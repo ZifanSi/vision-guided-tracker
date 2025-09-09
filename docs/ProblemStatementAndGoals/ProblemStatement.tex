@@ -22,8 +22,7 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
+Sept. 8, 2025 & Jianqing Liu & Initial Draft\\
 ... & ... & ...\\
 \bottomrule
 \end{tabularx}
@@ -40,34 +39,74 @@ information.}
 
 \subsection{Problem}
 
+In model rocketry, staging fails and parachute tangling has been the hardest engineering problems 
+to solve due to difficulties to observe what actually happens when the rocket is in the air.
+
+Model rockets fly extremely fast and high, some exceeding mach 3 and reach an altitude over 100km (TODO: citation here).
+This makes manual camera tracking basically impossible.
+
+Tracing a small model rocket can be more challenging than big rockets like the Falcon 9, because the
+launch pad environment is more unpredictable and the target is smaller, which makes it harder to identify 
+and track.
+
+Some commercial tracking camera solutions exist (TODO: citation here), but they do not have the performance and 
+accuracy required to track a small and fast accelerating model rocket.
+
+This project aims to develop a production-ready software stack for the tracking camera with a modular 
+interface for the gimbal mechanism.
+
 \subsection{Inputs and Outputs}
 
 \wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
 Use abstraction so that you can avoid details.}
 
+\begin{itemize}
+    \item Inputs
+    \begin{itemize}
+        \item 1080p 60fps camera feed
+    \end{itemize}
+    \item Outputs
+    \begin{itemize}
+        \item Gimbal movement commands
+        \item Real-time 1080p 60fps digitally zoomed and stablized video feed
+        \item Web management portal
+    \end{itemize}
+\end{itemize}
+
 \subsection{Stakeholders}
+
+\begin{itemize}
+    \item Model Rocket Engineers
+    \item TODO: more?
+\end{itemize}
 
 \subsection{Environment}
 
 \wss{Hardware and software environment}
 
+\subsection{Gimbal}
+
+An off-the-shelf cheap gimbal is used.
+
+A custom developed PCB is used to adapt the gimbal to the Jetson.
+
+\subsection{Computer Vision}
+
+Nvidia Jetson Orin Nano Super
+
+\subsection{Web Management Portal}
+
+Runs on any recent web browser
+
 \section{Goals}
+
+Track small-scale rocket launches (apogee < 200m)
 
 \section{Stretch Goals}
 
-\section{Challenge/Research Level and Extras}
+connected to a full-size gimbal developed by the McMaster Rocketry Team to track high-powered rocket launches (apogee 3km+)
 
-\wss{For CAS 741: State whether the project is a research project. This
-designation, with the approval (or request) of the instructor, can be modified
-over the course of the term.}
-
-\wss{For SE Capstone: State your expected challenge level (advanced, general or basic).  The
-challenge can come through the required domain knowledge, the implementation or
-something else.  Usually the greater the novelty of a project the greater its
-challenge level.  You should include your rationale for the selected level.
-Approval of the level will be part of the discussion with the instructor for
-approving the project.  The challenge level, with the approval (or request) of
-the instructor, can be modified over the course of the term.}
+\section{Extras}
 
 \wss{Teams may wish to include extras as either potential bonus grades, or to
 make up for a less advanced challenge level.  Potential extras include usability
@@ -76,6 +115,11 @@ personas, Design Thinking, etc.  Normally the maximum number of extras will be
 two.  Approval of the extras will be part of the discussion with the instructor
 for approving the project.  The extras, with the approval (or request) of the
 instructor, can be modified over the course of the term.}
+
+\subsection{Circuit Design}
+
+\subsection{TODO: Extra 2}
+
 
 \newpage{}
 
