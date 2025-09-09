@@ -13,25 +13,25 @@ This project builds a software stack that interfaces with low-cost hardware for 
 
 ### **Key Features**  
 
-1. **Embedded Motion Control**  
-   - Real-time two-axis gimbal control.  
-   - Predictive tracking for smooth and accurate motion.  
-   - Closed-loop feedback system for stability.  
+1. **Gimbal Motion Control**
+   - Real-time two-axis gimbal control.
+   - Closed-loop predictive control system for smooth and accurate motion.
 
-2. **Computer Vision Pipeline**  
-   - Detects and tracks fast-moving objects in real time.  
-   - Maintains lock even with partial occlusion.  
-   - Allows manual selection and prioritization of targets.  
+2. **Computer Vision Pipeline**
+   - Detects and tracks fast-moving objects in real time.
+   - Maintains lock even with partial occlusion.
+   - Allows manual selection and prioritization of targets.
+   - Digital zooming and stablization.
 
-3. **Web Application**  
-   - Live video feed preview.  
-   - Operator controls for manual override and tracking adjustments.  
-   - Start/stop video recording, playback, and download.  
+3. **Web Application**
+   - Live video feed preview.
+   - Operator controls for manual override and tracking adjustments.
+   - Start/stop video recording, playback, and download.
 
-4. **System Integration & Deployment**  
-   - End-to-end real-time tracking at 1080p/60fps.  
-   - Reliable and scalable for both small-scale and high-powered rocket launches.  
-   - Designed for ease of use, testing, and future expansion.  
+4. **System Integration & Deployment**
+   - Real-time tracking video output at 1080p/60fps.
+   - Reliable and scalable for both small-scale and high-powered rocket launches.
+   - Designed for ease of use, testing, and future expansion.
 
 ---
 
