@@ -13,28 +13,25 @@ This project builds a software stack that interfaces with low-cost hardware for 
 
 ### **Key Features**  
 
-1. **Embedded Motion Control (STM32 + Rust)**  
+1. **Embedded Motion Control**  
    - Real-time two-axis gimbal control.  
-   - Kalman filter for predictive object tracking.  
-   - Serial communication with Jetson for closed-loop feedback.  
+   - Predictive tracking for smooth and accurate motion.  
+   - Closed-loop feedback system for stability.  
 
-2. **Computer Vision Pipeline (NVIDIA Jetson Orin Nano + Python)**  
-   - Object detection/tracking using CNN/Transformer models.  
-   - Handles occlusion, downsampling, and interpolation for fast targets.  
-   - Manual object selection and priority lock-in.  
-   - Feedback control to embedded gimbal system.  
+2. **Computer Vision Pipeline**  
+   - Detects and tracks fast-moving objects in real time.  
+   - Maintains lock even with partial occlusion.  
+   - Allows manual selection and prioritization of targets.  
 
-3. **Web Application (React + Flask)**  
-   - Live video preview of camera feed.  
-   - Operator controls for manual override and tracking parameter tuning.  
+3. **Web Application**  
+   - Live video feed preview.  
+   - Operator controls for manual override and tracking adjustments.  
    - Start/stop video recording, playback, and download.  
-   - REST API + WebSocket backend for communication.  
 
 4. **System Integration & Deployment**  
-   - End-to-end real-time rocket tracking at 1080p/60fps.  
-   - CI/CD with GitHub Actions.  
-   - Automated unit and integration tests.  
-   - Dockerized builds for NVIDIA Jetson.  
+   - End-to-end real-time tracking at 1080p/60fps.  
+   - Reliable and scalable for both small-scale and high-powered rocket launches.  
+   - Designed for ease of use, testing, and future expansion.  
 
 ---
 
