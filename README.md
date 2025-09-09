@@ -1,7 +1,7 @@
 # High Performance Vision-Guided Camera Tracker  
 
 **Developer Names**: Zifan Si, Jianqing Liu, Mike Chen, Xiaotian Lou  
-**Supervisor**: TBD  
+**Supervisor**: Shahin Sirouspour  
 
 Date of project start: September 8th 2025  
 
