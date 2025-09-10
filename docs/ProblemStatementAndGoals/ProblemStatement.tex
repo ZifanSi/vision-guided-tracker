@@ -57,22 +57,21 @@ This project aims to develop a production-ready software stack for the tracking 
 interface for the gimbal mechanism.
 
 \subsection{Inputs and Outputs}
-
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
-Use abstraction so that you can avoid details.}
-
 \begin{itemize}
-    \item Inputs
+    \item \textbf{Inputs}
     \begin{itemize}
-        \item 1080p 60fps camera feed
+        \item Visual data of a fast-moving object in flight
+        \item Basic system state information for tracking
     \end{itemize}
-    \item Outputs
+
+    \item \textbf{Outputs}
     \begin{itemize}
-        \item Gimbal movement commands
-        \item Real-time 1080p 60fps digitally zoomed and stablized video feed
-        \item Web management portal
+        \item Camera orientation adjustments to maintain object lock
+        \item Stabilized video stream with the object centered in frame
+        \item User interface for monitoring and control
     \end{itemize}
 \end{itemize}
+
 
 \subsection{Stakeholders}
 
@@ -98,8 +97,21 @@ Use abstraction so that you can avoid details.}
 
 
 \subsection{Environment}
+\textbf{Development Frameworks and Tools:}
+\begin{enumerate}
 
-\wss{Hardware and software environment}
+    \item \textit{GitLab} will be used for version control, project management, and CI/CD pipelines to automate testing and deployment.
+    
+    \item \textit{Visual Studio Code} will serve as the primary IDE for software development across the embedded system, computer vision pipeline, and web application components.  
+
+    \item \textit{GitHub Actions} (or GitLab CI) will provide automated unit/integration testing and continuous integration workflows for reliable code validation.  
+
+    \item \textit{NVIDIA Jetson Orin Nano SDK} will be used for computer vision model execution, GPU acceleration, and performance optimization.  
+
+    \item \textit{STM32 Development Tools} (STM32CubeIDE, OpenOCD, or equivalent) will support programming and debugging of the embedded gimbal motion controller.  
+
+\end{enumerate}
+
 
 \subsection{Gimbal}
 
