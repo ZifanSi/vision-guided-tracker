@@ -13,11 +13,10 @@ assignees: ''
 
 **Attendance**
 
-- [ ] team member1
-- [ ] team member2
-- [ ] team member3
-- [ ] team member4
-- [ ] team member5
+- [ ] Xiaotian Lou
+- [ ] Si, Zifan
+- [ ] Liu, Jianqing
+- [ ] Shike Chen
 
 **Questions to Ask**
 
