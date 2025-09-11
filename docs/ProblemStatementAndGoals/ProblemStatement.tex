@@ -17,27 +17,27 @@
 \maketitle
 
 \begin{table}[hp]
-\caption{Revision History} \label{TblRevisionHistory}
-\begin{tabularx}{\textwidth}{llX}
-\toprule
-\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
-\midrule
-Sept. 8, 2025 & Jianqing Liu & Initial Draft\\
-Sept. 9, 2025 & Zifan Si & Details Elaboration\\
-Sept. 10, 2025 & Zifan Si & Fix based on teammate suggestion\\
-... & ... & ...\\
-\bottomrule
-\end{tabularx}
+    \caption{Revision History} \label{TblRevisionHistory}
+    \begin{tabularx}{\textwidth}{llX}
+        \toprule
+        \textbf{Date}  & \textbf{Developer(s)} & \textbf{Change}                  \\
+        \midrule
+        Sept. 8, 2025  & Jianqing Liu          & Initial Draft                    \\
+        Sept. 9, 2025  & Zifan Si              & Details Elaboration              \\
+        Sept. 10, 2025 & Zifan Si              & Fix based on teammate suggestion \\
+        ...            & ...                   & ...                              \\
+        \bottomrule
+    \end{tabularx}
 \end{table}
 
 \section{Problem Statement}
 
 \wss{You should check your problem statement with the
-\href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
-{problem statement checklist}.} 
+    \href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
+    {problem statement checklist}.}
 
 \wss{You can change the section headings, as long as you include the required
-information.}
+    information.}
 
 \subsection{Problem}
 
@@ -52,7 +52,7 @@ Model rockets travel at very high speeds, sometimes faster than Mach 3 and over
 100 km in altitude (TODO: citation). Under these conditions, manual camera
 tracking is not possible.
 
-Tracking a small model rocket is even harder than tracking large rockets such as
+Tracking a small model rocket is even harder than tracking large rockets suchas
 the Falcon 9. Smaller size and uncontrolled launch conditions make accurate
 detection and continuous tracking much more difficult.
 
@@ -64,57 +64,80 @@ observation of rocket flights.
 \subsection{Inputs and Outputs}
 \begin{itemize}
     \item \textbf{Inputs}
-    \begin{itemize}
-        \item 1080p 60fps camera feed of a rocket
-        \item Basic system state information for tracking
-    \end{itemize}
+          \begin{itemize}
+              \item 1080p 60fps camera feed of a rocket
+              \item Basic system state information for tracking
+          \end{itemize}
 
     \item \textbf{Outputs}
-    \begin{itemize}
-        \item Camera orientation adjustments to maintain object lock
-        \item Stabilized video stream with the object centered in frame
-        \item User interface for monitoring and control
-    \end{itemize}
+          \begin{itemize}
+              \item Camera orientation adjustments to maintain object lock
+              \item Stabilized video stream with the object centered in frame
+              \item User interface for monitoring and control
+          \end{itemize}
 \end{itemize}
-
 
 \subsection{Stakeholders}
 
 \subsubsection*{\color{blue}{Direct Stakeholders}}
 \begin{enumerate}
-    \item \textbf{McMaster Rocketry Team}: The primary end users who will deploy the system during launches. They depend on accurate real-time tracking to analyze staging, parachute deployment, and overall flight performance.  
+    \item \textbf{McMaster Rocketry Team}: The primary end users who
+          will deploy the system during launches. They depend on accurate
+          real-time tracking to analyze staging, parachute deployment, and
+          overall flight performance.
 
-    \item \textbf{Dr. Shahin Sirouspour (Supervisor)}: Provides technical guidance, project oversight, and mentorship. Ensures the project aligns with academic standards, engineering best practices, and capstone deliverable expectations.  
+    \item \textbf{Dr. Shahin Sirouspour (Supervisor)}: Provides
+          technical guidance, project oversight, and mentorship. Ensures
+          the project aligns with academic standards, engineering best
+          practices, and capstone deliverable expectations.
 \end{enumerate}
 
 \subsubsection*{\color{blue}{Indirect Stakeholders}}
 \begin{enumerate}
-    \item \textbf{Aerospace Engineers and Researchers}: Benefit from high-quality flight footage to validate models, improve rocket designs, and support experimental research.  
+    \item \textbf{Aerospace Engineers and Researchers}: Benefit from
+          high-quality flight footage to validate models, improve rocket
+          designs, and support experimental research.
 
-    \item \textbf{Event Organizers and Safety Officers}: Rely on reliable tracking for live monitoring of rocket flights, particularly for confirming parachute deployment and safe recovery during launch events.  
+    \item \textbf{Event Organizers and Safety Officers}: Rely on
+          reliable tracking for live monitoring of rocket flights,
+          particularly for confirming parachute deployment and safe
+          recovery during launch events.
 
-    \item \textbf{Engineering and Robotics Community}: May adapt the system’s design principles for other domains requiring precise tracking of fast-moving objects, such as UAV navigation, sports analytics, or autonomous robotics.  
+    \item \textbf{Engineering and Robotics Community}: May adapt the
+          system’s design principles for other domains requiring precise
+          tracking of fast-moving objects, such as UAV navigation, sports
+          analytics, or autonomous robotics.
 
-    \item \textbf{Potential Commercial and Industrial Users}: Could adopt the system for broader applications in surveillance, wildlife monitoring, or industrial inspections where real-time vision-guided tracking is valuable.  
+    \item \textbf{Potential Commercial and Industrial Users}: Could
+          adopt the system for broader applications in surveillance,
+          wildlife monitoring, or industrial inspections where real-time
+          vision-guided tracking is valuable.
 \end{enumerate}
-
 
 \subsection{Environment}
 \textbf{Development Frameworks and Tools:}
 \begin{enumerate}
 
-    \item \textit{GitLab} will be used for version control, project management, and CI/CD pipelines to automate testing and deployment.
-    
-    \item \textit{Visual Studio Code} will serve as the primary IDE for software development across the embedded system, computer vision pipeline, and web application components.  
+    \item \textit{GitLab} will be used for version control, project
+          management, and CI/CD pipelines to automate testing and deployment.
 
-    \item \textit{GitHub Actions} (or GitLab CI) will provide automated unit/integration testing and continuous integration workflows for reliable code validation.  
+    \item \textit{Visual Studio Code} will serve as the primary IDE for
+          software development across the embedded system, computer vision
+          pipeline, and web application components.
 
-    \item \textit{NVIDIA Jetson Orin Nano SDK} will be used for computer vision model execution, GPU acceleration, and performance optimization.  
+    \item \textit{GitHub Actions} (or GitLab CI) will provide automated
+          unit/integration testing and continuous integration workflows for
+          reliable code validation.
 
-    \item \textit{STM32 Development Tools} (STM32CubeIDE, OpenOCD, or equivalent) will support programming and debugging of the embedded gimbal motion controller.  
+    \item \textit{NVIDIA Jetson Orin Nano SDK} will be used for
+          computer vision model execution, GPU acceleration, and
+          performance optimization.
+
+    \item \textit{STM32 Development Tools} (STM32CubeIDE, OpenOCD, or
+          equivalent) will support programming and debugging of the
+          embedded gimbal motion controller.
 
 \end{enumerate}
-
 
 \subsection{Gimbal}
 
@@ -136,22 +159,24 @@ Track small-scale rocket launches (apogee < 200m)
 
 \section{Stretch Goals}
 
-connected to a full-size gimbal developed by the McMaster Rocketry Team to track high-powered rocket launches (apogee 3km+)
+connected to a full-size gimbal developed by the McMaster Rocketry Team to
+track high-powered rocket launches (apogee 3km+)
 
 \section{Extras}
 
 \wss{Teams may wish to include extras as either potential bonus grades, or to
-make up for a less advanced challenge level.  Potential extras include usability
-testing, code walkthroughs, user documentation, formal proof, GenderMag
-personas, Design Thinking, etc.  Normally the maximum number of extras will be
-two.  Approval of the extras will be part of the discussion with the instructor
-for approving the project.  The extras, with the approval (or request) of the
-instructor, can be modified over the course of the term.}
+    make up for a less advanced challenge level.  Potential extras
+    include usability
+    testing, code walkthroughs, user documentation, formal proof, GenderMag
+    personas, Design Thinking, etc.  Normally the maximum number of extras will be
+    two.  Approval of the extras will be part of the discussion with
+    the instructor
+    for approving the project.  The extras, with the approval (or request) of the
+    instructor, can be modified over the course of the term.}
 
 \subsection{Circuit Design}
 
 \subsection{TODO: Extra 2}
-
 
 \newpage{}
 
@@ -162,12 +187,12 @@ instructor, can be modified over the course of the term.}
 \input{../Reflection.tex}
 
 \begin{enumerate}
-    \item What went well while writing this deliverable? 
-    \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
-    \item How did you and your team adjust the scope of your goals to ensure
-    they are suitable for a Capstone project (not overly ambitious but also of
-    appropriate complexity for a senior design project)?
-\end{enumerate}  
+    \item What went well while writing this deliverable?
+    \item What pain points did you experience during this deliverable, and how did you
+          resolve them?
+    \item How did you and your team adjust the scope of your goals to ensure they are
+          suitable for a Capstone project (not overly ambitious but also of appropriate
+          complexity for a senior design project)?
+\end{enumerate}
 
 \end{document}
