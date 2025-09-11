@@ -20,12 +20,12 @@
     \caption{Revision History} \label{TblRevisionHistory}
     \begin{tabularx}{\textwidth}{llX}
         \toprule
-        \textbf{Date}  & \textbf{Developer(s)} & \textbf{Change}                  \\
+        \textbf{Date}  & \textbf{Developer(s)} & \textbf{Change}                   \\
         \midrule
-        Sept. 8, 2025  & Jianqing Liu          & Initial Draft                    \\
-        Sept. 9, 2025  & Zifan Si              & Details Elaboration              \\
-        Sept. 10, 2025 & Zifan Si              & Fix based on teammate suggestion \\
-        ...            & ...                   & ...                              \\
+        Sept. 8, 2025  & Jianqing Liu          & Initial Draft                     \\
+        Sept. 9, 2025  & Zifan Si              & Details Elaboration               \\
+        Sept. 10, 2025 & Zifan Si              & Fix based on teammate suggestion  \\
+        Sept. 10, 2025 & Jianqing Liu          & Refine inputs, outputs, and goals \\
         \bottomrule
     \end{tabularx}
 \end{table}
@@ -65,16 +65,27 @@ observation of rocket flights.
 \begin{itemize}
     \item \textbf{Inputs}
           \begin{itemize}
-              \item 1080p 60fps camera feed of a rocket
+              \item Realtime camera feed
               \item Basic system state information for tracking
+              \item Manual camera gimbal adjustment commands from user
           \end{itemize}
 
     \item \textbf{Outputs}
           \begin{itemize}
-              \item Camera orientation adjustments to maintain object lock
-              \item Stabilized video stream with the object centered in frame
-              \item User interface for monitoring and control
+              \item Camera gimbal adjustment commands to maintain visual lock of the rocket
+              \item Realtime video preview via ethernet
+              \item Realtime stabilized video output via HDMI with the rocket centered in frame
+              \item Recorded video with the rocket centered in frame
           \end{itemize}
+\end{itemize}
+
+\subsection{Performance Objectives}
+\label{sec:performance}
+
+\begin{itemize}
+    \item System should be able to handle 1080p 60fps camera feed
+    \item System should be able to output 1080p 60fps video via HDMI
+    \item Realtime video preview should be at least 15fps
 \end{itemize}
 
 \subsection{Stakeholders}
@@ -155,12 +166,20 @@ Runs on any recent web browser
 
 \section{Goals}
 
-Track small-scale rocket launches (apogee < 200m)
+The goal of the project is to track small-scale model rocket launches with
+apogee \textless 200m, while achieving all the performance objectives listed in
+Section \ref{sec:performance}.
 
 \section{Stretch Goals}
 
-connected to a full-size gimbal developed by the McMaster Rocketry Team to
-track high-powered rocket launches (apogee 3km+)
+\begin{itemize}
+    \item Handle 4K 60fps camera stream.
+    \item Include functionalities to control the zoom and the focus of more advanced
+          cameras.
+    \item Integration with a full-size gimbal developed by the McMaster Rocketry Team.
+    \item Track high-powered model rocket launches (apogee 3km+), while achieving all the
+          performance objectives listed in Section \ref{sec:performance}.
+\end{itemize}
 
 \section{Extras}
 
