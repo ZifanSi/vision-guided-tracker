@@ -104,9 +104,49 @@ for deadlines.}
 
 \section{Proof of Concept Demonstration Plan}
 
-What is the main risk, or risks, for the success of your project?  What will you
-demonstrate during your proof of concept demonstration to convince yourself that
-you will be able to overcome this risk?
+The following are planned steps of POC:
+
+\begin{enumerate}
+  \item Have initial image acquired from a camera, where the target is stationary.
+  \item Activate tracing mode of our system, it will segment and detect multiple moving objects in the image.
+    \begin{itemize}
+      \item The segmentation and moving object detection will be done using Computer Vision techniques.
+      \item The Computer Vision model will be deployed on a Jetson Nano.
+    \end{itemize}
+  \item user select a stationary or moving object as the target.
+  \item As the target moves, the system will keep it at the center of the image for smooth tracking.
+    \begin{itemize}
+      \item The system will be able to handle occlusion and loss of target.
+      \item user can manually re-select the target if needed.
+      \item the real time control of the camera will be done using a STM32 microcontroller.
+    \end{itemize}
+\end{enumerate}
+
+The following is a list of primary risks to consider from the POC:
+\begin{enumerate}
+  \item The computer vision system may not be able to process images at a fast enough rate.
+    \begin{itemize}
+      \item If this occurs, we will try to optimize the existing model, consider using a more powerful board, lower frame rate, or consider using traditional algorithmic approach and technique, where it detects motion by comparing image pixel wise.
+      \item We also reserve the option of use models trained for specific set of objects to increase the speed of the model.
+    \end{itemize}
+  \item The STM32 may not be able to deliver the real time control to the camera.
+    \begin{itemize}
+      \item If this occurs, we will consider using a more powerful microcontroller, or using a different control technique.
+    \end{itemize}
+  \item The Integration of the frontend, backend, computer vision model, and microcontroller may be more difficult than expected.
+    \begin{itemize}
+      \item If this occurs, we will consider using a more powerful integrated micro computer or deploy via cloud computation, redesign our control flow, to make integration easier.
+    \end{itemize}
+\end{enumerate}
+
+Other smaller risks to consider:
+\begin{enumerate}
+  \item UI Useability issues: The user interface may not be intuitive or easy to use, leading to user frustration or errors.
+    \begin{itemize}
+      \item {Potential Solution}: Conduct user testing and gather feedback to improve the interface design.
+    \end{itemize}
+\end{enumerate}
+
 
 \section{Expected Technology}
 
