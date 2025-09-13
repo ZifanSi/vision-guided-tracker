@@ -1,0 +1,64 @@
+# Temporary files
+**/*.000
+**/*.bak
+**/*.bck
+**/*.kicad_pcb-bak
+**/*.kicad_sch-bak
+**/*-backups
+**/*.kicad_prl
+**/*.sch-bak
+**/~*
+**/_autosave-*
+**/*.tmp
+**/*-save.pro
+**/*-save.kicad_pcb
+**/\#auto_saved_files\#
+**/fp-info-cache
+
+# Netlist files (exported from Eeschema)
+**/*.net
+
+# Autorouter files (exported from Pcbnew)
+**/*.dsn
+**/*.ses
+
+# Exported BOM files
+**/*.xml
+**/*.csv
+
+**/out/
+
+**/.DS_Store
+
+# Windows default autosave extension
+**/*.asv
+
+# OSX / *nix default autosave extension
+**/*.m~
+
+# Compiled MEX binaries (all platforms)
+**/*.mex*
+
+# Packaged app and toolbox files
+**/*.mlappinstall
+**/*.mltbx
+
+# Generated helpsearch folders
+**/helpsearch*/
+
+# Simulink code generation folders
+**/slprj/
+**/sccprj/
+**/*grt_rtw/
+
+# Matlab code generation folders
+**/codegen/
+
+# Simulink autosave extension
+**/*.autosave
+
+# Simulink cache files
+**/*.slxc
+
+# Octave session info
+**/octave-workspace
