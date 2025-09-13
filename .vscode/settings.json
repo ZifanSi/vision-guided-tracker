@@ -1,0 +1,10 @@
+{
+    "latex-workshop.formatting.latex": "latexindent",
+    "latex-workshop.formatting.latexindent.args":[
+        "-c",
+        "%DIR%/",
+        "%TMPFILE%",
+        "-y=defaultIndent: '%INDENT%',modifyLineBreaks:textWrapOptions:columns:80",
+        "-m"
+    ],
+}

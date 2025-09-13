@@ -2,7 +2,7 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
-
+\usepackage[round]{natbib}
 \title{Problem Statement and Goals\\\progname}
 
 \author{\authname}
@@ -17,65 +17,185 @@
 \maketitle
 
 \begin{table}[hp]
-\caption{Revision History} \label{TblRevisionHistory}
-\begin{tabularx}{\textwidth}{llX}
-\toprule
-\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
-\midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
-\bottomrule
-\end{tabularx}
+    \caption{Revision History} \label{TblRevisionHistory}
+    \begin{tabularx}{\textwidth}{llX}
+        \toprule
+        \textbf{Date}  & \textbf{Developer(s)} & \textbf{Change}                   \\
+        \midrule
+        Sept. 8, 2025  & Jianqing Liu          & Initial Draft                     \\
+        Sept. 9, 2025  & Zifan Si              & Details Elaboration               \\
+        Sept. 10, 2025 & Zifan Si              & Fix based on teammate suggestion  \\
+        Sept. 10, 2025 & Jianqing Liu          & Refine inputs, outputs, and goals \\
+        Sept. 12, 2025 & Jianqing Liu          & Update Depolyment Environment     \\
+        Sept. 13, 2025 & Xiaotian Lou          & Update Citation                   \\
+        \bottomrule
+    \end{tabularx}
 \end{table}
 
 \section{Problem Statement}
 
 \wss{You should check your problem statement with the
-\href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
-{problem statement checklist}.} 
+    \href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
+    {problem statement checklist}.}
 
 \wss{You can change the section headings, as long as you include the required
-information.}
+    information.}
 
 \subsection{Problem}
 
-\subsection{Inputs and Outputs}
+In model rocketry, two of the hardest engineering problems are staging failures
+and parachute tangling. These problems are hard to study because they happen in
+mid-flight, where direct observation is limited. Without reliable tracking,
+engineers cannot fully understand these failures or design better solutions. As
+a result, recurring issues remain unresolved, slowing progress in both safety
+and performance of future rockets.
 
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
-Use abstraction so that you can avoid details.}
+Model rockets travel at very high speeds, sometimes faster than Mach 3 and over
+100 km in altitude \citep{SpaceConcordiaRocketry2025}. Under these conditions,
+manual camera tracking is not possible.
+
+Tracking a small model rocket is even harder than tracking large rockets suchas
+the Falcon 9. Smaller size and uncontrolled launch conditions make accurate
+detection and continuous tracking much more difficult.
+
+Some commercial tracking systems exist \citep{AverTR3XX2021}, but they do not
+have the accuracy or speed needed to follow small, fast-moving rockets. This
+gap shows the need for a dedicated system that can provide clear, real-time
+observation of rocket flights.
+
+\subsection{Inputs and Outputs}
+\begin{itemize}
+    \item \textbf{Inputs}
+          \begin{itemize}
+              \item Realtime camera feed
+              \item State information from gimbal
+              \item Manual camera gimbal adjustment commands from user
+          \end{itemize}
+
+    \item \textbf{Outputs}
+          \begin{itemize}
+              \item Camera gimbal adjustment commands to maintain visual lock of the rocket
+              \item Realtime video preview via ethernet
+              \item Realtime stabilized video output via HDMI with the rocket centered in frame
+              \item Recorded video with the rocket centered in frame
+          \end{itemize}
+\end{itemize}
+
+\subsection{Performance Objectives}
+\label{sec:performance}
+
+\begin{itemize}
+    \item System should be able to handle 1080p 60fps camera feed
+    \item System should be able to output 1080p 60fps video via HDMI
+    \item Realtime video preview should be at least 15fps
+\end{itemize}
 
 \subsection{Stakeholders}
 
-\subsection{Environment}
+\subsubsection*{\color{blue}{Direct Stakeholders}}
+\begin{enumerate}
+    \item \textbf{McMaster Rocketry Team}: The primary end users who
+          will deploy the system during launches. They depend on accurate
+          real-time tracking to analyze staging, parachute deployment, and
+          overall flight performance.
 
-\wss{Hardware and software environment}
+    \item \textbf{Dr. Shahin Sirouspour (Supervisor)}: Provides
+          technical guidance, project oversight, and mentorship. Ensures
+          the project aligns with academic standards, engineering best
+          practices, and capstone deliverable expectations.
+\end{enumerate}
+
+\subsubsection*{\color{blue}{Indirect Stakeholders}}
+\begin{enumerate}
+    \item \textbf{Aerospace Engineers and Researchers}: Benefit from
+          high-quality flight footage to validate models, improve rocket
+          designs, and support experimental research.
+
+    \item \textbf{Event Organizers and Safety Officers}: Rely on
+          reliable tracking for live monitoring of rocket flights,
+          particularly for confirming parachute deployment and safe
+          recovery during launch events.
+
+    \item \textbf{Engineering and Robotics Community}: May adapt the
+          system’s design principles for other domains requiring precise
+          tracking of fast-moving objects, such as UAV navigation, sports
+          analytics, or autonomous robotics.
+
+    \item \textbf{Potential Commercial and Industrial Users}: Could
+          adopt the system for broader applications in surveillance,
+          wildlife monitoring, or industrial inspections where real-time
+          vision-guided tracking is valuable.
+\end{enumerate}
+
+\subsection{Environment}
+\subsubsection*{\color{blue}{Deployment Environment}}
+\begin{itemize}
+    \item Outdoor rocket launch sites with variable lighting, wind, and dynamic
+          backgrounds.
+    \item Initial testing on small-scale model rockets (apogees around 200 m).
+    \item Scalable to high-powered launches by the McMaster Rocketry Team (apogees
+          exceeding 3 km).
+    \item Indoor lab-based testing and demonstration for development and evaluation.
+\end{itemize}
+
+\subsubsection*{\color{blue}{Execution Environment}}
+There are four pieces of the hardware related to this project:
+
+\begin{enumerate}
+    \item A gimbal with a camera mounted on it
+    \item An STM32 microcontroller
+    \item An Nvidia Jetson prosessing module
+    \item An user laptop running a browser connected to the Jetson
+\end{enumerate}
+
+Three pieces of software will be developed as a part of this project:
+
+\begin{enumerate}
+    \item Baremetal code that runs on the STM32 microcontroller
+    \item Code that runs on the Jetson, which expects an linux environment with JetPack 6
+    \item Code that runs on the user browser, which expects any recent versions of major
+          browsers
+\end{enumerate}
 
 \section{Goals}
 
+The goal of the project is to track small-scale model rocket launches with
+apogee \textless 200m, while achieving all the performance objectives listed in
+Section \ref{sec:performance}.
+
 \section{Stretch Goals}
 
-\section{Challenge/Research Level and Extras}
+\begin{itemize}
+    \item Handle 4K 60fps camera stream.
+    \item Include functionalities to control the zoom and the focus of more advanced
+          cameras.
+    \item Integration with a full-size gimbal developed by the McMaster Rocketry Team.
+    \item Track high-powered model rocket launches (apogee 3km+), while achieving all the
+          performance objectives listed in Section \ref{sec:performance}.
+\end{itemize}
 
-\wss{For CAS 741: State whether the project is a research project. This
-designation, with the approval (or request) of the instructor, can be modified
-over the course of the term.}
-
-\wss{For SE Capstone: State your expected challenge level (advanced, general or basic).  The
-challenge can come through the required domain knowledge, the implementation or
-something else.  Usually the greater the novelty of a project the greater its
-challenge level.  You should include your rationale for the selected level.
-Approval of the level will be part of the discussion with the instructor for
-approving the project.  The challenge level, with the approval (or request) of
-the instructor, can be modified over the course of the term.}
+\section{Extras}
 
 \wss{Teams may wish to include extras as either potential bonus grades, or to
-make up for a less advanced challenge level.  Potential extras include usability
-testing, code walkthroughs, user documentation, formal proof, GenderMag
-personas, Design Thinking, etc.  Normally the maximum number of extras will be
-two.  Approval of the extras will be part of the discussion with the instructor
-for approving the project.  The extras, with the approval (or request) of the
-instructor, can be modified over the course of the term.}
+    make up for a less advanced challenge level.  Potential extras
+    include usability
+    testing, code walkthroughs, user documentation, formal proof, GenderMag
+    personas, Design Thinking, etc.  Normally the maximum number of extras will be
+    two.  Approval of the extras will be part of the discussion with
+    the instructor
+    for approving the project. The extras, with the approval (or request) of the
+    instructor, can be modified over the course of the term.}
+
+\subsection{Circuit Design}
+
+As this project require to use of a mechanical gimbal, electrical circuit is
+needed to interface between the host computer and the actuators. A seperate
+document will be authored to detail the circuit design.
+
+\subsection{User Instructional Video}
+
+An user instructional video will be created to help potential users to
+understand how to use the system.
 
 \newpage{}
 
@@ -86,12 +206,15 @@ instructor, can be modified over the course of the term.}
 \input{../Reflection.tex}
 
 \begin{enumerate}
-    \item What went well while writing this deliverable? 
-    \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
-    \item How did you and your team adjust the scope of your goals to ensure
-    they are suitable for a Capstone project (not overly ambitious but also of
-    appropriate complexity for a senior design project)?
-\end{enumerate}  
+    \item What went well while writing this deliverable?
+    \item What pain points did you experience during this deliverable, and how did you
+          resolve them?
+    \item How did you and your team adjust the scope of your goals to ensure they are
+          suitable for a Capstone project (not overly ambitious but also of appropriate
+          complexity for a senior design project)?
+\end{enumerate}
+
+\bibliographystyle{plainnat}
+\bibliography{../../refs/References}
 
 \end{document}
