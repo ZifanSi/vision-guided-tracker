@@ -2,7 +2,7 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
-
+\usepackage[round]{natbib}
 \title{Problem Statement and Goals\\\progname}
 
 \author{\authname}
@@ -27,6 +27,7 @@
         Sept. 10, 2025 & Zifan Si              & Fix based on teammate suggestion  \\
         Sept. 10, 2025 & Jianqing Liu          & Refine inputs, outputs, and goals \\
         Sept. 12, 2025 & Jianqing Liu          & Update Depolyment Environment     \\
+        Sept. 13, 2025 & Xiaotian Lou          & Update Citation                   \\
         \bottomrule
     \end{tabularx}
 \end{table}
@@ -50,14 +51,14 @@ a result, recurring issues remain unresolved, slowing progress in both safety
 and performance of future rockets.
 
 Model rockets travel at very high speeds, sometimes faster than Mach 3 and over
-100 km in altitude (TODO: citation). Under these conditions, manual camera
+100 km in altitude \citep{SpaceConcordiaRocketry2025}. Under these conditions, manual camera
 tracking is not possible.
 
 Tracking a small model rocket is even harder than tracking large rockets suchas
 the Falcon 9. Smaller size and uncontrolled launch conditions make accurate
 detection and continuous tracking much more difficult.
 
-Some commercial tracking systems exist (TODO: citation), but they do not have
+Some commercial tracking systems exist \citep{AverTR3XX2021}, but they do not have
 the accuracy or speed needed to follow small, fast-moving rockets. This gap
 shows the need for a dedicated system that can provide clear, real-time
 observation of rocket flights.
@@ -202,5 +203,9 @@ understand how to use the system.
           suitable for a Capstone project (not overly ambitious but also of appropriate
           complexity for a senior design project)?
 \end{enumerate}
+
+\bibliographystyle{plainnat}
+\bibliography{../../refs/References}
+
 
 \end{document}
