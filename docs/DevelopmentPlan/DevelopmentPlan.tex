@@ -187,22 +187,60 @@ Other smaller risks to consider:
   project.  It may also help with early identification of areas where project
   members will need to augment their training.}
 
-Topics to discuss include the following:
+\wss{git, GitHub and GitHub projects should be part of your technology.}
+
+% Topics to discuss include the following:
+
+% \begin{itemize}
+%   \item Specific programming language
+%   \item Specific libraries
+%   \item Pre-trained models
+%   \item Specific linter tool (if appropriate)
+%   \item Specific unit testing framework
+%   \item Investigation of code coverage measuring tools
+%   \item Specific plans for Continuous Integration (CI), or an explanation that CI is
+%         not being done
+%   \item Specific performance measuring tools (like Valgrind), if appropriate
+%   \item Tools you will likely be using?
+% \end{itemize}
 
 \begin{itemize}
-  \item Specific programming language
-  \item Specific libraries
-  \item Pre-trained models
-  \item Specific linter tool (if appropriate)
-  \item Specific unit testing framework
-  \item Investigation of code coverage measuring tools
-  \item Specific plans for Continuous Integration (CI), or an explanation that CI is
-        not being done
-  \item Specific performance measuring tools (like Valgrind), if appropriate
-  \item Tools you will likely be using?
+  \item Motion Control
+        \begin{itemize}
+          \item STM32 Microcontroller
+          \item Rust Programming Language
+          \item Linter: rust-clippy
+          \item Unit Testing: Rust built-in
+          \item Code Coverage: grcov
+          \item Hardware Abstraction Layer: embassy-rs
+          \item Debugging: probe-rs
+        \end{itemize}
+  \item Computer Vision
+        \begin{itemize}
+          \item Nvidia Jetson
+          \item Nvidia Jetpack
+          \item Python
+          \item Yolo (finetuned)
+          \item Linter: ??
+          \item Unit Testing: ??
+          \item Code Coverage: ??
+        \end{itemize}
+  \item Web App
+        \begin{itemize}
+          \item Web Server: Flask
+          \item React
+          \item Typescript
+          \item Linter: eslint
+          \item End-to-end Testing: Cypress
+        \end{itemize}
+  \item All the above will use GitHub Actions for CI
+  \item Development Tools
+        \begin{itemize}
+          \item VSCode
+          \item Git
+          \item Github
+        \end{itemize}
 \end{itemize}
-
-\wss{git, GitHub and GitHub projects should be part of your technology.}
 
 \section{Coding Standard}
 
