@@ -94,7 +94,16 @@
   \item \textbf{Quality Assurance}: Reviews code, documentation, and deliverables for quality and consistency, conducts testing and validation, ensures adherence to coding standards and project requirements, and manages the review process for all team outputs.
 \end{itemize}
 
-\section{Workflow Plan}
+\section{Continuous Integration Plan}
+        use Black for formatting and pylint and Ruff for static analysis; \\
+        use pytest + coverage for tests ($\geq 50\%$) on Python 3.9–3.11 across Linux, macOS, and Windows; \\
+        perform SAST with Bandit; all of the above are enforced via GitHub Actions.\\
+
+        linter tools: pylint and ruff\\
+        unit testing: pytest\\
+        code coverage: coverage\\
+        code security: bandit\\
+
 
 \begin{itemize}
   \item How will you be using git, including branches, pull request, etc.?
@@ -222,7 +231,7 @@ Other smaller risks to consider:
           \item Nvidia Jetpack
           \item Language: Python
           \item Libraries: OpenCV, NumPy, Matplotlib, Torch
-          \item Open Source Models: YOLO series, SAM, various ViTs
+          \item Open Source Models: Ultralytics YOLO, SAM, various ViTs
           \item Linter: pylint
         \end{itemize}
   \item Web App
@@ -237,6 +246,7 @@ Other smaller risks to consider:
   \item Development Tools
         \begin{itemize}
           \item VSCode
+          \item PyCharm
           \item Git
           \item Github
         \end{itemize}
