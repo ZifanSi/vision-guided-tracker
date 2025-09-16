@@ -248,7 +248,9 @@ Other smaller risks to consider:
   \item Rust:
         \href{https://en.wikipedia.org/wiki/The_Power_of_10:_Rules_for_Developing_Safety-Critical_Code}{The
           Power of 10 Rules}
-  \item Python: ??
+  \item Python:
+        Follow PEP 8 / PEP 257 / PEP 484; use Black for formatting and pylint and Ruff for static analysis;
+        use pytest + coverage for tests ( > 50\%) on Python 3.9–3.11 across Linux, macOS, and Windows; perform SAST with Bandit; all of the above are enforced via GitHub Actions.
   \item Typescript:
         \href{https://typescript-eslint.io/packages/typescript-eslint}{typescript-eslint}
 
