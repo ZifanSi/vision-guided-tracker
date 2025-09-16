@@ -277,3 +277,13 @@ TSWLatexianTemp*
 
 # DS_Store file from Mac computers
 .DS_Store
+
+# Ignore the actual data files, we can save them in discord
+data/
+
+# Ignore python virtual environment
+.venv/
+__pycache__/
+
+# Ignore Yolo source code for now
+ultralytics/
