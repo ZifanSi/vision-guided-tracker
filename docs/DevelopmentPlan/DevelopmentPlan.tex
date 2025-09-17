@@ -102,7 +102,16 @@ This project adopts the MIT license, which can be accessed at this
   \item \textbf{Quality Assurance}: Reviews code, documentation, and deliverables for quality and consistency, conducts testing and validation, ensures adherence to coding standards and project requirements, and manages the review process for all team outputs.
 \end{itemize}
 
-\section{Workflow Plan}
+\section{Continuous Integration Plan}
+        use Black for formatting and pylint and Ruff for static analysis; \\
+        use pytest + coverage for tests ($\geq 50\%$) on Python 3.9–3.11 across Linux, macOS, and Windows; \\
+        perform SAST with Bandit; all of the above are enforced via GitHub Actions.\\
+
+        linter tools: pylint and ruff\\
+        unit testing: pytest\\
+        code coverage: coverage\\
+        code security: bandit\\
+
 
 \begin{itemize}
   \item How will you be using git, including branches, pull request, etc.?
@@ -228,11 +237,10 @@ Other smaller risks to consider:
         \begin{itemize}
           \item Nvidia Jetson
           \item Nvidia Jetpack
-          \item Python
-          \item Yolo (finetuned)
-          \item Linter: ??
-          \item Unit Testing: ??
-          \item Code Coverage: ??
+          \item Language: Python
+          \item Libraries: OpenCV, NumPy, Matplotlib, Torch
+          \item Open Source Models: Ultralytics YOLO, SAM, various ViTs
+          \item Linter: pylint
         \end{itemize}
   \item Web App
         \begin{itemize}
@@ -246,6 +254,7 @@ Other smaller risks to consider:
   \item Development Tools
         \begin{itemize}
           \item VSCode
+          \item PyCharm
           \item Git
           \item Github
         \end{itemize}
@@ -257,7 +266,13 @@ Other smaller risks to consider:
   \item Rust:
         \href{https://en.wikipedia.org/wiki/The_Power_of_10:_Rules_for_Developing_Safety-Critical_Code}{The
           Power of 10 Rules}
-  \item Python: ??
+  \item Python:
+        Follow PEP 8 / PEP 257 / PEP 484; use Black for formatting and pylint and Ruff for static analysis; \\
+        use pytest + coverage for tests ($\geq 50\%$) on Python 3.9–3.11 across Linux, macOS, and Windows; \\
+        perform SAST with Bandit; all of the above are enforced via GitHub Actions.\\
+
+        If the project matures, gradually raise the coverage threshold from 50\% to 70\%--80\% (by increasing the threshold step by step in CI).\\
+
   \item Typescript:
         \href{https://typescript-eslint.io/packages/typescript-eslint}{typescript-eslint}
 
