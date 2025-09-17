@@ -1,4 +1,10 @@
-# High Performance Vision-Guided Camera Tracker  
+<p align="center" width="100%">
+   <img width="33%" src="./assets/logo/red.png">
+</p>
+
+<h1 align="center">
+   RoCam: High Performance Vision-Guided Rocket Tracker  
+</h1>
 
 **Developer Names**: Zifan Si, Jianqing Liu, Mike Chen, Xiaotian Lou  
 **Supervisor**: Shahin Sirouspour  
