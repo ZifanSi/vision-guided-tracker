@@ -24,6 +24,7 @@
     \midrule
     Sept. 10, 2025 & Mike Chen             & Proof of Concept Plan and Expected Technology \\
     Sept. 13, 2025 & Jianqing Liu          & Team Member Roles and Communication Plan      \\
+    Sept. 13, 2025 & Jianqing Liu          & Expected Technology and Coding Standard       \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -43,6 +44,8 @@
   not.  If there is confidential information, point to the agreement you have in
   place.}
 
+No confidential information to protect.
+
 \wss{For most teams this section will just state that there is no confidential
   information to protect.}
 \section{IP to Protect}
@@ -51,10 +54,15 @@
   All students who are working on a project that requires an IP agreement are also
   required to sign the ``Intellectual Property Guide Acknowledgement.''}
 
+No IP to protect.
+
 \section{Copyright License}
 
 \wss{What copyright license is your team adopting.  Point to the license in your
   repo.}
+
+This project adopts the MIT license, which can be accessed at this
+\href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/LICENSE}{link}.
 
 \section{Team Meeting Plan}
 
@@ -73,8 +81,9 @@
 \section{Team Communication Plan}
 
 \begin{itemize}
-  \item \textbf{Discord}: Used for general team communication, informal discussions, quick updates, and coordination of meetings. Team members will use Discord for day-to-day conversations, sharing progress updates, asking general questions, and maintaining team cohesion.
-  \item \textbf{GitHub}: Used for all code-related discussions and project management. GitHub Issues will be used to track bugs, feature requests, and tasks. GitHub Pull Requests will be used for code reviews and discussions related to specific code changes. Any technical discussions related to implementation details, code quality, or specific issues will be conducted through GitHub's commenting system on the relevant issue or pull request.
+  \item \textbf{Discord}: Used for general team communication, informal discussions, quick updates, and meetings.
+  \item \textbf{Zoom}: Used for meetings with advisors
+  \item \textbf{GitHub}: Used for all code-related discussions and project management.
 \end{itemize}
 
 \wss{Issues on GitHub should be part of your communication plan.}
@@ -93,7 +102,16 @@
   \item \textbf{Quality Assurance}: Reviews code, documentation, and deliverables for quality and consistency, conducts testing and validation, ensures adherence to coding standards and project requirements, and manages the review process for all team outputs.
 \end{itemize}
 
-\section{Workflow Plan}
+\section{Continuous Integration Plan}
+        use Black for formatting and pylint and Ruff for static analysis; \\
+        use pytest + coverage for tests ($\geq 50\%$) on Python 3.9–3.11 across Linux, macOS, and Windows; \\
+        perform SAST with Bandit; all of the above are enforced via GitHub Actions.\\
+
+        linter tools: pylint and ruff\\
+        unit testing: pytest\\
+        code coverage: coverage\\
+        code security: bandit\\
+
 
 \begin{itemize}
   \item How will you be using git, including branches, pull request, etc.?
@@ -187,24 +205,78 @@ Other smaller risks to consider:
   project.  It may also help with early identification of areas where project
   members will need to augment their training.}
 
-Topics to discuss include the following:
-
-\begin{itemize}
-  \item Specific programming language
-  \item Specific libraries
-  \item Pre-trained models
-  \item Specific linter tool (if appropriate)
-  \item Specific unit testing framework
-  \item Investigation of code coverage measuring tools
-  \item Specific plans for Continuous Integration (CI), or an explanation that CI is
-        not being done
-  \item Specific performance measuring tools (like Valgrind), if appropriate
-  \item Tools you will likely be using?
-\end{itemize}
-
 \wss{git, GitHub and GitHub projects should be part of your technology.}
 
+% Topics to discuss include the following:
+
+% \begin{itemize}
+%   \item Specific programming language
+%   \item Specific libraries
+%   \item Pre-trained models
+%   \item Specific linter tool (if appropriate)
+%   \item Specific unit testing framework
+%   \item Investigation of code coverage measuring tools
+%   \item Specific plans for Continuous Integration (CI), or an explanation that CI is
+%         not being done
+%   \item Specific performance measuring tools (like Valgrind), if appropriate
+%   \item Tools you will likely be using?
+% \end{itemize}
+
+\begin{itemize}
+  \item Motion Control
+        \begin{itemize}
+          \item STM32 Microcontroller
+          \item Rust Programming Language
+          \item Linter: rust-clippy
+          \item Unit Testing: Rust built-in
+          \item Code Coverage: grcov
+          \item Hardware Abstraction Layer: embassy-rs
+          \item Debugging: probe-rs
+        \end{itemize}
+  \item Computer Vision
+        \begin{itemize}
+          \item Nvidia Jetson
+          \item Nvidia Jetpack
+          \item Language: Python
+          \item Libraries: OpenCV, NumPy, Matplotlib, Torch
+          \item Open Source Models: Ultralytics YOLO, SAM, various ViTs
+          \item Linter: pylint
+        \end{itemize}
+  \item Web App
+        \begin{itemize}
+          \item Web Server: Flask
+          \item React
+          \item Typescript
+          \item Linter: eslint
+          \item End-to-end Testing: Cypress
+        \end{itemize}
+  \item All the above will use GitHub Actions for CI
+  \item Development Tools
+        \begin{itemize}
+          \item VSCode
+          \item PyCharm
+          \item Git
+          \item Github
+        \end{itemize}
+\end{itemize}
+
 \section{Coding Standard}
+
+\begin{itemize}
+  \item Rust:
+        \href{https://en.wikipedia.org/wiki/The_Power_of_10:_Rules_for_Developing_Safety-Critical_Code}{The
+          Power of 10 Rules}
+  \item Python:
+        Follow PEP 8 / PEP 257 / PEP 484; use Black for formatting and pylint and Ruff for static analysis; \\
+        use pytest + coverage for tests ($\geq 50\%$) on Python 3.9–3.11 across Linux, macOS, and Windows; \\
+        perform SAST with Bandit; all of the above are enforced via GitHub Actions.\\
+
+        If the project matures, gradually raise the coverage threshold from 50\% to 70\%--80\% (by increasing the threshold step by step in CI).\\
+
+  \item Typescript:
+        \href{https://typescript-eslint.io/packages/typescript-eslint}{typescript-eslint}
+
+\end{itemize}
 
 \wss{What coding standard will you adopt?}
 
