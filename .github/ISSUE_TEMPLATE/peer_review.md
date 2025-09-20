@@ -2,14 +2,14 @@
 name: Peer Review
 about: Someone outside of the team reviews one of the artifacts.
 title: 'Peer Review - clear name for issue'
-labels: 'review'
+labels: 'enhancement'
 assignees: ''
 
 ---
 
-**Artifact Under Review**
+## Artifact Under Review
 
-**Team Number for Team Doing the Review**
+## Team Number for Team Doing the Review
 
-**Description of Issue**
+## Description of Issue
 

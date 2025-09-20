@@ -2,22 +2,22 @@
 name: Lecture
 about: Track team details for lectures.
 title: 'Lecture - Date'
-labels: 'meeting'
+labels: ''
 assignees: ''
 
 ---
 
-**Topic**
+## Topic
 
-**Date and Time**
+## Date and Time
 
-**Attendance**
+## Attendance
 
 - [ ] Xiaotian Lou
 - [ ] Si, Zifan
 - [ ] Liu, Jianqing
 - [ ] Shike Chen
 
-**Questions to Ask**
+## Questions to Ask
 
 -
