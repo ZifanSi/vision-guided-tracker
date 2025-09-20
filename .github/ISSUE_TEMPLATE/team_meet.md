@@ -7,15 +7,15 @@ assignees: ''
 
 ---
 
-**Date and Time**
+## Date and Time
 
-**Attendance**
+## Attendance
 
 - [ ] Xiaotian Lou
 - [ ] Si, Zifan
 - [ ] Liu, Jianqing
 - [ ] Shike Chen
 
-**Agenda**
+## Agenda
 
 - 

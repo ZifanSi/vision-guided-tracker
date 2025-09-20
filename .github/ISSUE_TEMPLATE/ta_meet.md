@@ -2,22 +2,22 @@
 name: TA Meeting
 about: Track team details for TA meetings.
 title: 'TA Meeting - Date'
-labels: 'meeting'
+labels: ''
 assignees: ''
 
 ---
 
-**Purpose of Meeting**
+## Purpose of Meeting
 
-**Date and Time**
+## Date and Time
 
-**Attendance**
+## Attendance
 
 - [ ] Xiaotian Lou
 - [ ] Si, Zifan
 - [ ] Liu, Jianqing
 - [ ] Shike Chen
 
-**Questions to Ask**
+## Questions to Ask
 
 -

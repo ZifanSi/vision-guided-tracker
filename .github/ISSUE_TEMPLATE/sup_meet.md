@@ -2,24 +2,24 @@
 name: Supervisor Meeting
 about: Create an agenda for team meetings with supervisors/stakeholders.
 title: 'Supervisor Meeting - Date'
-labels: 'meeting'
+labels: ''
 assignees: ''
 
 ---
 
-**Date and Time**
+## Date and Time
 
-**Attendance**
+## Attendance
 
 - [ ] Xiaotian Lou
 - [ ] Si, Zifan
 - [ ] Liu, Jianqing
 - [ ] Shike Chen
 
-**Agenda**
+## Agenda
 
 - 
 
-**Questions to Ask**
+## Questions to Ask
 
 -
