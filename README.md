@@ -11,7 +11,7 @@
 
 Date of project start: September 8th 2025  
 
-**Project Overview**: The goal of this project is to design and implement a deployable camera tracking system capable of autonomously locking onto and following extremely fast-moving small targets, such as model rockets. The system integrates computer vision, motion control, and a web-based operator interface to deliver smooth, stable video (1080p @ 60fps) of critical rocket events such as staging and parachute deployment.  
+**Project Overview**: The goal of this project is to design and implement a deployable camera tracking system capable of autonomously locking onto and following extremely fast-moving model rockets. The system integrates computer vision, motion control, and a web-based operator interface to deliver smooth, stable video (1080p @ 60fps) of critical rocket events such as staging and parachute deployment.  
 
 This project builds a software stack that interfaces with low-cost hardware for small-scale launches (200m apogee) and is scalable to support the McMaster Rocketry Team’s high-powered rockets (3km+ apogee).  
 
@@ -26,7 +26,6 @@ This project builds a software stack that interfaces with low-cost hardware for 
 2. **Computer Vision Pipeline**
    - Detects and tracks fast-moving objects in real time.
    - Maintains lock even with partial occlusion.
-   - Allows manual selection and prioritization of targets.
    - Digital zooming and stablization.
 
 3. **Web Application**
@@ -43,7 +42,7 @@ This project builds a software stack that interfaces with low-cost hardware for 
 
 The folders and files for this project are as follows:  
 
-**docs** - Project documentation, design notes, diagrams  
-**refs** - Reference materials (papers, hardware specs, related work)  
-**src** - Source code for embedded system, CV pipeline, and web app  
-**test** - Test cases, simulation data, and validation results  
+- **docs** - Project documentation, design notes, diagrams
+- **refs** - Reference materials (papers, hardware specs, related work)
+- **src** - Source code for embedded system, CV pipeline, and web app
+- **test** - Test cases, simulation data, and validation results
