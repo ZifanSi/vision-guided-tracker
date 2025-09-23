@@ -441,7 +441,7 @@ guides means anyone reading or reviewing our code will find it easy to follow.
         you resolve them?
 \end{enumerate}
 
-\subsection*{Development Plan Reflection --- Jianqing Liu}
+\subsection*{Development Plan Reflection (Hardware) --- Jianqing Liu}
 
 \begin{enumerate}
   \item \textit{Why is it important to create a development plan prior to starting the project?}
@@ -477,27 +477,33 @@ guides means anyone reading or reviewing our code will find it easy to follow.
 \end{enumerate}
 
 
-\subsection*{Development Plan Reflection --- Xiaotian Lou}
+\subsection*{Development Plan Reflection (QA) --- Xiaotian Lou}
+
 \begin{enumerate}
   \item \textit{Why is it important to create a development plan prior to starting the project?}
 
-  A development plan exposes overlooked details early and clarifies
-  responsibilities. By mapping objectives to work packages, timelines,
-  resources, and risks, it aligns expectations across the team, reduces
-  ambiguity in day-to-day decisions, and provides a baseline for tracking
-  progress and adjusting course when constraints change.
+  I am the QA for this team, so having a clear plan is very important to me. A plan shows problems 
+  early and makes sure everyone knows their role. It also gives me a way to see when and how to check 
+  quality during the project. By connecting goals to tasks, timelines, and risks, the plan keeps the 
+  team on the same page and makes it easier to track progress.
+
+  \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
+
+  From a QA view, CI/CD is very helpful. It runs tests on every change, catches bugs early, and makes 
+  sure the code stays consistent. This keeps the project stable and saves time later when fixing 
+  problems. The downside is that it takes effort to set up, and if the pipeline is not correct, it can 
+  slow things down. But overall, the benefits are much bigger than the drawbacks.
 
   \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
 
-  We did not encounter material disagreements at this stage. If anything,
-  the team is slightly over-optimistic—great for momentum but it can hide
-  risk. To balance this, we added explicit buffers, milestone checkpoints,
-  and a short risk log so enthusiasm is paired with realistic schedules and
-  visible contingency plans.
-
+  We did not have big disagreements. The only small issue is that sometimes the team is very 
+  optimistic, which can hide risks. To fix this, we added schedule buffers, milestone checkpoints, and 
+  a short risk log. This helps us stay positive but also realistic, so we are ready if something takes 
+  longer than expected.
 \end{enumerate}
 
-\subsection*{Development Plan Reflection --- Shike Chen}
+
+\subsection*{Development Plan Reflection (CV) --- Shike Chen}
 
 \begin{enumerate}
   \item \textit{Why is it important to create a development plan prior to starting the project?}
@@ -511,54 +517,47 @@ guides means anyone reading or reviewing our code will find it easy to follow.
 
   \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
 
-  The largest advantage of CI/CD is that each small update, improvement, feature,
-  or bug fix can be integrated into the development environment as soon as it is
-  ready. This greatly enhances the flexibility and robustness of the product.
-  The main disadvantage of CI/CD is that it requires a lot of setup and, in some
-  cases, a mistake merged into the main branch can lead to large problems.
+    CI/CD is useful because it lets us add small changes, fixes, and updates quickly. 
+    For CV, this means things like models or scripts can be tested and merged right 
+    away, so we know they work. This makes the system stronger and easier to improve. 
+    The downside is that setup takes time, and if something bad gets into the main 
+    branch it can cause issues. But overall, the benefits are much bigger than the 
+    downsides.
 
   \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
 
   We did not have any disagreements in this deliverable.
+
 \end{enumerate}
 
-\subsection*{Development Plan Reflection --- Zifan Si}
+\subsection*{Development Plan Reflection (Web) --- Zifan Si}
 
 \begin{enumerate}
   \item \textit{Why is it important to create a development plan prior to starting the project?}
 
-  I worked on the web side of the project, making sure the frontend and tech stack
-  were included. While writing, I realized how much the web app depends on the
-  backend running on the Jetson. Things like speed, bandwidth, and deployment all
-  affect how the frontend works. Having a plan makes these things clear early and
-  keeps everyone on the same page.
+  I worked on the web side of the project, making sure the frontend and tech stack were included. 
+  While writing, I saw how much the web app depends on the backend on the Jetson. 
+  Things like speed, bandwidth, and deployment all affect how the frontend feels. 
+  Having a plan made these links clear early and kept the team on the same page. 
+  I also learned that web work here isn’t just about the frontend --- hardware and network limits 
+  change the design, so I had to think about the whole system, not just my part.
 
   \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
 
-  CI is super helpful because our project uses Rust, Python, and TypeScript. With
-  tests and checks running automatically, small mistakes get caught fast. The
-  downside is setting it up — each language has different tools, and it takes time.
-  CD is harder for us since we run on Jetson hardware, but we can still make
-  scripts so deploying is easier and more consistent.
-
-  \item \textit{What are the main challenges of building the web end for this project?}
-
-  The hardest part is that the web app relies on the backend. If the backend is
-  slow or crashes, the frontend feels broken even if the code is fine. Another
-  challenge is making the UI simple for people using it outdoors with glare,
-  gloves, and noise.
-
-  \item \textit{What did you learn while planning the web end of the project?}
-
-  I learned that web dev here isn’t just about the frontend. Hardware limits like
-  network speed, video streaming, and response times all affect the design. It
-  showed me that I need to think about the whole system, not just my part.
+  From the web side, CI is helpful because it can run tests on the React code and API calls, 
+  catching small bugs before they reach users. It also keeps the frontend consistent as new 
+  features are added. The downside is that setup takes time, and since we depend on the backend 
+  and Jetson hardware, a broken pipeline can also break the web side. Still, it makes development 
+  faster and more reliable overall.
 
   \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
 
-  No big disagreements. Just how much detail to write for the web app. We kept it
-  high-level and flexible.
+  We did not have big disagreements. The only question from my end was how much detail to write 
+  for the web app, like API design for a complex pipeline. Since a lot depends on backend 
+  performance, I decided to save those details for a later phase and focus on clear communication 
+  with the team.
 \end{enumerate}
+
 
 
 
