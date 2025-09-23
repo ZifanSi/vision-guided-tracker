@@ -130,7 +130,7 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: subtitle describing software}
+\title{Software Requirements Specification for \progname: RoCam2}
 \author{\authname}
 \date{\today}
 
@@ -169,8 +169,7 @@ This section records information for easy reference.
 
 \subsection{Table of Units}
 
-Throughout this document SI (Syst\`{e}me International d'Unit\'{e}s) is
-employed as the unit system. In addition to the basic units, several derived
+Throughout this document SI (Syst\`{e}me International d'Unit\'{e}s) is employed as the unit system. In addition to the basic units, several derived
 units are used as described below. For each unit, the symbol is given followed
 by a description of the unit and the SI name. ~\newline
 
@@ -462,8 +461,7 @@ characteristics and lists the system constraints. \plt{This text can likely be
   \item \progname{} Responsibilities:
         \begin{itemize}
           \item Detect data type mismatch, such as a string of characters instead of a floating
-                point number
-          \item
+                point number \item
         \end{itemize}
 \end{itemize}
 
@@ -781,22 +779,22 @@ instance models.
   \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
     \hline
     \rowcolor[gray]{0.9}
-    Number          & GD\refstepcounter{defnum}\thedefnum \label{NL}                   \\
+    Number   & GD\refstepcounter{defnum}\thedefnum \label{NL}                   \\
     \hline
-    Label           & \bf Newton's law of cooling                                      \\
+    Label    & \bf Newton's law of cooling                                      \\
     \hline
     % Units&$MLt^{-3}T^0$\\
     % \hline
-    SI Units        & \si{\watt\per\square\metre}                                      \\ \hline Equation & $ q(t) = h \Delta T(t)$
-    \\ \hline Description & Newton's law of cooling describes convective cooling
-       from a surface. The law is stated as: the rate of heat loss from a body is
-       proportional to the difference in temperatures between the body and its
-    surroundings.                                                                      \\ & $q(t)$ is the thermal flux (\si{\watt\per\square\metre}).\\
-                    & $h$ is the heat transfer coefficient, assumed independent of $T$
-    (\aref{A_hcoeff}) (\si{\watt\per\square\metre\per\celsius}).                       \\  & $\Delta T(t)$=
-       $T(t) - T_{\text{env}}(t)$ is the time-dependent thermal gradient between the
-    environment and the object (\si{\celsius}).                                        \\ \hline Source & Citation here \\
-    \hline Ref.\ By & \ddref{FluxCoil}, \ddref{FluxPCM}                                \\ \hline
+    SI Units & \si{\watt\per\square\metre}                                      \\ \hline Equation & $ q(t) = h \Delta
+    T(t)$                                                                       \\ \hline Description & Newton's law of cooling describes convective
+       cooling from a surface. The law is stated as: the rate of heat loss from a body
+       is proportional to the difference in temperatures between the body and its
+    surroundings.                                                               \\ & $q(t)$ is the thermal flux (\si{\watt\per\square\metre}).\\
+             & $h$ is the heat transfer coefficient, assumed independent of $T$
+    (\aref{A_hcoeff}) (\si{\watt\per\square\metre\per\celsius}).                \\  & $\Delta
+         T(t)$= $T(t) - T_{\text{env}}(t)$ is the time-dependent thermal gradient
+    between the environment and the object (\si{\celsius}).                     \\ \hline Source &
+    Citation here                                                               \\ \hline Ref.\ By & \ddref{FluxCoil}, \ddref{FluxPCM} \\ \hline
   \end{tabular}
 \end{minipage}\\
 
@@ -838,8 +836,8 @@ models. The dimension of each quantity is also given. \plt{Modify the examples
     \hline
     % Units& $Mt^{-3}$\\
     % \hline
-    SI Units & \si{\watt\per\square\metre}                                  \\ \hline Equation & $q_C(t) = h_C (T_C -
-    T_W(t))$, over area $A_C$                                               \\ \hline Description & $T_C$ is the temperature of
+    SI Units & \si{\watt\per\square\metre}                                  \\ \hline Equation & $q_C(t) = h_C (T_C
+    - T_W(t))$, over area $A_C$                                             \\ \hline Description & $T_C$ is the temperature of
        the coil (\si{\celsius}). $T_W$ is the temperature of the water
        (\si{\celsius}). The heat flux out of the coil, $q_C$
        (\si{\watt\per\square\metre}), is found by assuming that Newton's Law of
