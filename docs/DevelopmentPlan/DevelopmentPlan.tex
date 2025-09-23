@@ -1,4 +1,6 @@
 \documentclass{article}
+\pdfinfoomitdate=1
+\pdftrailerid{}
 
 \usepackage{booktabs}
 \usepackage{tabularx}
@@ -99,7 +101,6 @@ optional online or in-person meetings if either party requests them.
 to stay aligned without eating into development time. By keeping careful notes
 and sharing them after each meeting, everyone stays up to date—even if someone
 can’t attend—and we avoid the need for extra meetings that would slow progress.
-
 
 \wss{How often will you meet? where?}
 
@@ -208,7 +209,6 @@ is forgotten, branches keep code changes separate, and pull requests with review
 make sure mistakes get caught early. Using GitHub Projects ties everything together,
 so planning, coding, and reviewing all stay in one place. More complicated processes
 would just slow us down, while skipping steps would risk bugs and confusion.
-
 
 \section{Project Decomposition and Scheduling}
 
@@ -446,87 +446,88 @@ guides means anyone reading or reviewing our code will find it easy to follow.
 \begin{enumerate}
   \item \textit{Why is it important to create a development plan prior to starting the project?}
 
-  I'm responsible for drafting most of the sections of this deliverable except
-  Proof-of-Concept Demonstration Plan and part of Expected Technology. One section
-  I want to highlight is "7.2 Minor Changes (Expedited Workflow)". I got this idea
-  from my time working in a coop position, where the high overhead of project
-  management prevented me from fixing small issues I encountered during
-  development, as the fix was unrelated to the feature I was working on. I hope
-  this will not turn into a loophole where all the pull requests are labeled as
-  "minor" to bypass the normal planning process.
+        I'm responsible for drafting most of the sections of this deliverable except
+        Proof-of-Concept Demonstration Plan and part of Expected Technology. One
+        section I want to highlight is "7.2 Minor Changes (Expedited Workflow)". I got
+        this idea from my time working in a coop position, where the high overhead of
+        project management prevented me from fixing small issues I encountered during
+        development, as the fix was unrelated to the feature I was working on. I hope
+        this will not turn into a loophole where all the pull requests are labeled as
+        "minor" to bypass the normal planning process.
 
-  I also didn’t realize the usefulness of the development plan until I started
-  working on it. It makes a lot of implicit assumptions explicit (especially the
-  workflow plan and team meeting plan, which were only communicated verbally in my
-  previous positions), and helps the team better collaborate.
+        I also didn’t realize the usefulness of the development plan until I started
+        working on it. It makes a lot of implicit assumptions explicit (especially the
+        workflow plan and team meeting plan, which were only communicated verbally in
+        my previous positions), and helps the team better collaborate.
 
   \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
 
-  The advantages of CI far outweigh the disadvantages. The most important use for
-  it in my opinion is to enforce coding standards and catch regressions early. The
-  only disadvantage I can think of is the extra overhead of setting up CI, but it
-  is worth it.
+        The advantages of CI far outweigh the disadvantages. The most important use for
+        it in my opinion is to enforce coding standards and catch regressions early.
+        The only disadvantage I can think of is the extra overhead of setting up CI,
+        but it is worth it.
 
-  CD is a nice to have, but sometimes not feasible. For our project, since we need
-  to deploy to actual hardware (Jetson and STM32), it is not feasible to set up
-  CD. However, we can create a deployment script to simplify the process.
+        CD is a nice to have, but sometimes not feasible. For our project, since we
+        need to deploy to actual hardware (Jetson and STM32), it is not feasible to set
+        up CD. However, we can create a deployment script to simplify the process.
 
   \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
 
-  We did not have any disagreements in this deliverable.
+        We did not have any disagreements in this deliverable.
 \end{enumerate}
-
 
 \subsection*{Development Plan Reflection (QA) --- Xiaotian Lou}
 
 \begin{enumerate}
   \item \textit{Why is it important to create a development plan prior to starting the project?}
 
-  I am the QA for this team, so having a clear plan is very important to me. A plan shows problems 
-  early and makes sure everyone knows their role. It also gives me a way to see when and how to check 
-  quality during the project. By connecting goals to tasks, timelines, and risks, the plan keeps the 
-  team on the same page and makes it easier to track progress.
+        I am the QA for this team, so having a clear plan is very important to me. A
+        plan shows problems early and makes sure everyone knows their role. It also
+        gives me a way to see when and how to check quality during the project. By
+        connecting goals to tasks, timelines, and risks, the plan keeps the team on the
+        same page and makes it easier to track progress.
 
   \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
 
-  From a QA view, CI/CD is very helpful. It runs tests on every change, catches bugs early, and makes 
-  sure the code stays consistent. This keeps the project stable and saves time later when fixing 
-  problems. The downside is that it takes effort to set up, and if the pipeline is not correct, it can 
-  slow things down. But overall, the benefits are much bigger than the drawbacks.
+        From a QA view, CI/CD is very helpful. It runs tests on every change, catches
+        bugs early, and makes sure the code stays consistent. This keeps the project
+        stable and saves time later when fixing problems. The downside is that it takes
+        effort to set up, and if the pipeline is not correct, it can slow things down.
+        But overall, the benefits are much bigger than the drawbacks.
 
   \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
 
-  We did not have big disagreements. The only small issue is that sometimes the team is very 
-  optimistic, which can hide risks. To fix this, we added schedule buffers, milestone checkpoints, and 
-  a short risk log. This helps us stay positive but also realistic, so we are ready if something takes 
-  longer than expected.
+        We did not have big disagreements. The only small issue is that sometimes the
+        team is very optimistic, which can hide risks. To fix this, we added schedule
+        buffers, milestone checkpoints, and a short risk log. This helps us stay
+        positive but also realistic, so we are ready if something takes longer than
+        expected.
 \end{enumerate}
-
 
 \subsection*{Development Plan Reflection (CV) --- Shike Chen}
 
 \begin{enumerate}
   \item \textit{Why is it important to create a development plan prior to starting the project?}
 
-  I have helped in drafting and revising the development plan. I realized the
-  importance of the development plan as I was working on the proof of concept.
-  In the process of writing the proof of concept, I went through many risks of
-  the project that I had not thought of before. I believe the development plan
-  is vital at the beginning of the project, as it helps the team identify the
-  risks and feasibility of the project.
+        I have helped in drafting and revising the development plan. I realized the
+        importance of the development plan as I was working on the proof of concept. In
+        the process of writing the proof of concept, I went through many risks of the
+        project that I had not thought of before. I believe the development plan is
+        vital at the beginning of the project, as it helps the team identify the risks
+        and feasibility of the project.
 
   \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
 
-    CI/CD is useful because it lets us add small changes, fixes, and updates quickly. 
-    For CV, this means things like models or scripts can be tested and merged right 
-    away, so we know they work. This makes the system stronger and easier to improve. 
-    The downside is that setup takes time, and if something bad gets into the main 
-    branch it can cause issues. But overall, the benefits are much bigger than the 
-    downsides.
+        CI/CD is useful because it lets us add small changes, fixes, and updates
+        quickly. For CV, this means things like models or scripts can be tested and
+        merged right away, so we know they work. This makes the system stronger and
+        easier to improve. The downside is that setup takes time, and if something bad
+        gets into the main branch it can cause issues. But overall, the benefits are
+        much bigger than the downsides.
 
   \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
 
-  We did not have any disagreements in this deliverable.
+        We did not have any disagreements in this deliverable.
 
 \end{enumerate}
 
@@ -535,31 +536,30 @@ guides means anyone reading or reviewing our code will find it easy to follow.
 \begin{enumerate}
   \item \textit{Why is it important to create a development plan prior to starting the project?}
 
-  I worked on the web side of the project, making sure the frontend and tech stack were included. 
-  While writing, I saw how much the web app depends on the backend on the Jetson. 
-  Things like speed, bandwidth, and deployment all affect how the frontend feels. 
-  Having a plan made these links clear early and kept the team on the same page. 
-  I also learned that web work here isn’t just about the frontend --- hardware and network limits 
-  change the design, so I had to think about the whole system, not just my part.
+        I worked on the web side of the project, making sure the frontend and tech
+        stack were included. While writing, I saw how much the web app depends on the
+        backend on the Jetson. Things like speed, bandwidth, and deployment all affect
+        how the frontend feels. Having a plan made these links clear early and kept the
+        team on the same page. I also learned that web work here isn’t just about the
+        frontend --- hardware and network limits change the design, so I had to think
+        about the whole system, not just my part.
 
   \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
 
-  From the web side, CI is helpful because it can run tests on the React code and API calls, 
-  catching small bugs before they reach users. It also keeps the frontend consistent as new 
-  features are added. The downside is that setup takes time, and since we depend on the backend 
-  and Jetson hardware, a broken pipeline can also break the web side. Still, it makes development 
-  faster and more reliable overall.
+        From the web side, CI is helpful because it can run tests on the React code and
+        API calls, catching small bugs before they reach users. It also keeps the
+        frontend consistent as new features are added. The downside is that setup takes
+        time, and since we depend on the backend and Jetson hardware, a broken pipeline
+        can also break the web side. Still, it makes development faster and more
+        reliable overall.
 
   \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
 
-  We did not have big disagreements. The only question from my end was how much detail to write 
-  for the web app, like API design for a complex pipeline. Since a lot depends on backend 
-  performance, I decided to save those details for a later phase and focus on clear communication 
-  with the team.
+        We did not have big disagreements. The only question from my end was how much
+        detail to write for the web app, like API design for a complex pipeline. Since
+        a lot depends on backend performance, I decided to save those details for a
+        later phase and focus on clear communication with the team.
 \end{enumerate}
-
-
-
 
 \newpage{}
 \section*{Appendix --- Team Charter}

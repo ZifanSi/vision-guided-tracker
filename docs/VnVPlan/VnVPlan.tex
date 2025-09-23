@@ -1,4 +1,6 @@
 \documentclass[12pt, titlepage]{article}
+\pdfinfoomitdate=1
+\pdftrailerid{}
 
 \usepackage{booktabs}
 \usepackage{tabularx}
@@ -17,10 +19,10 @@
 
 \begin{document}
 
-\title{System Verification and Validation Plan for \progname{}} 
+\title{System Verification and Validation Plan for \progname{}}
 \author{\authname}
 \date{\today}
-	
+
 \maketitle
 
 \pagenumbering{roman}
@@ -28,27 +30,27 @@
 \section*{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
-\midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
-\bottomrule
+  \toprule {\bf Date} & {\bf Version} & {\bf Notes} \\
+  \midrule
+  Date 1              & 1.0           & Notes       \\
+  Date 2              & 1.1           & Notes       \\
+  \bottomrule
 \end{tabularx}
 
 ~\\
 \wss{The intention of the VnV plan is to increase confidence in the software.
-However, this does not mean listing every verification and validation technique
-that has ever been devised.  The VnV plan should also be a \textbf{feasible}
-plan. Execution of the plan should be possible with the time and team available.
-If the full plan cannot be completed during the time available, it can either be
-modified to ``fake it'', or a better solution is to add a section describing
-what work has been completed and what work is still planned for the future.}
+  However, this does not mean listing every verification and validation technique
+  that has ever been devised.  The VnV plan should also be a \textbf{feasible}
+  plan. Execution of the plan should be possible with the time and team available.
+  If the full plan cannot be completed during the time available, it can either be
+  modified to ``fake it'', or a better solution is to add a section describing
+  what work has been completed and what work is still planned for the future.}
 
 \wss{The VnV plan is typically started after the requirements stage, but before
-the design stage.  This means that the sections related to unit testing cannot
-initially be completed.  The sections will be filled in after the design stage
-is complete.  the final version of the VnV plan should have all sections filled
-in.}
+  the design stage.  This means that the sections related to unit testing cannot
+  initially be completed.  The sections will be filled in after the design stage
+  is complete.  the final version of the VnV plan should have all sections filled
+  in.}
 
 \newpage
 
@@ -65,11 +67,11 @@ in.}
 \section{Symbols, Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
-  \toprule		
-  \textbf{symbol} & \textbf{description}\\
-  \midrule 
-  T & Test\\
+\begin{tabular}{l l}
+  \toprule
+  \textbf{symbol} & \textbf{description} \\
+  \midrule
+  T               & Test                 \\
   \bottomrule
 \end{tabular}\\
 
@@ -100,32 +102,32 @@ This document ... \wss{provide an introductory blurb and roadmap of the
   ``demonstrate adequate usability.'' etc.  You won't list all of the qualities,
   just those that are most important.}
 
-\wss{You should also list the objectives that are out of scope.  You don't have 
-the resources to do everything, so what will you be leaving out.  For instance, 
-if you are not going to verify the quality of usability, state this.  It is also 
-worthwhile to justify why the objectives are left out.}
+\wss{You should also list the objectives that are out of scope.  You don't have
+  the resources to do everything, so what will you be leaving out.  For instance,
+  if you are not going to verify the quality of usability, state this.  It is also
+  worthwhile to justify why the objectives are left out.}
 
-\wss{The objectives are important because they highlight that you are aware of 
-limitations in your resources for verification and validation.  You can't do everything, 
-so what are you going to prioritize?  As an example, if your system depends on an 
-external library, you can explicitly state that you will assume that external library 
-has already been verified by its implementation team.}
+\wss{The objectives are important because they highlight that you are aware of
+  limitations in your resources for verification and validation.  You can't do everything,
+  so what are you going to prioritize?  As an example, if your system depends on an
+  external library, you can explicitly state that you will assume that external library
+  has already been verified by its implementation team.}
 
 \subsection{Challenge Level and Extras}
 
 \wss{State the challenge level (advanced, general, basic) for your project.
-Your challenge level should exactly match what is included in your problem
-statement.  This should be the challenge level agreed on between you and the
-course instructor.  You can use a pull request to update your challenge level
-(in TeamComposition.csv or Repos.csv) if your plan changes as a result of the
-VnV planning exercise.}
+  Your challenge level should exactly match what is included in your problem
+  statement.  This should be the challenge level agreed on between you and the
+  course instructor.  You can use a pull request to update your challenge level
+  (in TeamComposition.csv or Repos.csv) if your plan changes as a result of the
+  VnV planning exercise.}
 
 \wss{Summarize the extras (if any) that were tackled by this project.  Extras
-can include usability testing, code walkthroughs, user documentation, formal
-proof, GenderMag personas, Design Thinking, etc.  Extras should have already
-been approved by the course instructor as included in your problem statement.
-You can use a pull request to update your extras (in TeamComposition.csv or
-Repos.csv) if your plan changes as a result of the VnV planning exercise.}
+  can include usability testing, code walkthroughs, user documentation, formal
+  proof, GenderMag personas, Design Thinking, etc.  Extras should have already
+  been approved by the course instructor as included in your problem statement.
+  You can use a pull request to update your extras (in TeamComposition.csv or
+  Repos.csv) if your plan changes as a result of the VnV planning exercise.}
 
 \subsection{Relevant Documentation}
 
@@ -137,8 +139,8 @@ Repos.csv) if your plan changes as a result of the VnV planning exercise.}
 
 \citet{SRS}
 
-\wss{Don't just list the other documents.  You should explain why they are relevant and 
-how they relate to your VnV efforts.}
+\wss{Don't just list the other documents.  You should explain why they are relevant and
+  how they relate to your VnV efforts.}
 
 \section{Plan}
 
@@ -158,10 +160,10 @@ how they relate to your VnV efforts.}
   primary reviewer), or you may plan for something more rigorous/systematic.}
 
 \wss{If you have a supervisor for the project, you shouldn't just say they will
-read over the SRS.  You should explain your structured approach to the review.
-Will you have a meeting?  What will you present?  What questions will you ask?
-Will you give them instructions for a task-based inspection?  Will you use your
-issue tracker?}
+  read over the SRS.  You should explain your structured approach to the review.
+  Will you have a meeting?  What will you present?  What questions will you ask?
+  Will you give them instructions for a task-based inspection?  Will you use your
+  issue tracker?}
 
 \wss{Maybe create an SRS checklist?}
 
@@ -176,7 +178,7 @@ issue tracker?}
 \subsection{Verification and Validation Plan Verification}
 
 \wss{The verification and validation plan is an artifact that should also be
-verified.  Techniques for this include review and mutation testing.}
+  verified.  Techniques for this include review and mutation testing.}
 
 \wss{The review will include reviews by your classmates}
 
@@ -192,8 +194,8 @@ verified.  Techniques for this include review and mutation testing.}
   walkthroughs, code inspection, static analyzers, etc.}
 
 \wss{The final class presentation in CAS 741 could be used as a code
-walkthrough.  There is also a possibility of using the final presentation (in
-CAS741) for a partial usability survey.}
+  walkthrough.  There is also a possibility of using the final presentation (in
+  CAS741) for a partial usability survey.}
 
 \subsection{Automated Testing and Verification Tools}
 
@@ -207,7 +209,7 @@ CAS741) for a partial usability survey.}
   Python.}
 
 \wss{If you have already done this in the development plan, you can point to
-that document.}
+  that document.}
 
 \wss{The details of this section will likely evolve as you get closer to the
   implementation.}
@@ -219,23 +221,23 @@ that document.}
   here.}
 
 \wss{You might want to use review sessions with the stakeholder to check that
-the requirements document captures the right requirements.  Maybe task based
-inspection?}
+  the requirements document captures the right requirements.  Maybe task based
+  inspection?}
 
-\wss{For those capstone teams with an external supervisor, the Rev 0 demo should 
-be used as an opportunity to validate the requirements.  You should plan on 
-demonstrating your project to your supervisor shortly after the scheduled Rev 0 demo.  
-The feedback from your supervisor will be very useful for improving your project.}
+\wss{For those capstone teams with an external supervisor, the Rev 0 demo should
+  be used as an opportunity to validate the requirements.  You should plan on
+  demonstrating your project to your supervisor shortly after the scheduled Rev 0 demo.
+  The feedback from your supervisor will be very useful for improving your project.}
 
-\wss{For teams without an external supervisor, user testing can serve the same purpose 
-as a Rev 0 demo for the supervisor.}
+\wss{For teams without an external supervisor, user testing can serve the same purpose
+  as a Rev 0 demo for the supervisor.}
 
 \wss{This section might reference back to the SRS verification section.}
 
 \section{System Tests}
 
 \wss{There should be text between all headings, even if it is just a roadmap of
-the contents of the subsections.}
+  the contents of the subsections.}
 
 \subsection{Tests for Functional Requirements}
 
@@ -252,40 +254,42 @@ the contents of the subsections.}
   cover the requirements.  References to the SRS would be good here.  If a section
   covers tests for input constraints, you should reference the data constraints
   table in the SRS.}
-		
+
 \paragraph{Title for Test}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+  \item{test-id1\\}
 
-Control: Manual versus Automatic
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs.  Output is not how you
-are going to return the results of the test.  The output is the expected
-result.}
+        Control: Manual versus Automatic
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-					
-How test will be performed: 
-					
-\item{test-id2\\}
+        Initial State:
 
-Control: Manual versus Automatic
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+        Input:
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+        Output: \wss{The expected result for the given inputs. Output is not how you
+          are going to return the results of the test. The output is the expected
+          result.}
 
-How test will be performed: 
+        Test Case Derivation: \wss{Justify the expected value given in the Output
+          field}
+
+        How test will be performed:
+
+  \item{test-id2\\}
+
+        Control: Manual versus Automatic
+
+        Initial State:
+
+        Input:
+
+        Output: \wss{The expected result for the given inputs}
+
+        Test Case Derivation: \wss{Justify the expected value given in the Output
+          field}
+
+        How test will be performed:
 
 \end{enumerate}
 
@@ -301,50 +305,50 @@ How test will be performed:
   necessarily have nonfunctional requirements related to accuracy.}
 
 \wss{For some nonfunctional tests, you won't be setting a target threshold for
-passing the test, but rather describing the experiment you will do to measure
-the quality for different inputs.  For instance, you could measure speed versus
-the problem size.  The output of the test isn't pass/fail, but rather a summary
-table or graph.}
+  passing the test, but rather describing the experiment you will do to measure
+  the quality for different inputs.  For instance, you could measure speed versus
+  the problem size.  The output of the test isn't pass/fail, but rather a summary
+  table or graph.}
 
 \wss{Tests related to usability could include conducting a usability test and
   survey.  The survey will be in the Appendix.}
 
 \wss{Static tests, review, inspections, and walkthroughs, will not follow the
-format for the tests given below.}
+  format for the tests given below.}
 
 \wss{If you introduce static tests in your plan, you need to provide details.
-How will they be done?  In cases like code (or document) walkthroughs, who will
-be involved? Be specific.}
+  How will they be done?  In cases like code (or document) walkthroughs, who will
+  be involved? Be specific.}
 
 \subsubsection{Area of Testing1}
-		
+
 \paragraph{Title for Test}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+  \item{test-id1\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
+        Type: Functional, Dynamic, Manual, Static etc.
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
+        Initial State:
+
+        Input/Condition:
+
+        Output/Result:
+
+        How test will be performed:
+
+  \item{test-id2\\}
+
+        Type: Functional, Dynamic, Manual, Static etc.
+
+        Initial State:
+
+        Input:
+
+        Output:
+
+        How test will be performed:
 
 \end{enumerate}
 
@@ -363,15 +367,15 @@ How test will be performed:
   document) has been completed.}
 
 \wss{Reference your MIS (detailed design document) and explain your overall
-philosophy for test case selection.}  
+  philosophy for test case selection.}
 
-\wss{To save space and time, it may be an option to provide less detail in this section.  
-For the unit tests you can potentially layout your testing strategy here.  That is, you 
-can explain how tests will be selected for each module.  For instance, your test building 
-approach could be test cases for each access program, including one test for normal behaviour 
-and as many tests as needed for edge cases.  Rather than create the details of the input 
-and output here, you could point to the unit testing code.  For this to work, you code 
-needs to be well-documented, with meaningful names for all of the tests.}
+\wss{To save space and time, it may be an option to provide less detail in this section.
+  For the unit tests you can potentially layout your testing strategy here.  That is, you
+  can explain how tests will be selected for each module.  For instance, your test building
+  approach could be test cases for each access program, including one test for normal behaviour
+  and as many tests as needed for edge cases.  Rather than create the details of the input
+  and output here, you could point to the unit testing code.  For this to work, you code
+  needs to be well-documented, with meaningful names for all of the tests.}
 
 \subsection{Unit Testing Scope}
 
@@ -396,38 +400,40 @@ needs to be well-documented, with meaningful names for all of the tests.}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+  \item{test-id1\\}
 
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+        Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will be
+          automatic}
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+        Initial State:
 
-How test will be performed: 
-					
-\item{test-id2\\}
+        Input:
 
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+        Output: \wss{The expected result for the given inputs}
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+        Test Case Derivation: \wss{Justify the expected value given in the Output
+          field}
 
-How test will be performed: 
+        How test will be performed:
 
-\item{...\\}
-    
+  \item{test-id2\\}
+
+        Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will be
+          automatic}
+
+        Initial State:
+
+        Input:
+
+        Output: \wss{The expected result for the given inputs}
+
+        Test Case Derivation: \wss{Justify the expected value given in the Output
+          field}
+
+        How test will be performed:
+
+  \item{...\\}
+
 \end{enumerate}
 
 \subsubsection{Module 2}
@@ -444,33 +450,33 @@ How test will be performed:
   mentioned functional tests.}
 
 \subsubsection{Module ?}
-		
+
 \begin{enumerate}
 
-\item{test-id1\\}
+  \item{test-id1\\}
 
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
+        Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will be
+          automatic}
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
+        Initial State:
+
+        Input/Condition:
+
+        Output/Result:
+
+        How test will be performed:
+
+  \item{test-id2\\}
+
+        Type: Functional, Dynamic, Manual, Static etc.
+
+        Initial State:
+
+        Input:
+
+        Output:
+
+        How test will be performed:
 
 \end{enumerate}
 
@@ -481,7 +487,7 @@ How test will be performed:
 \subsection{Traceability Between Test Cases and Modules}
 
 \wss{Provide evidence that all of the modules have been considered.}
-				
+
 \bibliographystyle{plainnat}
 
 \bibliography{../../refs/References}
@@ -494,8 +500,8 @@ This is where you can place additional information.
 
 \subsection{Symbolic Parameters}
 
-The definition of the test cases will call for SYMBOLIC\_CONSTANTS.
-Their values are defined in this section for easy maintenance.
+The definition of the test cases will call for SYMBOLIC\_CONSTANTS. Their
+values are defined in this section for easy maintenance.
 
 \subsection{Usability Survey Questions?}
 
@@ -506,24 +512,24 @@ Their values are defined in this section for easy maintenance.
 
 \wss{This section is not required for CAS 741}
 
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Lifelong Learning.
+The information in this section will be used to evaluate the team members on
+the graduate attribute of Lifelong Learning.
 
 \input{../Reflection.tex}
 
 \begin{enumerate}
-  \item What went well while writing this deliverable? 
-  \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
+  \item What went well while writing this deliverable?
+  \item What pain points did you experience during this deliverable, and how did you
+        resolve them?
   \item What knowledge and skills will the team collectively need to acquire to
-  successfully complete the verification and validation of your project?
-  Examples of possible knowledge and skills include dynamic testing knowledge,
-  static testing knowledge, specific tool usage, Valgrind etc.  You should look to
-  identify at least one item for each team member.
-  \item For each of the knowledge areas and skills identified in the previous
-  question, what are at least two approaches to acquiring the knowledge or
-  mastering the skill?  Of the identified approaches, which will each team
-  member pursue, and why did they make this choice?
+        successfully complete the verification and validation of your project? Examples
+        of possible knowledge and skills include dynamic testing knowledge, static
+        testing knowledge, specific tool usage, Valgrind etc. You should look to
+        identify at least one item for each team member.
+  \item For each of the knowledge areas and skills identified in the previous question,
+        what are at least two approaches to acquiring the knowledge or mastering the
+        skill? Of the identified approaches, which will each team member pursue, and
+        why did they make this choice?
 \end{enumerate}
 
 \end{document}

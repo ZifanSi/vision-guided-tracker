@@ -1,4 +1,6 @@
 \documentclass{article}
+\pdfinfoomitdate=1
+\pdftrailerid{}
 
 \usepackage{tabularx}
 \usepackage{booktabs}
@@ -17,19 +19,19 @@
 \maketitle
 
 \begin{table}[hp]
-    \caption{Revision History} \label{TblRevisionHistory}
-    \begin{tabularx}{\textwidth}{llX}
-        \toprule
-        \textbf{Date}  & \textbf{Developer(s)} & \textbf{Change}                   \\
-        \midrule
-        Sept. 8, 2025  & Jianqing Liu          & Initial Draft                     \\
-        Sept. 9, 2025  & Zifan Si              & Details Elaboration               \\
-        Sept. 10, 2025 & Zifan Si              & Fix based on teammate suggestion  \\
-        Sept. 10, 2025 & Jianqing Liu          & Refine inputs, outputs, and goals \\
-        Sept. 12, 2025 & Jianqing Liu          & Update Depolyment Environment     \\
-        Sept. 13, 2025 & Xiaotian Lou          & Update Citation                   \\
-        \bottomrule
-    \end{tabularx}
+  \caption{Revision History} \label{TblRevisionHistory}
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    \textbf{Date}  & \textbf{Developer(s)} & \textbf{Change}                   \\
+    \midrule
+    Sept. 8, 2025  & Jianqing Liu          & Initial Draft                     \\
+    Sept. 9, 2025  & Zifan Si              & Details Elaboration               \\
+    Sept. 10, 2025 & Zifan Si              & Fix based on teammate suggestion  \\
+    Sept. 10, 2025 & Jianqing Liu          & Refine inputs, outputs, and goals \\
+    Sept. 12, 2025 & Jianqing Liu          & Update Depolyment Environment     \\
+    Sept. 13, 2025 & Xiaotian Lou          & Update Citation                   \\
+    \bottomrule
+  \end{tabularx}
 \end{table}
 
 \newpage{}
@@ -37,11 +39,11 @@
 \section{Problem Statement}
 
 \wss{You should check your problem statement with the
-    \href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
-    {problem statement checklist}.}
+  \href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
+  {problem statement checklist}.}
 
 \wss{You can change the section headings, as long as you include the required
-    information.}
+  information.}
 
 \subsection{Problem}
 
@@ -67,96 +69,96 @@ observation of rocket flights.
 
 \subsection{Inputs and Outputs}
 \begin{itemize}
-    \item \textbf{Inputs}
-          \begin{itemize}
-              \item Realtime camera feed
-              \item State information from gimbal
-              \item Manual camera gimbal adjustment commands from user
-          \end{itemize}
+  \item \textbf{Inputs}
+        \begin{itemize}
+          \item Realtime camera feed
+          \item State information from gimbal
+          \item Manual camera gimbal adjustment commands from user
+        \end{itemize}
 
-    \item \textbf{Outputs}
-          \begin{itemize}
-              \item Camera gimbal adjustment commands to maintain visual lock of the rocket
-              \item Realtime video preview via ethernet
-              \item Realtime stabilized video output via HDMI with the rocket centered in frame
-              \item Recorded video with the rocket centered in frame
-          \end{itemize}
+  \item \textbf{Outputs}
+        \begin{itemize}
+          \item Camera gimbal adjustment commands to maintain visual lock of the rocket
+          \item Realtime video preview via ethernet
+          \item Realtime stabilized video output via HDMI with the rocket centered in frame
+          \item Recorded video with the rocket centered in frame
+        \end{itemize}
 \end{itemize}
 
 \subsection{Performance Objectives}
 \label{sec:performance}
 
 \begin{itemize}
-    \item System should be able to handle 1080p 60fps camera feed
-    \item System should be able to output 1080p 60fps video via HDMI
-    \item Realtime video preview should be at least 15fps
+  \item System should be able to handle 1080p 60fps camera feed
+  \item System should be able to output 1080p 60fps video via HDMI
+  \item Realtime video preview should be at least 15fps
 \end{itemize}
 
 \subsection{Stakeholders}
 
 \subsubsection*{\color{blue}{Direct Stakeholders}}
 \begin{enumerate}
-    \item \textbf{McMaster Rocketry Team}: The primary end users who
-          will deploy the system during launches. They depend on accurate
-          real-time tracking to analyze staging, parachute deployment, and
-          overall flight performance.
+  \item \textbf{McMaster Rocketry Team}: The primary end users who
+        will deploy the system during launches. They depend on accurate
+        real-time tracking to analyze staging, parachute deployment, and
+        overall flight performance.
 
-    \item \textbf{Dr. Shahin Sirouspour (Supervisor)}: Provides
-          technical guidance, project oversight, and mentorship. Ensures
-          the project aligns with academic standards, engineering best
-          practices, and capstone deliverable expectations.
+  \item \textbf{Dr. Shahin Sirouspour (Supervisor)}: Provides
+        technical guidance, project oversight, and mentorship. Ensures
+        the project aligns with academic standards, engineering best
+        practices, and capstone deliverable expectations.
 \end{enumerate}
 
 \subsubsection*{\color{blue}{Indirect Stakeholders}}
 \begin{enumerate}
-    \item \textbf{Aerospace Engineers and Researchers}: Benefit from
-          high-quality flight footage to validate models, improve rocket
-          designs, and support experimental research.
+  \item \textbf{Aerospace Engineers and Researchers}: Benefit from
+        high-quality flight footage to validate models, improve rocket
+        designs, and support experimental research.
 
-    \item \textbf{Event Organizers and Safety Officers}: Rely on
-          reliable tracking for live monitoring of rocket flights,
-          particularly for confirming parachute deployment and safe
-          recovery during launch events.
+  \item \textbf{Event Organizers and Safety Officers}: Rely on
+        reliable tracking for live monitoring of rocket flights,
+        particularly for confirming parachute deployment and safe
+        recovery during launch events.
 
-    \item \textbf{Engineering and Robotics Community}: May adapt the
-          system’s design principles for other domains requiring precise
-          tracking of fast-moving objects, such as UAV navigation, sports
-          analytics, or autonomous robotics.
+  \item \textbf{Engineering and Robotics Community}: May adapt the
+        system’s design principles for other domains requiring precise
+        tracking of fast-moving objects, such as UAV navigation, sports
+        analytics, or autonomous robotics.
 
-    \item \textbf{Potential Commercial and Industrial Users}: Could
-          adopt the system for broader applications in surveillance,
-          wildlife monitoring, or industrial inspections where real-time
-          vision-guided tracking is valuable.
+  \item \textbf{Potential Commercial and Industrial Users}: Could
+        adopt the system for broader applications in surveillance,
+        wildlife monitoring, or industrial inspections where real-time
+        vision-guided tracking is valuable.
 \end{enumerate}
 
 \subsection{Environment}
 \subsubsection*{\color{blue}{Deployment Environment}}
 \begin{itemize}
-    \item Outdoor rocket launch sites with variable lighting, wind, and dynamic
-          backgrounds.
-    \item Initial testing on small-scale model rockets (apogees around 200 m).
-    \item Scalable to high-powered launches by the McMaster Rocketry Team (apogees
-          exceeding 3 km).
-    \item Indoor lab-based testing and demonstration for development and evaluation.
+  \item Outdoor rocket launch sites with variable lighting, wind, and dynamic
+        backgrounds.
+  \item Initial testing on small-scale model rockets (apogees around 200 m).
+  \item Scalable to high-powered launches by the McMaster Rocketry Team (apogees
+        exceeding 3 km).
+  \item Indoor lab-based testing and demonstration for development and evaluation.
 \end{itemize}
 
 \subsubsection*{\color{blue}{Execution Environment}}
 There are four pieces of the hardware related to this project:
 
 \begin{enumerate}
-    \item A gimbal with a camera mounted on it
-    \item An STM32 microcontroller
-    \item An Nvidia Jetson prosessing module
-    \item An user laptop running a browser connected to the Jetson
+  \item A gimbal with a camera mounted on it
+  \item An STM32 microcontroller
+  \item An Nvidia Jetson prosessing module
+  \item An user laptop running a browser connected to the Jetson
 \end{enumerate}
 
 Three pieces of software will be developed as a part of this project:
 
 \begin{enumerate}
-    \item Baremetal code that runs on the STM32 microcontroller
-    \item Code that runs on the Jetson, which expects an linux environment with JetPack 6
-    \item Code that runs on the user browser, which expects any recent versions of major
-          browsers
+  \item Baremetal code that runs on the STM32 microcontroller
+  \item Code that runs on the Jetson, which expects an linux environment with JetPack 6
+  \item Code that runs on the user browser, which expects any recent versions of major
+        browsers
 \end{enumerate}
 
 \section{Goals}
@@ -169,25 +171,25 @@ Section \ref{sec:performance}.
 \section{Stretch Goals}
 
 \begin{itemize}
-    \item Handle 4K 60fps camera stream.
-    \item Include functionalities to control the zoom and the focus of more advanced
-          cameras.
-    \item Integration with a full-size gimbal developed by the McMaster Rocketry Team.
-    \item Track high-powered model rocket launches (apogee 3km+), while achieving all the
-          performance objectives listed in Section \ref{sec:performance}.
+  \item Handle 4K 60fps camera stream.
+  \item Include functionalities to control the zoom and the focus of more advanced
+        cameras.
+  \item Integration with a full-size gimbal developed by the McMaster Rocketry Team.
+  \item Track high-powered model rocket launches (apogee 3km+), while achieving all the
+        performance objectives listed in Section \ref{sec:performance}.
 \end{itemize}
 
 \section{Extras}
 
 \wss{Teams may wish to include extras as either potential bonus grades, or to
-    make up for a less advanced challenge level.  Potential extras
-    include usability
-    testing, code walkthroughs, user documentation, formal proof, GenderMag
-    personas, Design Thinking, etc.  Normally the maximum number of extras will be
-    two.  Approval of the extras will be part of the discussion with
-    the instructor
-    for approving the project. The extras, with the approval (or request) of the
-    instructor, can be modified over the course of the term.}
+  make up for a less advanced challenge level.  Potential extras
+  include usability
+  testing, code walkthroughs, user documentation, formal proof, GenderMag
+  personas, Design Thinking, etc.  Normally the maximum number of extras will be
+  two.  Approval of the extras will be part of the discussion with
+  the instructor
+  for approving the project. The extras, with the approval (or request) of the
+  instructor, can be modified over the course of the term.}
 
 \subsection{Circuit Design}
 
@@ -209,12 +211,12 @@ understand how to use the system.
 \input{../Reflection.tex}
 
 \begin{enumerate}
-    \item What went well while writing this deliverable?
-    \item What pain points did you experience during this deliverable, and how did you
-          resolve them?
-    \item How did you and your team adjust the scope of your goals to ensure they are
-          suitable for a Capstone project (not overly ambitious but also of appropriate
-          complexity for a senior design project)?
+  \item What went well while writing this deliverable?
+  \item What pain points did you experience during this deliverable, and how did you
+        resolve them?
+  \item How did you and your team adjust the scope of your goals to ensure they are
+        suitable for a Capstone project (not overly ambitious but also of appropriate
+        complexity for a senior design project)?
 \end{enumerate}
 
 \subsection*{\color{blue}{Jianqing Liu}}
@@ -231,32 +233,32 @@ by talking to a TA. Luckly, no adjustments to the project goals were needed.
 \subsection*{\color{blue}{Xiaotian Lou}}
 \begin{description}
   \item[\textit{What went well while writing this deliverable?}]
-  Our team started with a clear objective and a lightweight task
-  management plan, which helped keep ownership visible and discussions
-  focused. We also successfully connected with a faculty advisor relevant
-  to our domain. Team communication was smooth and inclusive; ideas were
-  surfaced early, discussed openly, and consolidated into a shared view
-  without blocking progress.
+        Our team started with a clear objective and a lightweight task
+        management plan, which helped keep ownership visible and discussions
+        focused. We also successfully connected with a faculty advisor relevant
+        to our domain. Team communication was smooth and inclusive; ideas were
+        surfaced early, discussed openly, and consolidated into a shared view
+        without blocking progress.
 
   \item[\textit{What pain points did you experience during this deliverable, and how did you resolve them?}]
-  Authoring in \LaTeX{} was initially time--consuming and a bit
-  frustrating. We mitigated this by adopting editor plugins, templates,
-  and a simple compile pipeline. Conceptually, a few sections felt vague
-  at first; we resolved this through multiple short meetings, refining
-  definitions, assumptions, and success criteria until the problem
-  framing was concrete.
+        Authoring in \LaTeX{} was initially time--consuming and a bit
+        frustrating. We mitigated this by adopting editor plugins, templates,
+        and a simple compile pipeline. Conceptually, a few sections felt vague
+        at first; we resolved this through multiple short meetings, refining
+        definitions, assumptions, and success criteria until the problem
+        framing was concrete.
 
 \end{description}
 
-
 \subsection{\color{blue}{Shike Chen}}
 
-The team is very cohesive with a clear goal on our project. It was very easy for us to
-identify our objectives. The only struggle invovled in this deliverable is the 
-standards to "high-performance". The definition of "high-performance" largely dictates
-the complexity of the project. In order to constrain the scope of the project and
-ensure the project is suitable for a Capstone project, we added some constrains and extra 
-goals to confine the domain of "high-performance".
+The team is very cohesive with a clear goal on our project. It was very easy
+for us to identify our objectives. The only struggle invovled in this
+deliverable is the standards to "high-performance". The definition of
+"high-performance" largely dictates the complexity of the project. In order to
+constrain the scope of the project and ensure the project is suitable for a
+Capstone project, we added some constrains and extra goals to confine the
+domain of "high-performance".
 
 \bibliographystyle{plainnat}
 \bibliography{../../refs/References}

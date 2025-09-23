@@ -1,12 +1,12 @@
 name: buildtex
 
-on:
-  push:
-    branches: main
-    paths: [docs/**]
-  pull_request:
-    branches: main
-    paths: [docs/**]
+# on:
+#   push:
+#     branches: main
+#     paths: [docs/**]
+#   pull_request:
+#     branches: main
+#     paths: [docs/**]
 
 permissions:
   contents: write
