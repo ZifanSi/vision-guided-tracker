@@ -1,0 +1,31 @@
+name: build-tex
+
+on:
+  push:
+    branches: main
+    paths: [docs/**]
+
+permissions:
+  contents: write
+
+jobs:
+  compile-latex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: xu-cheng/texlive-action@v3
+        name: Compile LaTeX Files
+        with:
+          scheme: full
+          texlive_version: 2025
+          run: |
+            apk add make
+            cd docs
+            make -B
+      - name: Commit and push PDFs
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'Add/Update PDFs'
+          file_pattern: 'docs/*.pdf'
