@@ -26,7 +26,7 @@ jobs:
             cd docs
             make -B
       - name: Commit and push PDFs
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: 'Add/Update PDFs'
-          file_pattern: 'docs/*.pdf'
+          file_pattern: '*.pdf'

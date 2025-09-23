@@ -49,7 +49,7 @@ jobs:
             cd docs
             find . -type f -name '*.tex' -print0 | xargs -0 -n 1 latexindent "-y=defaultIndent: '  ',modifyLineBreaks:textWrapOptions:columns:80" -m -w
       - name: Commit formatted LaTeX files
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: 'Format LaTeX files'
-          file_pattern: 'docs/*.tex'
+          file_pattern: '*.tex'
