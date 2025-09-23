@@ -5,8 +5,11 @@ on:
     branches: main
     paths: [docs/**]
 
+permissions:
+  contents: write
+
 jobs:
-  build-latex:
+  check-tex:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,10 +48,8 @@ jobs:
           run: |
             cd docs
             find . -type f -name '*.tex' -print0 | xargs -0 -n 1 latexindent "-y=defaultIndent: '  ',modifyLineBreaks:textWrapOptions:columns:80" -m -w
-      - name: Fail if any LaTeX files are not formatted
-        run: |
-          mapfile -t CHANGED_FILES < <(git diff --name-only | grep '\.tex$' || true)
-          if [ ${#CHANGED_FILES[@]} -gt 0 ]; then
-            echo "Some LaTeX files are not formatted: ${CHANGED_FILES[*]}"
-            exit 1
-          fi
+      - name: Commit formatted LaTeX files
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: 'Format LaTeX files'
+          file_pattern: '*.tex'
