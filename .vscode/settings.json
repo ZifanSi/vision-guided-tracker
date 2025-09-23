@@ -9,4 +9,5 @@
     ],
     "editor.detectIndentation": false,
     "editor.tabSize": 4,
+    "latex-workshop.latex.autoBuild.run": "onSave",
 }
