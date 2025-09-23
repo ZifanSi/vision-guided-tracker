@@ -33,16 +33,16 @@
 \pagenumbering{roman}
 
 \begin{table}[hp]
-\caption{Revision History} \label{TblRevisionHistory}
-\begin{tabularx}{\textwidth}{llX}
-\toprule
-\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
-\midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
-\bottomrule
-\end{tabularx}
+  \caption{Revision History} \label{TblRevisionHistory}
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}        \\
+    \midrule
+    Date1         & Name(s)               & Description of changes \\
+    Date2         & Name(s)               & Description of changes \\
+    ...           & ...                   & ...                    \\
+    \bottomrule
+  \end{tabularx}
 \end{table}
 
 ~\newpage
@@ -62,43 +62,43 @@ Date2 & Name(s) & Description of changes\\
 \section{Scope and Purpose of Hazard Analysis}
 
 \wss{You should say what \textbf{loss} could be incurred because of the
-hazards.}
+  hazards.}
 
 \section{System Boundaries and Components}
 
 \wss{Dividing the system into components will help you brainstorm the hazards.
-You shouldn't do a full design of the components, just get a feel for the major
-ones.  For projects that involve hardware, the components will typically include
-each individual piece of hardware.  If your software will have a database, or an
-important library, these are also potential components.}
+  You shouldn't do a full design of the components, just get a feel for the major
+  ones.  For projects that involve hardware, the components will typically include
+  each individual piece of hardware.  If your software will have a database, or an
+  important library, these are also potential components.}
 
 \section{Critical Assumptions}
 
 \wss{These assumptions that are made about the software or system.  You should
-minimize the number of assumptions that remove potential hazards.  For instance,
-you could assume a part will never fail, but it is generally better to include
-this potential failure mode.}
+  minimize the number of assumptions that remove potential hazards.  For instance,
+  you could assume a part will never fail, but it is generally better to include
+  this potential failure mode.}
 
 \section{Failure Mode and Effect Analysis}
 
 \wss{Include your FMEA table here. This is the most important part of this document.}
 \wss{The safety requirements in the table do not have to have the prefix SR.
-The most important thing is to show traceability to your SRS. You might trace to
-requirements you have already written, or you might need to add new
-requirements.}
+  The most important thing is to show traceability to your SRS. You might trace to
+  requirements you have already written, or you might need to add new
+  requirements.}
 \wss{If no safety requirement can be devised, other mitigation strategies can be
-entered in the table, including strategies involving providing additional
-documentation, and/or test cases.}
+  entered in the table, including strategies involving providing additional
+  documentation, and/or test cases.}
 
 \section{Safety and Security Requirements}
 
 \wss{Newly discovered requirements.  These should also be added to the SRS.  (A
-rationale design process how and why to fake it.)}
+  rationale design process how and why to fake it.)}
 
 \section{Roadmap}
 
 \wss{Which safety requirements will be implemented as part of the capstone timeline?
-Which requirements will be implemented in the future?}
+  Which requirements will be implemented in the future?}
 
 \newpage{}
 
@@ -109,16 +109,15 @@ Which requirements will be implemented in the future?}
 \input{../Reflection.tex}
 
 \begin{enumerate}
-    \item What went well while writing this deliverable? 
-    \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
-    \item Which of your listed risks had your team thought of before this
-    deliverable, and which did you think of while doing this deliverable? For
-    the latter ones (ones you thought of while doing the Hazard Analysis), how
-    did they come about?
-    \item Other than the risk of physical harm (some projects may not have any
-    appreciable risks of this form), list at least 2 other types of risk in
-    software products. Why are they important to consider?
+  \item What went well while writing this deliverable?
+  \item What pain points did you experience during this deliverable, and how did you
+        resolve them?
+  \item Which of your listed risks had your team thought of before this deliverable,
+        and which did you think of while doing this deliverable? For the latter ones
+        (ones you thought of while doing the Hazard Analysis), how did they come about?
+  \item Other than the risk of physical harm (some projects may not have any
+        appreciable risks of this form), list at least 2 other types of risk in
+        software products. Why are they important to consider?
 \end{enumerate}
 
 \end{document}
