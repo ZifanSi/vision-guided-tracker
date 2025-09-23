@@ -1,0 +1,54 @@
+name: check-tex
+
+on:
+  pull_request:
+    branches: main
+    paths: [docs/**]
+
+jobs:
+  build-latex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: xu-cheng/texlive-action@v3
+        name: Compile LaTeX Files
+        with:
+          scheme: full
+          texlive_version: 2025
+          run: |
+            apk add make
+            cd docs
+            make -B
+      - name: Collect changed PDFs
+        run: |
+          mapfile -t CHANGED_FILES < <(git diff --name-only | grep '\.pdf$' || true)
+          mkdir -p changed_pdfs_dir
+          for f in "${CHANGED_FILES[@]}"; do
+            if [ -f "$f" ]; then
+              mkdir -p "$(dirname "changed_pdfs_dir/$f")"
+              cp "$f" "changed_pdfs_dir/$f"
+            fi
+          done
+      - name: Upload changed PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-pdfs
+          path: changed_pdfs_dir
+          if-no-files-found: ignore
+      - uses: xu-cheng/texlive-action@v3
+        name: Format LaTeX Files
+        with:
+          scheme: full
+          texlive_version: 2025
+          run: |
+            cd docs
+            find . -type f -name '*.tex' -print0 | xargs -0 -n 1 latexindent "-y=defaultIndent: '  ',modifyLineBreaks:textWrapOptions:columns:80" -m -w
+      - name: Fail if any LaTeX files are not formatted
+        run: |
+          mapfile -t CHANGED_FILES < <(git diff --name-only | grep '\.tex$' || true)
+          if [ ${#CHANGED_FILES[@]} -gt 0 ]; then
+            echo "Some LaTeX files are not formatted: ${CHANGED_FILES[*]}"
+            exit 1
+          fi
