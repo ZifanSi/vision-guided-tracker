@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  compile-latex:
+  build-tex:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
