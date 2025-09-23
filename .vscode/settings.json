@@ -4,7 +4,9 @@
         "-c",
         "%DIR%/",
         "%TMPFILE%",
-        "-y=defaultIndent: '%INDENT%',modifyLineBreaks:textWrapOptions:columns:80",
+        "-y=defaultIndent: '  ',modifyLineBreaks:textWrapOptions:columns:80",
         "-m"
     ],
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
 }
