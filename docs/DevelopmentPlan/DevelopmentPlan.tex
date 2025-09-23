@@ -146,8 +146,11 @@ optional online or in-person meetings if either party requests them.
   \item Developing
         \begin{enumerate}
           \item The assignee will work on the task in a new branch:
-                [main-contributor-name]/[feature-name].
+                [main-author-name]/[feature-name].
           \item Move the issue into "In Progress".
+          \item (optional) If the author wants to get feedback on the code before all the
+                changes are complete, they can create a draft pull request and request for
+                review.
           \item Create a pull request once the code is ready for review. The pull request
                 should reference the original issue.
           \item Request a review from at least one team member and ping them on Discord.
@@ -379,6 +382,34 @@ Other smaller risks to consider:
   \item What disagreements did your group have in this deliverable, if any, and how did
         you resolve them?
 \end{enumerate}
+
+\subsection*{\color{blue}{Jianqing Liu}}
+
+I'm responsible for drafting most of the sections of this deliverable except
+Proof-of-Concept Demonstration Plan and part of Expected Technology. One
+section I want to highlight is "7.2 Minor Changes (Expedited Workflow)". I got
+this idea from my time working in a coop position, where the high overhead of
+the project management prevents me from fixing small issues I encountered
+during development, as the fix is unrelated to the feature I'm working on. I
+hope this will not turn into a loophole where all the pull requests are labeled
+as "minor" and by passing the normal planning process.
+
+I didn't realize the usefulness of the development plan until I started working
+on it. It makes a lot of implicit assumptions explicit (especially the workflow
+plan and team meeting plan, which was only communicated verbally in my previous
+positions), and helps the team better collaborate.
+
+The advantages of CI is far outweigh the disadvantages. The most important use
+for it in my opinion is to enforce coding standards, and catch regressions
+early. The only disadvantage I can think of is the extra overhead of setting up
+CI, but it's worth it.
+
+CD is a nice to have, but sometimes not feasible. For our project, since we
+need to deploy to an actual hardware (Jetson and STM32), it's not feasible to
+set up CD. However, we can create a deployment script to simplify the process.
+
+We did not have any disagreements in this deliverable.
+
 \newpage{}
 \section*{Appendix --- Team Charter}
 
