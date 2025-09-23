@@ -494,9 +494,6 @@ guides means anyone reading or reviewing our code will find it easy to follow.
   and a short risk log so enthusiasm is paired with realistic schedules and
   visible contingency plans.
 
-  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
-
-  We did not have any disagreements in this deliverable.
 \end{enumerate}
 
 \subsection*{Development Plan Reflection --- Shike Chen}
@@ -523,6 +520,45 @@ guides means anyone reading or reviewing our code will find it easy to follow.
 
   We did not have any disagreements in this deliverable.
 \end{enumerate}
+
+\subsection*{Development Plan Reflection --- Zifan Si}
+
+\begin{enumerate}
+  \item \textit{Why is it important to create a development plan prior to starting the project?}
+
+  I worked on the web side of the project, making sure the frontend and tech stack
+  were included. While writing, I realized how much the web app depends on the
+  backend running on the Jetson. Things like speed, bandwidth, and deployment all
+  affect how the frontend works. Having a plan makes these things clear early and
+  keeps everyone on the same page.
+
+  \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
+
+  CI is super helpful because our project uses Rust, Python, and TypeScript. With
+  tests and checks running automatically, small mistakes get caught fast. The
+  downside is setting it up — each language has different tools, and it takes time.
+  CD is harder for us since we run on Jetson hardware, but we can still make
+  scripts so deploying is easier and more consistent.
+
+  \item \textit{What are the main challenges of building the web end for this project?}
+
+  The hardest part is that the web app relies on the backend. If the backend is
+  slow or crashes, the frontend feels broken even if the code is fine. Another
+  challenge is making the UI simple for people using it outdoors with glare,
+  gloves, and noise.
+
+  \item \textit{What did you learn while planning the web end of the project?}
+
+  I learned that web dev here isn’t just about the frontend. Hardware limits like
+  network speed, video streaming, and response times all affect the design. It
+  showed me that I need to think about the whole system, not just my part.
+
+  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
+
+  No big disagreements. Just how much detail to write for the web app. We kept it
+  high-level and flexible.
+\end{enumerate}
+
 
 
 \newpage{}
