@@ -440,32 +440,41 @@ guides means anyone reading or reviewing our code will find it easy to follow.
         you resolve them?
 \end{enumerate}
 
-\subsection*{\color{blue}{Jianqing Liu}}
+\subsection*{Development Plan Reflection --- Jianqing Liu}
 
-I'm responsible for drafting most of the sections of this deliverable except
-Proof-of-Concept Demonstration Plan and part of Expected Technology. One
-section I want to highlight is "7.2 Minor Changes (Expedited Workflow)". I got
-this idea from my time working in a coop position, where the high overhead of
-the project management prevents me from fixing small issues I encountered
-during development, as the fix is unrelated to the feature I'm working on. I
-hope this will not turn into a loophole where all the pull requests are labeled
-as "minor" and by passing the normal planning process.
+\begin{enumerate}
+  \item \textit{Why is it important to create a development plan prior to starting the project?}
 
-I didn't realize the usefulness of the development plan until I started working
-on it. It makes a lot of implicit assumptions explicit (especially the workflow
-plan and team meeting plan, which was only communicated verbally in my previous
-positions), and helps the team better collaborate.
+  I'm responsible for drafting most of the sections of this deliverable except
+  Proof-of-Concept Demonstration Plan and part of Expected Technology. One section
+  I want to highlight is "7.2 Minor Changes (Expedited Workflow)". I got this idea
+  from my time working in a coop position, where the high overhead of project
+  management prevented me from fixing small issues I encountered during
+  development, as the fix was unrelated to the feature I was working on. I hope
+  this will not turn into a loophole where all the pull requests are labeled as
+  "minor" to bypass the normal planning process.
 
-The advantages of CI is far outweigh the disadvantages. The most important use
-for it in my opinion is to enforce coding standards, and catch regressions
-early. The only disadvantage I can think of is the extra overhead of setting up
-CI, but it's worth it.
+  I also didn’t realize the usefulness of the development plan until I started
+  working on it. It makes a lot of implicit assumptions explicit (especially the
+  workflow plan and team meeting plan, which were only communicated verbally in my
+  previous positions), and helps the team better collaborate.
 
-CD is a nice to have, but sometimes not feasible. For our project, since we
-need to deploy to an actual hardware (Jetson and STM32), it's not feasible to
-set up CD. However, we can create a deployment script to simplify the process.
+  \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
 
-We did not have any disagreements in this deliverable.
+  The advantages of CI far outweigh the disadvantages. The most important use for
+  it in my opinion is to enforce coding standards and catch regressions early. The
+  only disadvantage I can think of is the extra overhead of setting up CI, but it
+  is worth it.
+
+  CD is a nice to have, but sometimes not feasible. For our project, since we need
+  to deploy to actual hardware (Jetson and STM32), it is not feasible to set up
+  CD. However, we can create a deployment script to simplify the process.
+
+  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
+
+  We did not have any disagreements in this deliverable.
+\end{enumerate}
+
 
 \subsection*{Development Plan Reflection --- Xiaotian Lou}
 \begin{enumerate}
@@ -484,24 +493,37 @@ We did not have any disagreements in this deliverable.
   risk. To balance this, we added explicit buffers, milestone checkpoints,
   and a short risk log so enthusiasm is paired with realistic schedules and
   visible contingency plans.
+
+  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
+
+  We did not have any disagreements in this deliverable.
 \end{enumerate}
 
-\subsection{\color{blue}{Shike Chen}}
+\subsection*{Development Plan Reflection --- Shike Chen}
 
-I have helped in drafting and revising the development plan. I realized the 
-importance of the development plan as I was working on the proof of concept.
-In the process of writing the proof of concept, I went through many risks of
-the project that I had not thought of before. I believe the development is a
-vital at the beginning of the project, as it helps the team to identify the
-risks and feasibility of the project.
+\begin{enumerate}
+  \item \textit{Why is it important to create a development plan prior to starting the project?}
 
-The largest advantage of CI/CD is that each small updates, improvements, 
-feature, bug fix can be integrated into the development environment as soon as 
-they are ready. This greatly enhances the flexibility and robustness of the 
-product. The only disadvantages of the CI/CD is it requires alot of setup and 
-sometimes, a mistake into the main branch can lead to large problems.
+  I have helped in drafting and revising the development plan. I realized the
+  importance of the development plan as I was working on the proof of concept.
+  In the process of writing the proof of concept, I went through many risks of
+  the project that I had not thought of before. I believe the development plan
+  is vital at the beginning of the project, as it helps the team identify the
+  risks and feasibility of the project.
 
-We did not have any disagreements in this deliverable.
+  \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
+
+  The largest advantage of CI/CD is that each small update, improvement, feature,
+  or bug fix can be integrated into the development environment as soon as it is
+  ready. This greatly enhances the flexibility and robustness of the product.
+  The main disadvantage of CI/CD is that it requires a lot of setup and, in some
+  cases, a mistake merged into the main branch can lead to large problems.
+
+  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
+
+  We did not have any disagreements in this deliverable.
+\end{enumerate}
+
 
 \newpage{}
 \section*{Appendix --- Team Charter}
