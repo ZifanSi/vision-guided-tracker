@@ -31,6 +31,7 @@
     Sept. 21, 2025 & Jianqing Liu          & Misc changes and expedited workflow plan        \\
     Sept. 22, 2025 & Xiaotian Lou          & change on Team Charter                          \\
     Sept. 22, 2025 & Zifan Si              & Fix development plan based on lecture slides    \\                          \\
+    Sept. 22, 2025 & Xiaotian Lou          & update reflection                               \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -93,9 +94,9 @@ Communication with the supervisor will include a weekly update email and
 optional online or in-person meetings if either party requests them.
 
 % Justification for P4
-\textcolor{blue}{Justification:} Meeting twice a week gives us enough touchpoints 
-to stay aligned without eating into development time. By keeping careful notes 
-and sharing them after each meeting, everyone stays up to date—even if someone 
+\textcolor{blue}{Justification:} Meeting twice a week gives us enough touchpoints
+to stay aligned without eating into development time. By keeping careful notes
+and sharing them after each meeting, everyone stays up to date—even if someone
 can’t attend—and we avoid the need for extra meetings that would slow progress.
 
 
@@ -122,10 +123,10 @@ can’t attend—and we avoid the need for extra meetings that would slow progre
 \end{itemize}
 
 % Justification for P5
-\textcolor{blue}{Justification:} These four channels cover everything we need without 
-overlap—fast chat (Discord), structured task tracking (GitHub), live supervisor 
-discussions (Zoom), and formal updates (Email). Using more tools would only add 
-confusion and split conversations across too many places, while using fewer 
+\textcolor{blue}{Justification:} These four channels cover everything we need without
+overlap—fast chat (Discord), structured task tracking (GitHub), live supervisor
+discussions (Zoom), and formal updates (Email). Using more tools would only add
+confusion and split conversations across too many places, while using fewer
 would leave gaps in how we share information.
 
 \wss{Issues on GitHub should be part of your communication plan.}
@@ -145,11 +146,11 @@ would leave gaps in how we share information.
 \end{itemize}
 
 % Justification for P6
-\textcolor{blue}{Justification:} These four roles cover everything our team needs: 
-someone to coordinate and manage progress (Project Manager), someone to run 
-organized meetings (Meeting Chair), someone to keep accurate records (Notetaker), 
-and someone to check the quality of our work (Quality Assurance). Together, 
-they cover planning, communication, documentation, and review, so nothing 
+\textcolor{blue}{Justification:} These four roles cover everything our team needs:
+someone to coordinate and manage progress (Project Manager), someone to run
+organized meetings (Meeting Chair), someone to keep accurate records (Notetaker),
+and someone to check the quality of our work (Quality Assurance). Together,
+they cover planning, communication, documentation, and review, so nothing
 important is left out.
 
 \section{Workflow Plan}
@@ -200,11 +201,11 @@ GitHub Projects board is not required. Instead:
 \end{enumerate}
 
 % Justification for P7
-\textcolor{blue}{Justification:} This workflow is enough to keep our work organized 
-and traceable without being too heavy. Every task starts as an issue so nothing 
-is forgotten, branches keep code changes separate, and pull requests with reviews 
-make sure mistakes get caught early. Using GitHub Projects ties everything together, 
-so planning, coding, and reviewing all stay in one place. More complicated processes 
+\textcolor{blue}{Justification:} This workflow is enough to keep our work organized
+and traceable without being too heavy. Every task starts as an issue so nothing
+is forgotten, branches keep code changes separate, and pull requests with reviews
+make sure mistakes get caught early. Using GitHub Projects ties everything together,
+so planning, coding, and reviewing all stay in one place. More complicated processes
 would just slow us down, while skipping steps would risk bugs and confusion.
 
 
@@ -254,11 +255,11 @@ deadlines, the overall project will follow the major deadlines below.
 \FloatBarrier
 
 % Justification for P8
-\textcolor{blue}{Justification:} Splitting the work into Web App, CV Pipeline, 
-and Motion Control is enough because these three parts match the main technical 
-challenges of the project. Each subproject has clear boundaries, so team members 
-can work in parallel without confusion. Putting everything in a single monorepo 
-keeps the codebase consistent, and using GitHub Projects ties scheduling directly 
+\textcolor{blue}{Justification:} Splitting the work into Web App, CV Pipeline,
+and Motion Control is enough because these three parts match the main technical
+challenges of the project. Each subproject has clear boundaries, so team members
+can work in parallel without confusion. Putting everything in a single monorepo
+keeps the codebase consistent, and using GitHub Projects ties scheduling directly
 to the actual code, so we don’t need extra tools that could complicate tracking.
 
 \wss{How will the project be scheduled?  This is the big picture schedule, not
@@ -321,10 +322,10 @@ Other smaller risks to consider:
 \end{enumerate}
 
 % Justification for P9
-\textcolor{blue}{Justification:} These steps give us just enough to prove the idea works 
-without overloading the demo. Taking a picture, tracking movement, picking a target, 
-and keeping it in view are the core things we need to show. We also listed the biggest 
-risks so we’re ready if something goes wrong. This way the POC is doable, but it still 
+\textcolor{blue}{Justification:} These steps give us just enough to prove the idea works
+without overloading the demo. Taking a picture, tracking movement, picking a target,
+and keeping it in view are the core things we need to show. We also listed the biggest
+risks so we’re ready if something goes wrong. This way the POC is doable, but it still
 shows the hardest and most important parts of the system.
 
 \section{Expected Technology}
@@ -416,10 +417,10 @@ shows the hardest and most important parts of the system.
 \end{itemize}
 
 % Justification for P11
-\textcolor{blue}{Justification:} These standards are enough to keep our code clean 
-and consistent without adding extra rules that slow us down. The Power of 10 helps 
-make Rust code safer, PEP 8 is the common style guide for Python, and 
-typescript-eslint is widely used for TypeScript. Sticking to these well-known 
+\textcolor{blue}{Justification:} These standards are enough to keep our code clean
+and consistent without adding extra rules that slow us down. The Power of 10 helps
+make Rust code safer, PEP 8 is the common style guide for Python, and
+typescript-eslint is widely used for TypeScript. Sticking to these well-known
 guides means anyone reading or reviewing our code will find it easy to follow.
 
 \wss{What coding standard will you adopt?}
@@ -466,6 +467,25 @@ set up CD. However, we can create a deployment script to simplify the process.
 
 We did not have any disagreements in this deliverable.
 
+\subsection*{Development Plan Reflection --- Xiaotian Lou}
+\begin{enumerate}
+  \item \textit{Why is it important to create a development plan prior to starting the project?}
+
+  A development plan exposes overlooked details early and clarifies
+  responsibilities. By mapping objectives to work packages, timelines,
+  resources, and risks, it aligns expectations across the team, reduces
+  ambiguity in day-to-day decisions, and provides a baseline for tracking
+  progress and adjusting course when constraints change.
+
+  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
+
+  We did not encounter material disagreements at this stage. If anything,
+  the team is slightly over-optimistic—great for momentum but it can hide
+  risk. To balance this, we added explicit buffers, milestone checkpoints,
+  and a short risk log so enthusiasm is paired with realistic schedules and
+  visible contingency plans.
+\end{enumerate}
+
 \subsection{\color{blue}{Shike Chen}}
 
 I have helped in drafting and revising the development plan. I realized the 
@@ -482,6 +502,7 @@ product. The only disadvantages of the CI/CD is it requires alot of setup and
 sometimes, a mistake into the main branch can lead to large problems.
 
 We did not have any disagreements in this deliverable.
+
 \newpage{}
 \section*{Appendix --- Team Charter}
 
