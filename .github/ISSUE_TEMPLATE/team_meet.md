@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-## Date and Time
-
 ## Attendance
 
 - [ ] Xiaotian Lou
@@ -18,4 +16,5 @@ assignees: ''
 
 ## Agenda
 
-- 
+- Task Updates
+- Backlog grooming

@@ -25,8 +25,11 @@
     Sept. 10, 2025 & Mike Chen             & Proof-of-Concept Plan and Expected Technology   \\
     Sept. 13, 2025 & Jianqing Liu          & Team Member Roles and Communication Plan        \\
     Sept. 13, 2025 & Jianqing Liu          & Expected Technology and Coding Standard         \\
+    Sept. 15, 2025 & Xiaotian Lou          & Coding Standard for Python                      \\
     Sept. 20, 2025 & Jianqing Liu          & Team Meeting Plan, Workflow Plan and Scheduling \\
+    Sept. 21, 2025 & Xiaotian Lou          & Team Charter                                    \\
     Sept. 21, 2025 & Jianqing Liu          & Misc changes and expedited workflow plan        \\
+    Sept. 22, 2025 & Xiaotian Lou          & change on Team Charter                          \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -405,77 +408,212 @@ set up CD. However, we can create a deployment script to simplify the process.
 We did not have any disagreements in this deliverable.
 
 \newpage{}
-
 \section*{Appendix --- Team Charter}
 
 \wss{borrows from
-  \href{https://engineering.up.edu/industry_partnerships/files/team-charter.pdf}
-  {University of Portland Team Charter}}
+  \href{https://github.com/ssm-lab/capstone--source-code-optimizer/blob/main/docs/DevelopmentPlan/DevelopmentPlan.pdf}
+}
 
 \subsection*{External Goals}
 
-\wss{What are your team's external goals for this project? These are not the
-  goals related to the functionality or quality fo the project.  These are the
-  goals on what the team wishes to achieve with the project.  Potential goals are
-  to win a prize at the Capstone EXPO, or to have something to talk about in
-  interviews, or to get an A+, etc.}
+Our team's primary goal is to learn something practical and transferable skills
+on full software development lifecycle that can be applied in the workforce,
+including requirements engineering, UI design, API design, iterative
+prototyping, and validation.
+
+Additionally, we aim to create a project that we can confidently discuss in
+interviews, demonstrating our ability to work on real-world problems. While we
+focus on personal and professional growth, we also aim for an A+ as a
+nice-to-have achievement.
 
 \subsection*{Attendance}
 
-\subsubsection*{Expectations}
+\subsubsection*{\color{blue}{Expectations}}
 
-\wss{What are your team's expectations regarding meeting attendance (being on
-  time, leaving early, missing meetings, etc.)?}
+Members commit to scheduled meetings, arrive on time, and participate fully. If
+a member cannot attend, they will notify the team in advance, provide clear
+reasons, and help coordinate a new time if full attendance is required. Repeat
+lateness or unexplained absence will be addressed promptly to protect cadence.
 
-\subsubsection*{Acceptable Excuse}
+\subsubsection*{\color{blue}Acceptable Excuse}
 
-\wss{What constitutes an acceptable excuse for missing a meeting or a deadline?
-  What types of excuses will not be considered acceptable?}
+Acceptable reasons include emergencies, illness, family obligations, or other
+significant duties, provided the team is informed as early as possible. Vague
+or last minute reasons (e.g., ``forgot'') or avoidable conflicts are not
+accepted, as they jeopardize schedule, trust, and safety readiness.
 
-\subsubsection*{In Case of Emergency}
+\subsubsection*{\color{blue}In Case of Emergency}
 
-\wss{What process will team members follow if they have an emergency and cannot
-  attend a team meeting or complete their individual work promised for a team
-  deliverable?}
-
+When emergencies prevent attendance or delivery, the member must notify the
+team immediately via our primary channel (Discord). The team may redistribute
+tasks or reschedule as needed. If a deadline is impacted, notify the team and
+the instructor or TA promptly so proper arrangements are made without risking
+progress or stakeholder expectations.
 \subsection*{Accountability and Teamwork}
 
-\subsubsection*{Quality}
+\subsubsection*{\color{blue}Quality}
 
-\wss{What are your team's expectations regarding the quality
-  of team members' preparation for team meetings and the quality of the
-  deliverables that members bring to the team?}
+Our team sets explicit expectations for meeting prep and deliverable quality,
+with safety and reliability emphasized for field operations:
 
-\subsubsection*{Attitude}
+\begin{itemize}
+  \item \textbf{Meeting Preparation}:
+        \begin{itemize}
+          \item Review materials and complete assigned work before meetings; bring concise,
+                verifiable updates with blockers and proposed options.
+          \item Keep discussions decision oriented; capture risks, assumptions, and next
+                actions; timebox and create follow ups for deep dives.
+          \item Maintain a decision log and lightweight RACI notes for key items.
+        \end{itemize}
 
-\wss{What are your team's expectations regarding team members' ideas,
-  interactions with the team, cooperation, attitudes, and anything else regarding
-  team member contributions?  Do you want to introduce a code of conduct?  Do you
-  want a conflict resolution plan?  Can adopt existing codes of conduct.}
+  \item \textbf{Deliverables Quality}:
+        \begin{itemize}
+          \item Meet standards of correctness, clarity, completeness, and reproducibility;
+                include error and empty states in the UI.
+          \item Align with API contracts and data schemas; document versions and backward
+                compatibility expectations.
+          \item Provide evidence: latency/FPS snapshots, basic load trials, and stability
+                checks (e.g., 30+ min runs) with notes on limits.
+        \end{itemize}
 
-\subsubsection*{Stay on Track}
+  \item \textbf{Verification and Safety Readiness}:
+        \begin{itemize}
+          \item Validate with staged tests: synthetic videos, recorded flights, and hardware in
+                the loop where feasible.
+          \item Track KPIs: end to end latency (p50/p95), FPS, target reacquisition time, crash
+                free session rate, and UI task success.
+          \item Record assumptions, known issues, and mitigations for field usage.
+        \end{itemize}
 
-\wss{What methods will be used to keep the team on track? How will your team
-  ensure that members contribute as expected to the team and that the team
-  performs as expected? How will your team reward members who do well and manage
-  members whose performance is below expectations?  What are the consequences for
-  someone not contributing their fair share?}
+  \item \textbf{Accountability and Feedback}:
+        \begin{itemize}
+          \item Own outcomes; escalate early if help or time is needed; provide timely handoffs
+                and keep docs current.
+          \item Welcome review feedback; address comments within 7 days unless a different SLA
+                is agreed in advance.
+        \end{itemize}
 
-\wss{You may wish to use the project management metrics collected for the TA and
-  instructor for this.}
+\end{itemize}
 
-\wss{You can set target metrics for attendance, commits, etc.  What are the
-  consequences if someone doesn't hit their targets?  Do they need to bring the
-  coffee to the next team meeting?  Does the team need to make an appointment with
-  their TA, or the instructor?  Are there incentives for reaching targets early?}
+\noindent
+By upholding these practices, meetings remain efficient and deliverables remain
+professional, testable, and field minded.
 
-\subsubsection*{Team Building}
+\subsubsection*{\color{blue}Attitude}
 
-\wss{How will you build team cohesion (fun time, group rituals, etc.)? }
+We adopt the following \textbf{expectations} for contribution, interaction, and
+cooperation to sustain a respectful and high performance culture:
 
-\subsubsection*{Decision Making}
+\begin{itemize}
+  \item \textbf{Respectful Communication}: Listen first; respond with concrete
+        specifics; separate people from problems.
+  \item \textbf{Open Collaboration}: Share ideas and risks early; offer support
+        during integration and time critical milestones.
+  \item \textbf{Accountability}: Meet timelines or replan early with options
+        that protect scope, safety, and critical path.
+  \item \textbf{Positive Attitude}: Stay solution oriented under constraints;
+        help teammates recover when issues occur.
+  \item \textbf{Commitment to Quality}: Prefer simple, observable solutions and
+        incremental improvement over risky big bangs.
+\end{itemize}
 
-\wss{How will you make decisions in your group? Consensus?  Vote? How will you
-  handle disagreements? }
+\noindent
+We further adopt a concise \textbf{code of conduct}:
+
+\begin{itemize}
+  \item \textbf{Inclusivity}: Welcome diverse backgrounds and viewpoints; ensure
+        space for every member to contribute.
+  \item \textbf{Professionalism}: Act with integrity; avoid offensive language
+        and behavior in all settings.
+  \item \textbf{Collaboration and Feedback}: Keep critique about the work, not
+        the person; make feedback specific and actionable.
+  \item \textbf{No Tolerance for Harassment}: Any harassment is unacceptable
+        and will be reported and handled immediately.
+\end{itemize}
+
+\noindent
+Conflicts are handled via the following \textbf{resolution plan}:
+
+\begin{enumerate}
+  \item \textbf{Address the Issue Directly}: Involved parties first attempt a
+        respectful, solution oriented discussion.
+  \item \textbf{Mediation by a Neutral Member}: If unresolved, a neutral
+        teammate facilitates and seeks common ground.
+  \item \textbf{Escalation to Instructor/TA}: If still unresolved, we escalate
+        for guidance and a final decision.
+  \item \textbf{Follow Up and Monitoring}: Verify the resolution holds; refine
+        norms if needed to prevent recurrence.
+\end{enumerate}
+
+By following these expectations and processes, we maintain a positive and
+collaborative environment while delivering course outcomes.
+
+\subsubsection*{\color{blue}Stay on Track}
+
+To keep momentum and visibility while preparing for safe field demos, we will
+use the methods below:
+
+\begin{enumerate}
+  \item \textbf{Regular Check ins and Progress Updates}: Hold \textit{weekly
+          meetings} where each member shares progress, risks, and next steps; capture
+        actions, owners, and due dates.
+  \item \textbf{Performance and Reliability Metrics}:
+        \begin{itemize}
+          \item \textit{Attendance} tracked in GitHub Issues or the project board.
+          \item \textit{Commits/PRs} for steady, reviewable progress with CI gates.
+          \item \textit{Task on time rate} and defect turnaround time per milestone.
+          \item \textit{Runtime KPIs}: latency, FPS, time to reacquire, stability.
+        \end{itemize}
+  \item \textbf{Rewards for High Performers}: Recognize members who meet or
+        exceed expectations with public kudos and opportunities to lead desired
+        submodules or integrations.
+  \item \textbf{Managing Underperformance}: If a member underdelivers for more
+        than 3 weeks:
+        \begin{itemize}
+          \item Start with a team conversation to understand obstacles, add pairing, and set
+                concrete checkpoints.
+          \item If issues persist, add guardrail tasks; in severe cases, meet with the TA or
+                instructor.
+        \end{itemize}
+  \item \textbf{Consequences for Not Contributing}: When a member does not
+        contribute fairly:
+        \begin{itemize}
+          \item Rebalance workload and expectations to protect the milestone.
+          \item Escalate to the TA or instructor if patterns continue.
+        \end{itemize}
+  \item \textbf{Incentives for Meeting Targets Early}: Members who reliably
+        meet or exceed targets receive first pick for next milestone tasks and
+        additional leadership opportunities.
+\end{enumerate}
+
+\subsubsection*{\color{blue}Team Building}
+
+We host a light, bi weekly hangout to build trust and informal bandwidth.
+Examples include attending campus events, shared meals, or quick bubble tea
+breaks at inclusive times. Optional pair programming or design jam sessions may
+be used to accelerate learning and cohesion.
+
+\subsubsection*{\color{blue}Decision Making}
+
+We prefer consensus based decisions and ensure everyone has a chance to speak
+before concluding. If consensus is not reachable in time, we vote with equal
+weight per member and accept the majority decision. Summaries and action items
+are posted within 24 hours in Discord and linked Issues.
+
+\vspace{10pt}
+\textit{To handle disagreements: address issues directly and respectfully.}
+
+\begin{enumerate}
+  \item Allow members to share concerns without interruption and record key points
+        neutrally for transparency.
+  \item Keep discussion focused on the topic, not on personal attributions or intent.
+  \item When needed, appoint a neutral facilitator to guide the conversation toward a
+        resolution within the timebox.
+  \item If the issue persists, revisit project goals, safety constraints, and
+        stakeholder needs; choose the option that best aligns with them.
+\end{enumerate}
+
+By applying these strategies, we preserve a collaborative environment and make
+timely, transparent decisions aligned with a high quality tracking solution.
 
 \end{document}
