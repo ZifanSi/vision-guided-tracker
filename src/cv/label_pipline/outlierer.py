@@ -6,6 +6,7 @@ from torchvision.ops import nms
 from matplotlib import pyplot as plt
 from torchvision.ops import box_convert
 import supervision as sv
+from matplotlib.patches import Rectangle
 # ----------------------------
 # Logging (switch to DEBUG for more)
 # ----------------------------
@@ -77,28 +78,58 @@ def showRBG(img_rgb: np.ndarray, title="Image"):
     plt.axis('off')
     plt.show()
 
-def showDINO(img_rgb: np.ndarray, dets : sv.Detections, labels):
+def showDINO(img_rgb: np.ndarray, dets: sv.Detections, labels=None):
     img = img_rgb.copy()
-    h, w, _ = img.shape
+    H, W = img.shape[:2]
 
-    boxes = boxes * torch.Tensor([w, h, w, h])
-    xyxy = box_convert(boxes=boxes, in_fmt="cxcywh", out_fmt="xyxy").numpy()
-    for i, box in enumerate(xyxy):
-        x1, y1, x2, y2 = map(int, box)
-        cv2.rectangle(img, (x1, y1), (x2, y2), (0,255,0), 2)
-        label = f"{scores[i]:.2f}"
-        cv2.putText(img, label, (x1, max(0,y1-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2, cv2.LINE_AA)
-    showRBG(img, title="GroundingDINO Detections")
+    # Nothing to draw
+    if dets is None or dets.xyxy is None or len(dets.xyxy) == 0:
+        plt.figure(figsize=(10, 10))
+        plt.imshow(img); plt.axis('off'); plt.show()
+        return
+
+    boxes = dets.xyxy.astype(float)  # (N,4) [x1,y1,x2,y2]
+    confs = getattr(dets, "confidence", None)
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.imshow(img)
+
+    for i, (x1, y1, x2, y2) in enumerate(boxes):
+        # clip to image
+        x1 = float(np.clip(x1, 0, W - 1))
+        y1 = float(np.clip(y1, 0, H - 1))
+        x2 = float(np.clip(x2, 0, W - 1))
+        y2 = float(np.clip(y2, 0, H - 1))
+        w, h = max(0.0, x2 - x1), max(0.0, y2 - y1)
+
+        # rectangle
+        ax.add_patch(Rectangle((x1, y1), w, h, fill=False, edgecolor='r', linewidth=2))
+
+        # label text
+        score = None if confs is None else float(confs[i])
+        base = (labels[i] if labels is not None and i < len(labels) else None)
+        text = (
+            f"{base} ({score:.2f})" if (base is not None and score is not None)
+            else (base if base is not None else (f"{score:.2f}" if score is not None else ""))
+        )
+        if text:
+            ax.text(
+                x1, max(0, y1 - 3), text,
+                color='w', fontsize=9, weight='bold', va='bottom', ha='left',
+                bbox=dict(facecolor='black', alpha=0.35, pad=1.5, edgecolor='none')
+            )
+
+    ax.axis('off')
+    plt.show()
 
 def label_boxes_with_gdino(img_bgr: np.ndarray, boxes_xyxy: torch.Tensor,
                            text_prompt: str, box_score_thresh=0.25):
     log.info(f"[GDINO] prompt='{text_prompt}' | boxes_in={boxes_xyxy.size(0)}")
     if boxes_xyxy.numel() == 0:
         return []
-
-    # --- Run GDINO (handle multiple return formats) ---
+    showRBG(img_bgr[:, :, ::-1], title="Input Image (BGR->RGB)")
+    # --- Run GDINO ---
     t0 = time.perf_counter()
-    showRBG(img_bgr[:, :, ::-1], title=text_prompt)
     try:
         result = gdino.predict_with_caption(
             image=img_bgr[:, :, ::-1],  # BGR->RGB
@@ -112,9 +143,9 @@ def label_boxes_with_gdino(img_bgr: np.ndarray, boxes_xyxy: torch.Tensor,
     log.info(f"[GDINO] predict_with_caption took {(time.perf_counter()-t0)*1000:.1f} ms")
 
     # --- Normalize result into gd_boxes (Nx4), gd_scores (N,), gd_labels (list[str]) ---
-    gd_boxes, gd_scores, gd_labels = None, None, None
-
     def to_tensor(x, dtype=torch.float32):
+        if x is None:
+            return torch.zeros((0,), dtype=dtype)
         x = np.array(x) if not torch.is_tensor(x) else x.cpu().numpy()
         return torch.tensor(x, dtype=dtype)
 
@@ -122,76 +153,66 @@ def label_boxes_with_gdino(img_bgr: np.ndarray, boxes_xyxy: torch.Tensor,
         log.warning("[GDINO] detections is None")
         return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
 
-    if isinstance(result, tuple):
-        # Common patterns:
-        # (detections, labels)  OR  (boxes, scores/logits, phrases)
+    # Parse the supervision Detection object
+    gd_boxes, gd_scores, gd_labels = None, None, None
+    
+    if isinstance(result, tuple) and len(result) == 2:
         dets, labels = result
-        showDINO(img_bgr[:, :, ::-1], dets, labels)  # visualize raw GDINO output
-        if len(result) == 2:
-            dets, labels = result
-            # dets could be attr-obj or dict
-            if hasattr(dets, "boxes"):
-                gd_boxes = to_tensor(dets.boxes)
-                gd_scores = to_tensor(getattr(dets, "scores", []))
-            else:
-                gd_boxes = to_tensor(dets.get("boxes", []))
-                gd_scores = to_tensor(dets.get("scores", []))
+        showDINO(img_bgr[:, :, ::-1], dets, labels)
+        # Handle supervision Detection object
+        if hasattr(dets, 'xyxy'):
+            gd_boxes = to_tensor(dets.xyxy)
+            gd_scores = to_tensor(dets.confidence) if hasattr(dets, 'confidence') else torch.zeros(len(dets.xyxy))
             gd_labels = list(labels) if labels is not None else []
-        elif len(result) == 3:
-            boxes, scores, phrases = result
-            gd_boxes  = to_tensor(boxes)
-            gd_scores = to_tensor(scores)
-            gd_labels = list(phrases)
         else:
-            log.warning(f"[GDINO] unexpected tuple len={len(result)}; treating as empty")
-            gd_boxes, gd_scores, gd_labels = torch.zeros((0,4)), torch.zeros((0,)), []
+            log.warning(f"[GDINO] unexpected detection format, missing xyxy attribute")
+            return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
     else:
-        # Single object or dict
-        dets = result
-        try:
-            gd_boxes  = to_tensor(dets.boxes)
-            gd_scores = to_tensor(getattr(dets, "scores", []))
-            gd_labels = list(getattr(dets, "phrases", []))
-        except AttributeError:
-            gd_boxes  = to_tensor(dets.get("boxes", []))
-            gd_scores = to_tensor(dets.get("scores", []))
-            gd_labels = list(dets.get("phrases", []))
+        log.warning(f"[GDINO] unexpected result format: {type(result)}")
+        return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
 
-    # Safety: shapes/lengths
-    if gd_boxes is None or gd_boxes.numel() == 0:
+    # Ensure gd_boxes has correct shape
+    if gd_boxes.ndim == 1:
+        gd_boxes = gd_boxes.reshape(-1, 4)
+    
+    # Safety checks and shape alignment
+    if gd_boxes.numel() == 0:
         log.warning("[GDINO] 0 detections; returning unlabeled proposals")
         return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
-    if gd_scores is None or gd_scores.numel() != gd_boxes.shape[0]:
-        # pad/trim scores to match boxes
-        n = gd_boxes.shape[0]
-        s = gd_scores.numel() if gd_scores is not None else 0
-        log.debug(f"[GDINO] score length mismatch boxes={n} scores={s}; fixing")
-        if s < n:
-            pad = torch.zeros(n - s, dtype=torch.float32)
-            gd_scores = torch.cat([gd_scores if s > 0 else torch.zeros(0), pad], dim=0)
+    
+    n_boxes = gd_boxes.shape[0]
+    
+    # Fix scores length
+    if gd_scores.numel() != n_boxes:
+        log.debug(f"[GDINO] score length mismatch boxes={n_boxes} scores={gd_scores.numel()}; fixing")
+        if gd_scores.numel() < n_boxes:
+            pad = torch.zeros(n_boxes - gd_scores.numel(), dtype=torch.float32)
+            gd_scores = torch.cat([gd_scores, pad], dim=0)
         else:
-            gd_scores = gd_scores[:n]
+            gd_scores = gd_scores[:n_boxes]
+    
+    # Fix labels length
     if gd_labels is None:
         gd_labels = []
-    if len(gd_labels) != gd_boxes.shape[0]:
-        # If model returns 1 label for whole caption, broadcast; else trim/pad
+    if len(gd_labels) != n_boxes:
         if len(gd_labels) == 1:
-            gd_labels = gd_labels * gd_boxes.shape[0]
+            # Broadcast single label to all boxes
+            gd_labels = gd_labels * n_boxes
         else:
-            log.debug(f"[GDINO] label length mismatch boxes={gd_boxes.shape[0]} labels={len(gd_labels)}; fixing")
-            gd_labels = (gd_labels[:gd_boxes.shape[0]] +
-                         [""] * max(0, gd_boxes.shape[0] - len(gd_labels)))
+            log.debug(f"[GDINO] label length mismatch boxes={n_boxes} labels={len(gd_labels)}; fixing")
+            gd_labels = (gd_labels[:n_boxes] + 
+                        [""] * max(0, n_boxes - len(gd_labels)))
 
     log.info(f"[GDINO] normalized: boxes={gd_boxes.size(0)} labels={len(gd_labels)} scores={gd_scores.numel()}")
 
     # --- IoU assignment from SAM boxes to GDINO detections ---
-    def iou(a,b):
+    def iou(a, b):
         tl = torch.max(a[:, None, :2], b[None, :, :2])
         br = torch.min(a[:, None, 2:], b[None, :, 2:])
         wh = (br - tl).clamp(min=0)
         inter = wh[..., 0] * wh[..., 1]
-        area_a = (a[:, 2]-a[:, 0]) * (a[:, 3]-a[:, 1])
-        area_b = (b[:, 2]-b[:, 0]) * (b[:, 3]-b[:, 1])
+        area_a = (a[:, 2] - a[:, 0]) * (a[:, 3] - a[:, 1])
+        area_b = (b[:, 2] - b[:, 0]) * (b[:, 3] - b[:, 1])
         union = area_a[:, None] + area_b[None, :] - inter
         return inter / union.clamp(min=1e-6)
 
@@ -205,7 +226,7 @@ def label_boxes_with_gdino(img_bgr: np.ndarray, boxes_xyxy: torch.Tensor,
         ok = bool(best_iou[i] >= 0.3)
         lbl = (gd_labels[j] if ok and j < len(gd_labels) and gd_labels[j] else None)
         scr = (float(gd_scores[j]) if ok and j < gd_scores.numel() else None)
-        if ok and lbl is not None:
+        if ok and lbl:  # Check if label is not empty string
             labeled += 1
         out.append({"box": b.tolist(), "label": lbl, "score": scr})
 
@@ -287,7 +308,6 @@ def run_on_video(src_mp4: str, dst_mp4: str, text_prompt: str, every_n=1):
             log.info(f"[Frame {fidx}] wrote frame with {len(dets)} dets (boxes_in={boxes.size(0)})")
         out.write(frame)
         fidx += 1
-
     cap.release(); out.release()
     log.info(f"[VIDEO] done. frames_processed={fidx}, output={dst_mp4}")
 
@@ -299,5 +319,5 @@ if __name__ == "__main__":
         src_mp4 = r"C:\Personal-Project\vision-guided-tracker\src\cv\data\alot_of_things\Carleton__launch.mp4",
         dst_mp4 = r"C:\Personal-Project\vision-guided-tracker\src\cv\runs\detect\Carleton__launch.mp4",
         text_prompt = "rocket",
-        every_n = 5
+        every_n = 10
     )
