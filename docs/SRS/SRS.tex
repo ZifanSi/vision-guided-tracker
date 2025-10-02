@@ -778,7 +778,11 @@ system’s response is defined as a Business Use Case (BUC).
   \textbf{Fit Criterion:} Models load and run via ONNX; TensorRT engine builds succeed for the target GPU.
 \end{itemize}
 \subsection{Longevity Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-LNG-1] \emph{System endurance shall be $\geq$ 6 hours of continuous operation; daily operating cost shall be $<\$100$.}\\
+  \textbf{Rationale:} Matches event-day duty cycles and budget constraints.\\
+  \textbf{Fit Criterion:} Battery/Power tests show $\geq$ 6 hours; cost worksheet shows $<\$100$/day.
+\end{itemize}
 
 \section{Operational and Environmental Requirements}
 \subsection{Expected Physical Environment}
