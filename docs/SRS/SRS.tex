@@ -772,7 +772,11 @@ system’s response is defined as a Business Use Case (BUC).
   \textbf{Fit Criterion:} Three full sessions can be recorded and listed for playback/export without space errors.
 \end{itemize}
 \subsection{Scalability or Extensibility Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-SCL-1] \emph{The inference stack shall support ONNX deployment and TensorRT optimization.}\\
+  \textbf{Rationale:} Preserves portability and performance tuning headroom.\\
+  \textbf{Fit Criterion:} Models load and run via ONNX; TensorRT engine builds succeed for the target GPU.
+\end{itemize}
 \subsection{Longevity Requirements}
 \lips
 
