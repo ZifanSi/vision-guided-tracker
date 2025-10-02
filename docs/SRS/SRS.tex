@@ -1032,10 +1032,20 @@ Product Use Case: Detect and Track Rocket
 \end{itemize}
 
 \section{Compliance Requirements}
+
 \subsection{Legal Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[CMP-LG-1] \emph{Recording, streaming, and data retention shall follow event and venue policies regarding image rights and privacy.}\\
+  \textbf{Rationale:} Ensures lawful operation at competitions and ranges.\\
+  \textbf{Fit Criterion:} A pre-event compliance checklist is reviewed and approved by the organizer.
+\end{itemize}
+
 \subsection{Standards Compliance Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[CMP-ST-1] \emph{Networking/interfaces shall use standard IP/HTTP and common video formats; AI deployment shall be compatible with ONNX and TensorRT.}\\
+  \textbf{Rationale:} Interoperability with broadcast tools and GPU inference stacks.\\
+  \textbf{Fit Criterion:} Ingest succeeds in mainstream encoders/capture tools; ONNX models load and run with TensorRT optimization.
+\end{itemize}
 
 \section{Open Issues}
 \lips
