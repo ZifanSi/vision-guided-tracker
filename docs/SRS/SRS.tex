@@ -481,7 +481,11 @@ not applicable
   \textbf{Fit Criterion:} Profiling at the specified model/resolution shows p95 $\leq$ 50\,ms.
 \end{itemize}
 \subsection{Safety-Critical Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-SF-1] \emph{Manual override shall preempt automated control at any time.}\\
+  \textbf{Rationale:} Ensures a safe fallback in ambiguous or degraded conditions.\\
+  \textbf{Fit Criterion:} In three injected-fault scenarios (loss, misdetection, link jitter), override takes effect within 200\,ms.
+\end{itemize}
 \subsection{Precision or Accuracy Requirements}
 \lips
 \subsection{Robustness or Fault-Tolerance Requirements}
