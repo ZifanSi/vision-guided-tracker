@@ -471,7 +471,15 @@ not applicable
 
 \section{Performance Requirements}
 \subsection{Speed and Latency Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-SPD-1] \emph{End-to-end live streaming latency shall be $\leq$ 300\,ms (p95); on-device preview latency shall be $\leq$ 100\,ms (p95).}\\
+  \textbf{Rationale:} Live production and manual intervention depend on low latency.\\
+  \textbf{Fit Criterion:} Time-synchronized probes confirm p95 $\leq$ 300\,ms (glass-to-glass) and p95 $\leq$ 100\,ms (local preview).
+
+  \item[PR-SPD-2] \emph{AI inference latency per frame shall be $\leq$ 50\,ms (p95) at the target resolution.}\\
+  \textbf{Rationale:} Keeps the track-control loop within the motion budget.\\
+  \textbf{Fit Criterion:} Profiling at the specified model/resolution shows p95 $\leq$ 50\,ms.
+\end{itemize}
 \subsection{Safety-Critical Requirements}
 \lips
 \subsection{Precision or Accuracy Requirements}
