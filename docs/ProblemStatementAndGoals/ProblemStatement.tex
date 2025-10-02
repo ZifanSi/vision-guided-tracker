@@ -79,8 +79,8 @@ observation of rocket flights.
   \item \textbf{Outputs}
         \begin{itemize}
           \item Camera gimbal adjustment commands to maintain visual lock of the rocket
-          \item Realtime video preview via ethernet
-          \item Realtime stabilized video output via HDMI with the rocket centered in frame
+          \item Realtime video preview for the operator
+          \item Realtime stabilized video output to the live streaming equipment
           \item Recorded video with the rocket centered in frame
         \end{itemize}
 \end{itemize}
@@ -90,7 +90,7 @@ observation of rocket flights.
 
 \begin{itemize}
   \item System should be able to handle 1080p 60fps camera feed
-  \item System should be able to output 1080p 60fps video via HDMI
+  \item System should be able to output 1080p 60fps to the live streaming equipment
   \item Realtime video preview should be at least 15fps
 \end{itemize}
 
@@ -131,38 +131,15 @@ observation of rocket flights.
         vision-guided tracking is valuable.
 \end{enumerate}
 
-\subsection{Environment}
-\subsubsection*{\color{blue}{Deployment Environment}}
+\subsection{Deployment Environment}
+
 \begin{itemize}
   \item Outdoor rocket launch sites with variable lighting, wind, and dynamic
         backgrounds.
-  \item Initial testing on small-scale model rockets (apogees around 200 m).
-  \item Scalable to high-powered launches by the McMaster Rocketry Team (apogees
-        exceeding 3 km).
   \item Indoor lab-based testing and demonstration for development and evaluation.
 \end{itemize}
 
-\subsubsection*{\color{blue}{Execution Environment}}
-There are four pieces of the hardware related to this project:
-
-\begin{enumerate}
-  \item A gimbal with a camera mounted on it
-  \item An STM32 microcontroller
-  \item An Nvidia Jetson prosessing module
-  \item An user laptop running a browser connected to the Jetson
-\end{enumerate}
-
-Three pieces of software will be developed as a part of this project:
-
-\begin{enumerate}
-  \item Baremetal code that runs on the STM32 microcontroller
-  \item Code that runs on the Jetson, which expects an linux environment with JetPack 6
-  \item Code that runs on the user browser, which expects any recent versions of major
-        browsers
-\end{enumerate}
-
 \section{Goals}
-\
 
 The goal of the project is to track small-scale model rocket launches with
 apogee \textless 200m, while achieving all the performance objectives listed in
