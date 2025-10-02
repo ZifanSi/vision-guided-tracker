@@ -757,9 +757,14 @@ system’s response is defined as a Business Use Case (BUC).
   \item[PR-ACU-1] \emph{During ascent, target detection/association accuracy shall be $\geq$ 75\% against human-labeled ground truth.}\\
   \textbf{Rationale:} Guarantees usable footage and telemetry for analysis.\\
   \textbf{Fit Criterion:} IoU or hit-rate metrics over ascent meet or exceed 75\%.
-\end{itemize
+\end{itemize}
 \subsection{Robustness or Fault-Tolerance Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-RB-1] \emph{After short occlusion or loss, the system shall attempt auto re-acquisition with p95 $\leq$ 1\,s; if unsuccessful, it shall prompt manual reselect.}\\
+  \textbf{Rationale:} Maintains lock through realistic field interruptions.\\
+  \textbf{Fit Criterion:} In 10 occlusion trials, p95 re-acquisition time $\leq$ 1\,s; UI exposes manual reselect on failure.
+\end{itemize}
+
 \subsection{Capacity Requirements}
 \lips
 \subsection{Scalability or Extensibility Requirements}
