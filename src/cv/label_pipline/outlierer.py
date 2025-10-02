@@ -7,6 +7,8 @@ from matplotlib import pyplot as plt
 from torchvision.ops import box_convert
 import supervision as sv
 from matplotlib.patches import Rectangle
+from dino_utils import label_sam_masks_with_gdino
+from sam_utils import extract_segmented_regions
 # ----------------------------
 # Logging (switch to DEBUG for more)
 # ----------------------------
