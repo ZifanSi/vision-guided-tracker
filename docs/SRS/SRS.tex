@@ -820,12 +820,27 @@ system’s response is defined as a Business Use Case (BUC).
 \end{itemize}
 
 \section{Maintainability and Support Requirements}
+
 \subsection{Maintenance Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[MSR-MA-1] \emph{Thresholds for FPS, latency, and confidence shall be adjustable via configuration or admin UI without recompilation.}\\
+  \textbf{Rationale:} Facilitates tuning across sites and hardware.\\
+  \textbf{Fit Criterion:} Changes take effect without backend restart and within 60 seconds.
+\end{itemize}
+
 \subsection{Supportability Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[MSR-SP-1] \emph{Exportable logs shall include frame timestamps, tracking error, and event markers (e.g., ignition, staging, chute).}\\
+  \textbf{Rationale:} Enables post-flight analysis and issue triage.\\
+  \textbf{Fit Criterion:} After a launch, CSV/JSON with the three fields is available for download.
+\end{itemize}
+
 \subsection{Adaptability Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[MSR-AD-1] \emph{A gimbal-abstraction layer shall allow swapping at least three gimbals (indoor dev, outdoor weatherized, high-payload) without changing core tracking code.}\\
+  \textbf{Rationale:} Different contexts require different rigs.\\
+  \textbf{Fit Criterion:} All three gimbals pass pan/tilt/zoom command and calibration tests.
+\end{itemize}
 
 \section{Security Requirements}
 \subsection{Access Requirements}
