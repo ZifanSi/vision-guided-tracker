@@ -843,16 +843,41 @@ system’s response is defined as a Business Use Case (BUC).
 \end{itemize}
 
 \section{Security Requirements}
+
 \subsection{Access Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-AC-1] \emph{Remote management UI shall require authentication; three consecutive failed logins shall trigger a lockout of at least 5 minutes.}\\
+  \textbf{Rationale:} Protects control paths exposed over the network.\\
+  \textbf{Fit Criterion:} Black-box tests confirm lockout after three failed attempts.
+\end{itemize}
+
 \subsection{Integrity Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-IN-1] \emph{Configurations and logs shall include checksums or signatures; control commands shall use authenticated channels.}\\
+  \textbf{Rationale:} Prevents tampering and unauthorized actuation.\\
+  \textbf{Fit Criterion:} Tampering is detected; unauthenticated devices cannot issue PTZ commands.
+\end{itemize}
+
 \subsection{Privacy Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-PV-1] \emph{Access to recordings and logs shall be role-based (Operator/Analyst/Admin) with least-privilege defaults.}\\
+  \textbf{Rationale:} Aligns access with duties while limiting exposure.\\
+  \textbf{Fit Criterion:} Role matrix is enforced in acceptance tests.
+\end{itemize}
+
 \subsection{Audit Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-AU-1] \emph{Audit logs shall record login, configuration changes, manual overrides, and deletion of recordings.}\\
+  \textbf{Rationale:} Supports accountability and incident reconstruction.\\
+  \textbf{Fit Criterion:} Each audited event contains actor, timestamp, action, and target.
+\end{itemize}
+
 \subsection{Immunity Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-IM-1] \emph{On communication loss or heavy jitter, the system shall enter a safe-hold state and avoid hazardous motion; upon recovery it shall reconnect smoothly.}\\
+  \textbf{Rationale:} Prevents unsafe behavior under network faults.\\
+  \textbf{Fit Criterion:} Injected 10+ second outages cause no dangerous actuation; control recovers automatically.
+\end{itemize}
 
 \section{Cultural Requirements}
 \subsection{Cultural Requirements}
