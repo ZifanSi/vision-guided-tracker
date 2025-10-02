@@ -322,64 +322,91 @@ not applicable
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
-\begin{enumerate}[label=FR \arabic*., wide=0pt, leftmargin=*]
 
-  \item \emph{The system shall acquire images/video from a connected camera.}\\[2mm]
-    {\bf Rationale:} Image acquisition is the first step of the proof-of-concept (POC) and enables all downstream vision tasks.\\
-    {\bf Fit Criterion:} On startup, the system opens the camera and displays incoming frames without errors.\\
+\begin{itemize}
+
+  \item[FR-SYS-1] \emph{The system must acquire live images or video streams from an onboard camera.}\\[2mm]
+    {\bf Rationale:} Image acquisition is the first step of the vision-guided pipeline and enables all downstream processing.\\
+    {\bf Fit Criterion:} The system successfully captures frames at a usable resolution and passes them to the CV pipeline.\\
     {\bf Priority:} High
 
-  \item \emph{The system shall segment and detect multiple moving objects in the camera image.}\\[2mm]
-    {\bf Rationale:} The POC specifies segmentation and moving-object detection to initialize tracking candidates.\\
-    {\bf Fit Criterion:} With tracking mode active, the system overlays detections on the preview when at least one object is moving.\\
+  \item[FR-SYS-2] \emph{The system must segment the scene and detect multiple moving objects in real time.}\\[2mm]
+    {\bf Rationale:} Object detection enables the tracker to identify possible targets for selection and tracking.\\
+    {\bf Fit Criterion:} At least two moving objects can be detected simultaneously at $\geq$ 15 FPS on Jetson hardware.\\
     {\bf Priority:} High
 
-  \item \emph{The system shall allow the operator to select a stationary or moving object as the tracking target.}\\[2mm]
-    {\bf Rationale:} Operator target selection is a required step in the POC workflow.\\
-    {\bf Fit Criterion:} In the UI, the operator can click/tap or otherwise choose a detected object and see it marked as the active target.\\
+  \item[FR-SYS-3] \emph{The system must allow the operator to select a stationary or moving object as the target.}\\[2mm]
+    {\bf Rationale:} Manual target selection is essential for flexibility, ensuring the system can track user-specified objects.\\
+    {\bf Fit Criterion:} Operator input is received and the chosen target is registered by the tracking system.\\
     {\bf Priority:} High
 
-  \item \emph{The system shall estimate the selected target’s image position each frame during tracking.}\\[2mm]
-    {\bf Rationale:} Continuous target localization is necessary to compute control errors for centering.\\
-    {\bf Fit Criterion:} For each processed frame, the UI/logs expose the target centroid (pixel coordinates) without gaps while lock is maintained.\\
+  \item[FR-SYS-4] \emph{The system must continuously estimate the target’s position and keep it centered in the image.}\\[2mm]
+    {\bf Rationale:} Accurate target tracking is the core function of the system to maintain visual lock.\\
+    {\bf Fit Criterion:} Target remains within 40 px of frame center at 1080p resolution under smooth motion.\\
     {\bf Priority:} High
 
-  \item \emph{The system shall command the gimbal so that the selected target remains centered in the image.}\\[2mm]
-    {\bf Rationale:} The POC requires closed-loop behavior: keeping the target centered yields smooth tracking.\\
-    {\bf Fit Criterion:} When the target moves, the gimbal responds and the target remains near the frame center during the demo.\\
+  \item[FR-SYS-5] \emph{The system must send real-time pan/tilt commands to the STM32 microcontroller for gimbal control.}\\[2mm]
+    {\bf Rationale:} Gimbal control keeps the target centered physically, extending camera field of view.\\
+    {\bf Fit Criterion:} Latency between detected movement and gimbal adjustment is $\leq$ 120 ms.\\
     {\bf Priority:} High
 
-  \item \emph{The system shall send real-time pan/tilt control commands to the gimbal via an STM32 microcontroller.}\\[2mm]
-    {\bf Rationale:} The Development Plan specifies real-time camera/gimbal control implemented on an STM32.\\
-    {\bf Fit Criterion:} During tracking, control messages are transmitted to the STM32 and result in observable gimbal motion.\\
-    {\bf Priority:} High
-
-  \item \emph{The system shall handle temporary occlusions or loss of the target by attempting automatic re-acquisition.}\\[2mm]
-    {\bf Rationale:} The POC calls out handling occlusion and temporary loss to maintain practical tracking.\\
-    {\bf Fit Criterion:} When the target is briefly occluded, the system transitions to a search/reacquire state and resumes tracking without a restart.\\
-    {\bf Priority:} High
-
-  \item \emph{The system shall allow the operator to manually reselect the target at any time.}\\[2mm]
-    {\bf Rationale:} The POC includes manual re-selection as a recovery path if automatic re-acquisition fails.\\
-    {\bf Fit Criterion:} The UI supports choosing a new target on demand, immediately replacing the previous lock without restarting the system.\\
-    {\bf Priority:} High
-
-  \item \emph{The system shall provide a browser-accessible application for remote management (e.g., connect, arm, start/stop tracking, target selection).}\\[2mm]
-    {\bf Rationale:} The project decomposition assigns the Web App to remote system management.\\
-    {\bf Fit Criterion:} From a laptop browser, an operator can reach the app and successfully perform connect/arm/start/stop and target selection actions.\\
+  \item[FR-SYS-6] \emph{The system must detect target occlusion or loss and attempt automatic re-acquisition, with manual reselection available.}\\[2mm]
+    {\bf Rationale:} Targets may be temporarily obstructed; recovery ensures robustness of the tracking loop.\\
+    {\bf Fit Criterion:} The system reacquires a target within 1 second (p95) or allows operator reselection.\\
     {\bf Priority:} Medium
 
-  \item \emph{The system shall expose runtime status to the operator interface, including tracking state and basic performance indicators (e.g., FPS).}\\[2mm]
-    {\bf Rationale:} Operators need visibility to judge tracking health during demos and tests.\\
-    {\bf Fit Criterion:} The UI displays current tracking state (e.g., TRACKING/LOST/SEARCH) and an FPS readout while the system runs.\\
+  \item[FR-SYS-7] \emph{The system must provide remote management capabilities for operators.}\\[2mm]
+    {\bf Rationale:} Remote access supports field deployment and safety by allowing off-device control.\\
+    {\bf Fit Criterion:} Operators can access system controls via a web interface on a remote device.\\
     {\bf Priority:} Medium
 
-  \item \emph{The system shall support a proof-of-concept workflow demonstrating image acquisition, activation of tracking, operator target selection, and closed-loop gimbal control.}\\[2mm]
-    {\bf Rationale:} The Development Plan defines the end-to-end POC sequence to validate feasibility.\\
-    {\bf Fit Criterion:} In a single session, the team executes the POC steps (1–4) without manual restarts, showing each stage functioning as described.\\
+  \item[FR-SYS-8] \emph{The system must display runtime information including system state, FPS, and tracking status.}\\[2mm]
+    {\bf Rationale:} Visibility into runtime performance is critical for debugging and operator trust.\\
+    {\bf Fit Criterion:} The interface updates system status in real time with FPS $\pm$ 1 frame accuracy.\\
+    {\bf Priority:} Medium
+
+  \item[FR-SYS-9] \emph{The system must demonstrate the complete workflow: Acquire $\rightarrow$ Detect $\rightarrow$ Select $\rightarrow$ Track $\rightarrow$ Control.}\\[2mm]
+    {\bf Rationale:} The proof-of-concept requires showing the integration of all subsystems working together.\\
+    {\bf Fit Criterion:} During demo, the system executes all five stages successfully without manual patching.\\
     {\bf Priority:} High
 
-\end{enumerate}
+% --- Web End Requirements ---
+\item[FR-WEB-1] \emph{The web application must provide a browser-based interface for remote management of the system.}\\[2mm]
+  {\bf Rationale:} Operators need remote access to safely configure and monitor the system during field testing.\\
+  {\bf Fit Criterion:} Operators can log in through a standard browser and access system controls without requiring local installation.\\
+  {\bf Priority:} Medium
+
+\item[FR-WEB-2] \emph{The web application must display runtime status information such as system state, frame rate, and tracking status.}\\[2mm]
+  {\bf Rationale:} Operators need real-time visibility into performance to make informed decisions and detect issues.\\
+  {\bf Fit Criterion:} The dashboard shows current state, FPS, and tracking status, updating within 1 second of backend changes.\\
+  {\bf Priority:} Medium
+
+\item[FR-WEB-3] \emph{The web application must provide controls for manual target reselection when automatic tracking fails.}\\[2mm]
+  {\bf Rationale:} Manual override enables recovery when auto-reacquisition is unsuccessful.\\
+  {\bf Fit Criterion:} When a target is lost, the operator can reselect a target via the web UI and the system resumes tracking within 1 second.\\
+  {\bf Priority:} High
+
+\item[FR-WEB-4] \emph{The web application must allow operators to view the live video stream from the camera.}\\[2mm]
+  {\bf Rationale:} Visual confirmation of what the system is tracking is necessary for effective operation.\\
+  {\bf Fit Criterion:} The live camera feed is viewable in the web interface with end-to-end latency $\leq$ 500 ms relative to the source.\\
+  {\bf Priority:} High
+
+\item[FR-WEB-5] \emph{The web application must allow operators to record video sessions for later review.}\\[2mm]
+  {\bf Rationale:} Recording supports debugging, validation, and demonstration.\\
+  {\bf Fit Criterion:} Operators can start and stop recording from the web UI and access the saved video files afterward.\\
+  {\bf Priority:} Medium
+
+\item[FR-WEB-6] \emph{The web application must provide playback and basic management of recorded videos (list, delete, download).}\\[2mm]
+  {\bf Rationale:} Reviewing and managing captured sessions supports performance analysis and documentation.\\
+  {\bf Fit Criterion:} Operators can select a recording, play it in the web UI, and perform list/delete/download actions.\\
+  {\bf Priority:} Low
+
+
+
+\end{itemize}
+
+
+
 
 
 \section{Look and Feel Requirements}
