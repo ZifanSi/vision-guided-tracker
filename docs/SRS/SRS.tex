@@ -753,7 +753,11 @@ system’s response is defined as a Business Use Case (BUC).
   \textbf{Fit Criterion:} In three injected-fault scenarios (loss, misdetection, link jitter), override takes effect within 200\,ms.
 \end{itemize}
 \subsection{Precision or Accuracy Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-ACU-1] \emph{During ascent, target detection/association accuracy shall be $\geq$ 75\% against human-labeled ground truth.}\\
+  \textbf{Rationale:} Guarantees usable footage and telemetry for analysis.\\
+  \textbf{Fit Criterion:} IoU or hit-rate metrics over ascent meet or exceed 75\%.
+\end{itemize
 \subsection{Robustness or Fault-Tolerance Requirements}
 \lips
 \subsection{Capacity Requirements}
