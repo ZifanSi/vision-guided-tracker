@@ -430,7 +430,15 @@ not applicable
 
 \section{Usability and Humanity Requirements}
 \subsection{Ease of Use Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[USR-EZ-1] \emph{Cold start to “Ready” shall require no more than five operator steps; reset between launches shall be $\leq$ 2 minutes.}\\
+  \textbf{Rationale:} Field workflow demands rapid setup, turnaround, and minimal touches at the pad.\\
+  \textbf{Fit Criterion:} Three operators independently achieve average reset time $\leq$ 120 s and $\leq$ 5 steps from cold start to “Ready”.
+
+  \item[USR-EZ-2] \emph{The full operational flow (power on, checks, arm, record, shutdown) shall be executable remotely without visiting the camera site.}\\
+  \textbf{Rationale:} Reduces exposure to hazardous zones and supports protected control-tent operation.\\
+  \textbf{Fit Criterion:} A complete session is performed from the control station with zero physical interaction at the camera.
+\end{itemize}
 \subsection{Personalization and Internationalization Requirements}
 \lips
 \subsection{Learning Requirements}
