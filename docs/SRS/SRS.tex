@@ -574,177 +574,322 @@ system’s response is defined as a Business Use Case (BUC).
 
 \section{Business Data Model and Data Dictionary}
 \subsection{Business Data Model}
-\lips
+
+A list of videos of recorded launches
+
 \subsection{Data Dictionary}
 \lips
 
 \section{The Scope of the Product}
 \subsection{Product Boundary}
-\lips
+
+The product boundary defines which parts of the work are handled by the
+tracking camera system (automated product use cases) and which parts remain the
+responsibility of human actors (manual tasks). By inspecting the business use
+cases and consulting with stakeholders, the following partition has been
+established.
+
+The tracking camera system is responsible for automating the detection,
+tracking, recording, and output of rocket flight data. Human actors are
+responsible for initiating sessions, providing launch cues, and consuming the
+outputs for analysis, safety, or broadcast.
+
 \subsection{Product Use Case Table}
-\lips
+
+\begin{enumerate}[wide=0pt, leftmargin=*]
+  \item \textbf{Initialize and Configure System}
+        \emph{Actor:} Camera Operator.
+        \emph{Product Responsibility:} Load stored configuration, establish
+        gimbal communication, report system health and readiness.
+        \emph{Actor Responsibility:} Provide power, initiate startup, select
+        session parameters.
+
+  \item \textbf{Start Recording Session at T-0}
+        \emph{Actor:} Mission Control (via cue) or Camera Operator (manual trigger).
+        \emph{Product Responsibility:} Detect cue, create new recording file,
+        time-stamp session ID, and transition to tracking state.
+        \emph{Actor Responsibility:} Issue cue at correct launch time.
+
+  \item \textbf{Detect and Track Rocket}
+        \emph{Actor:} Rocket Launch Vehicle (provides visual signature).
+        \emph{Product Responsibility:} Apply detection algorithms, command
+        gimbal PTZ to keep rocket centered, log telemetry.
+        \emph{Actor Responsibility:} None (passive role).
+
+  \item \textbf{Manage Zoom and Field of View}
+        \emph{Actor:} Camera Operator (optional override).
+        \emph{Product Responsibility:} Automatically adjust zoom to maintain
+        visible rocket size above detection threshold.
+        \emph{Actor Responsibility:} Optional manual override if auto-zoom fails.
+
+  \item \textbf{Provide Live Video Output}
+        \emph{Actor:} Event Organizers, Safety Officers, Livestream Technicians.
+        \emph{Product Responsibility:} Deliver stable HDMI feed at 1080p/60 for
+        integration into switchers or livestream software.
+        \emph{Actor Responsibility:} Connect, ingest, and broadcast feed.
+
+  \item \textbf{Record and Store Flight Session}
+        \emph{Actor:} Analysts, Media Leads.
+        \emph{Product Responsibility:} Record video with timestamps and gimbal
+        data, close session cleanly at end-of-flight.
+        \emph{Actor Responsibility:} Retrieve stored files, archive them, or
+        prepare them for analysis.
+
+  \item \textbf{Export Data for Analysis}
+        \emph{Actor:} Researchers, Rocketry Team Analysts.
+        \emph{Product Responsibility:} Provide synchronized video, telemetry,
+        and event logs in standard formats.
+        \emph{Actor Responsibility:} Perform engineering analysis, reporting,
+        and interpretation of the data.
+
+  \item \textbf{Remote Control and Health Monitoring}
+        \emph{Actor:} Camera Operator.
+        \emph{Product Responsibility:} Respond to remote commands for status,
+        diagnostics, and reboot; maintain safe operation when placed in
+        hazardous zones.
+        \emph{Actor Responsibility:} Issue remote commands, interpret health
+        reports, and take corrective actions.
+\end{enumerate}
+
 \subsection{Individual Product Use Cases (PUC's)}
-\lips
+
+Product Use Case: Detect and Track Rocket
+
+\textbf{Primary Actor:} Tracking Camera System (automated).  
+\textbf{Supporting Actor:} Rocket Launch Vehicle (provides visual target).  
+
+\textbf{Preconditions:}
+\begin{itemize}
+  \item System has received launch cue and is in ``takeoff mode.''
+  \item Camera and gimbal are powered, calibrated, and aligned with launch pad coordinates.
+  \item Recording session has been initialized.
+\end{itemize}
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item System continuously receives video frames from the camera sensor.
+  \item Detection algorithm processes frames to identify rocket plume or body.
+  \item If candidate target is detected, the system validates confidence score against threshold.
+  \item A bounding box is assigned to the target and updated each frame.
+  \item Target position is mapped to screen coordinates relative to frame center.
+  \item Gimbal controller calculates required pan/tilt adjustments using PID (or equivalent) to re-center target.
+  \item Pan/tilt commands are issued to the gimbal hardware.
+  \item Optional: zoom controller adjusts focal length to maintain target resolution above minimum threshold.
+  \item Updated gimbal state is logged along with timestamp and detection confidence.
+  \item HDMI output and operator preview are refreshed with updated framing.
+  \item Loop repeats for each frame until end-of-flight signal is received.
+\end{enumerate}
+
+\textbf{Alternative Flows:}
+\begin{itemize}
+  \item \emph{Detection Lost:} If no target is detected for $>$N consecutive frames, the system widens search area (zoom out or broaden ROI) and flags status as ``searching.''
+  \item \emph{False Detection:} If multiple objects match, system prioritizes trajectory consistent with launch path and highest confidence score.
+\end{itemize}
+
+\textbf{Postconditions:}
+\begin{itemize}
+  \item Rocket remains within a defined bounding region (e.g., $\pm$10\% frame center) for at least 80\% of observable flight.
+  \item Continuous log of gimbal angles, bounding box coordinates, and confidence values is maintained.
+  \item Recorded video contains centered rocket imagery for subsequent analysis.
+\end{itemize}
+
+\textbf{Business Data Involved:}
+\begin{itemize}
+  \item Frame sequence and timestamps.
+  \item Bounding box coordinates.
+  \item Gimbal pan/tilt/zoom values.
+  \item Detection confidence scores.
+\end{itemize}
+
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
 
 \begin{itemize}
 
-  \item[FR-SYS-1] \emph{The system must acquire live images or video streams from an onboard camera.}\\[2mm]
-    {\bf Rationale:} Image acquisition is the first step of the vision-guided pipeline and enables all downstream processing.\\
-    {\bf Fit Criterion:} The system successfully captures frames at a usable resolution and passes them to the CV pipeline.\\
-    {\bf Priority:} High
+  \item[FR-SYS-1] \emph{The system must acquire live images or video streams from an
+          onboard camera.}\\[2mm]
+        {\bf Rationale:} Image acquisition is the first step of the vision-guided pipeline and enables all downstream processing.\\
+        {\bf Fit Criterion:} The system successfully captures frames at a usable resolution and passes them to the CV pipeline.\\
+        {\bf Priority:} High
 
-  \item[FR-SYS-2] \emph{The system must segment the scene and detect multiple moving objects in real time.}\\[2mm]
-    {\bf Rationale:} Object detection enables the tracker to identify possible targets for selection and tracking.\\
-    {\bf Fit Criterion:} At least two moving objects can be detected simultaneously at $\geq$ 15 FPS on Jetson hardware.\\
-    {\bf Priority:} High
+  \item[FR-SYS-2] \emph{The system must segment the scene and detect multiple moving
+          objects in real time.}\\[2mm]
+        {\bf Rationale:} Object detection enables the tracker to identify possible targets for selection and tracking.\\
+        {\bf Fit Criterion:} At least two moving objects can be detected simultaneously at $\geq$ 15 FPS on Jetson hardware.\\
+        {\bf Priority:} High
 
-  \item[FR-SYS-3] \emph{The system must allow the operator to select a stationary or moving object as the target.}\\[2mm]
-    {\bf Rationale:} Manual target selection is essential for flexibility, ensuring the system can track user-specified objects.\\
-    {\bf Fit Criterion:} Operator input is received and the chosen target is registered by the tracking system.\\
-    {\bf Priority:} High
+  \item[FR-SYS-3] \emph{The system must allow the operator to select a stationary or
+          moving object as the target.}\\[2mm]
+        {\bf Rationale:} Manual target selection is essential for flexibility, ensuring the system can track user-specified objects.\\
+        {\bf Fit Criterion:} Operator input is received and the chosen target is registered by the tracking system.\\
+        {\bf Priority:} High
 
-  \item[FR-SYS-4] \emph{The system must continuously estimate the target’s position and keep it centered in the image.}\\[2mm]
-    {\bf Rationale:} Accurate target tracking is the core function of the system to maintain visual lock.\\
-    {\bf Fit Criterion:} Target remains within 40 px of frame center at 1080p resolution under smooth motion.\\
-    {\bf Priority:} High
+  \item[FR-SYS-4] \emph{The system must continuously estimate the target’s position and
+          keep it centered in the image.}\\[2mm]
+        {\bf Rationale:} Accurate target tracking is the core function of the system to maintain visual lock.\\
+        {\bf Fit Criterion:} Target remains within 40 px of frame center at 1080p resolution under smooth motion.\\
+        {\bf Priority:} High
 
-  \item[FR-SYS-5] \emph{The system must send real-time pan/tilt commands to the STM32 microcontroller for gimbal control.}\\[2mm]
-    {\bf Rationale:} Gimbal control keeps the target centered physically, extending camera field of view.\\
-    {\bf Fit Criterion:} Latency between detected movement and gimbal adjustment is $\leq$ 120 ms.\\
-    {\bf Priority:} High
+  \item[FR-SYS-5] \emph{The system must send real-time pan/tilt commands to the STM32
+          microcontroller for gimbal control.}\\[2mm]
+        {\bf Rationale:} Gimbal control keeps the target centered physically, extending camera field of view.\\
+        {\bf Fit Criterion:} Latency between detected movement and gimbal adjustment is $\leq$ 120 ms.\\
+        {\bf Priority:} High
 
-  \item[FR-SYS-6] \emph{The system must detect target occlusion or loss and attempt automatic re-acquisition, with manual reselection available.}\\[2mm]
-    {\bf Rationale:} Targets may be temporarily obstructed; recovery ensures robustness of the tracking loop.\\
-    {\bf Fit Criterion:} The system reacquires a target within 1 second (p95) or allows operator reselection.\\
-    {\bf Priority:} Medium
+  \item[FR-SYS-6] \emph{The system must detect target occlusion or loss and attempt
+          automatic re-acquisition, with manual reselection available.}\\[2mm]
+        {\bf Rationale:} Targets may be temporarily obstructed; recovery ensures robustness of the tracking loop.\\
+        {\bf Fit Criterion:} The system reacquires a target within 1 second (p95) or allows operator reselection.\\
+        {\bf Priority:} Medium
 
-  \item[FR-SYS-7] \emph{The system must provide remote management capabilities for operators.}\\[2mm]
-    {\bf Rationale:} Remote access supports field deployment and safety by allowing off-device control.\\
-    {\bf Fit Criterion:} Operators can access system controls via a web interface on a remote device.\\
-    {\bf Priority:} Medium
+  \item[FR-SYS-7] \emph{The system must provide remote management capabilities for
+          operators.}\\[2mm]
+        {\bf Rationale:} Remote access supports field deployment and safety by allowing off-device control.\\
+        {\bf Fit Criterion:} Operators can access system controls via a web interface on a remote device.\\
+        {\bf Priority:} Medium
 
-  \item[FR-SYS-8] \emph{The system must display runtime information including system state, FPS, and tracking status.}\\[2mm]
-    {\bf Rationale:} Visibility into runtime performance is critical for debugging and operator trust.\\
-    {\bf Fit Criterion:} The interface updates system status in real time with FPS $\pm$ 1 frame accuracy.\\
-    {\bf Priority:} Medium
+  \item[FR-SYS-8] \emph{The system must display runtime information including system
+          state, FPS, and tracking status.}\\[2mm]
+        {\bf Rationale:} Visibility into runtime performance is critical for debugging and operator trust.\\
+        {\bf Fit Criterion:} The interface updates system status in real time with FPS $\pm$ 1 frame accuracy.\\
+        {\bf Priority:} Medium
 
-  \item[FR-SYS-9] \emph{The system must demonstrate the complete workflow: Acquire $\rightarrow$ Detect $\rightarrow$ Select $\rightarrow$ Track $\rightarrow$ Control.}\\[2mm]
-    {\bf Rationale:} The proof-of-concept requires showing the integration of all subsystems working together.\\
-    {\bf Fit Criterion:} During demo, the system executes all five stages successfully without manual patching.\\
-    {\bf Priority:} High
+  \item[FR-SYS-9] \emph{The system must demonstrate the complete workflow: Acquire
+          $\rightarrow$ Detect $\rightarrow$ Select $\rightarrow$ Track $\rightarrow$
+          Control.}\\[2mm]
+        {\bf Rationale:} The proof-of-concept requires showing the integration of all subsystems working together.\\
+        {\bf Fit Criterion:} During demo, the system executes all five stages successfully without manual patching.\\
+        {\bf Priority:} High
 
-% --- Web End Requirements ---
-\item[FR-WEB-1] \emph{The web application must provide a browser-based interface for remote management of the system.}\\[2mm]
-  {\bf Rationale:} Operators need remote access to safely configure and monitor the system during field testing.\\
-  {\bf Fit Criterion:} Operators can log in through a standard browser and access system controls without requiring local installation.\\
-  {\bf Priority:} Medium
+        % --- Web End Requirements ---
+  \item[FR-WEB-1] \emph{The web application must provide a browser-based interface for
+          remote management of the system.}\\[2mm]
+        {\bf Rationale:} Operators need remote access to safely configure and monitor the system during field testing.\\
+        {\bf Fit Criterion:} Operators can log in through a standard browser and access system controls without requiring local installation.\\
+        {\bf Priority:} Medium
 
-\item[FR-WEB-2] \emph{The web application must display runtime status information such as system state, frame rate, and tracking status.}\\[2mm]
-  {\bf Rationale:} Operators need real-time visibility into performance to make informed decisions and detect issues.\\
-  {\bf Fit Criterion:} The dashboard shows current state, FPS, and tracking status, updating within 1 second of backend changes.\\
-  {\bf Priority:} Medium
+  \item[FR-WEB-2] \emph{The web application must display runtime status information
+          such as system state, frame rate, and tracking status.}\\[2mm]
+        {\bf Rationale:} Operators need real-time visibility into performance to make informed decisions and detect issues.\\
+        {\bf Fit Criterion:} The dashboard shows current state, FPS, and tracking status, updating within 1 second of backend changes.\\
+        {\bf Priority:} Medium
 
-\item[FR-WEB-3] \emph{The web application must provide controls for manual target reselection when automatic tracking fails.}\\[2mm]
-  {\bf Rationale:} Manual override enables recovery when auto-reacquisition is unsuccessful.\\
-  {\bf Fit Criterion:} When a target is lost, the operator can reselect a target via the web UI and the system resumes tracking within 1 second.\\
-  {\bf Priority:} High
+  \item[FR-WEB-3] \emph{The web application must provide controls for manual target
+          reselection when automatic tracking fails.}\\[2mm]
+        {\bf Rationale:} Manual override enables recovery when auto-reacquisition is unsuccessful.\\
+        {\bf Fit Criterion:} When a target is lost, the operator can reselect a target via the web UI and the system resumes tracking within 1 second.\\
+        {\bf Priority:} High
 
-\item[FR-WEB-4] \emph{The web application must allow operators to view the live video stream from the camera.}\\[2mm]
-  {\bf Rationale:} Visual confirmation of what the system is tracking is necessary for effective operation.\\
-  {\bf Fit Criterion:} The live camera feed is viewable in the web interface with end-to-end latency $\leq$ 500 ms relative to the source.\\
-  {\bf Priority:} High
+  \item[FR-WEB-4] \emph{The web application must allow operators to view the live video
+          stream from the camera.}\\[2mm]
+        {\bf Rationale:} Visual confirmation of what the system is tracking is necessary for effective operation.\\
+        {\bf Fit Criterion:} The live camera feed is viewable in the web interface with end-to-end latency $\leq$ 500 ms relative to the source.\\
+        {\bf Priority:} High
 
-\item[FR-WEB-5] \emph{The web application must allow operators to record video sessions for later review.}\\[2mm]
-  {\bf Rationale:} Recording supports debugging, validation, and demonstration.\\
-  {\bf Fit Criterion:} Operators can start and stop recording from the web UI and access the saved video files afterward.\\
-  {\bf Priority:} Medium
+  \item[FR-WEB-5] \emph{The web application must allow operators to record video
+          sessions for later review.}\\[2mm]
+        {\bf Rationale:} Recording supports debugging, validation, and demonstration.\\
+        {\bf Fit Criterion:} Operators can start and stop recording from the web UI and access the saved video files afterward.\\
+        {\bf Priority:} Medium
 
-\item[FR-WEB-6] \emph{The web application must provide playback and basic management of recorded videos (list, delete, download).}\\[2mm]
-  {\bf Rationale:} Reviewing and managing captured sessions supports performance analysis and documentation.\\
-  {\bf Fit Criterion:} Operators can select a recording, play it in the web UI, and perform list/delete/download actions.\\
-  {\bf Priority:} Low
-
-
+  \item[FR-WEB-6] \emph{The web application must provide playback and basic management
+          of recorded videos (list, delete, download).}\\[2mm]
+        {\bf Rationale:} Reviewing and managing captured sessions supports performance analysis and documentation.\\
+        {\bf Fit Criterion:} Operators can select a recording, play it in the web UI, and perform list/delete/download actions.\\
+        {\bf Priority:} Low
 
 \end{itemize}
-
-
-
-
 
 \section{Look and Feel Requirements}
 \subsection{Appearance Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[LFR-AP-1] \emph{The dashboard shall use a light background with high-contrast status colors (green=Ready, amber=Armed, red=Fault/Lost).}\\
-  \textbf{Rationale:} Improves readability under bright outdoor lighting and noisy environments.\\
-  \textbf{Fit Criterion:} In a 300-lux outdoor setting, at least 19 out of 20 status checks by five users are correctly identified within 2 seconds.
+  \item[LFR-AP-1] \emph{The dashboard shall use a light background with high-contrast
+          status colors (green=Ready, amber=Armed, red=Fault/Lost).}\\
+        \textbf{Rationale:} Improves readability under bright outdoor lighting and
+        noisy environments.\\ \textbf{Fit Criterion:} In a 300-lux outdoor setting, at
+        least 19 out of 20 status checks by five users are correctly identified within
+        2 seconds.
 
-  \item[LFR-AP-2] \emph{Key readouts (FPS, end-to-end latency estimate, tracking confidence) shall be visible in the main view without scrolling on a 1080p display.}\\
-  \textbf{Rationale:} Operators need immediate awareness of system health and tracking quality.\\
-  \textbf{Fit Criterion:} On a 1920×1080 monitor, all three readouts are simultaneously visible in the primary screen.
+  \item[LFR-AP-2] \emph{Key readouts (FPS, end-to-end latency estimate, tracking
+          confidence) shall be visible in the main view without scrolling on a 1080p
+          display.}\\ \textbf{Rationale:} Operators need immediate awareness of system
+        health and tracking quality.\\ \textbf{Fit Criterion:} On a 1920×1080 monitor,
+        all three readouts are simultaneously visible in the primary screen.
 \end{itemize}
 
 \subsection{Style Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[LFR-ST-1] \emph{Units and terminology shall be consistent: speed (°/s), resolution (px), frame rate (FPS), distance (km), temperature (°C).}\\
-  \textbf{Rationale:} Consistency reduces operator error during high-pressure launch operations.\\
-  \textbf{Fit Criterion:} A style audit of 10 UI readouts finds zero unit inconsistencies.
+  \item[LFR-ST-1] \emph{Units and terminology shall be consistent: speed (°/s),
+          resolution (px), frame rate (FPS), distance (km), temperature (°C).}\\
+        \textbf{Rationale:} Consistency reduces operator error during high-pressure
+        launch operations.\\ \textbf{Fit Criterion:} A style audit of 10 UI readouts
+        finds zero unit inconsistencies.
 \end{itemize}
 
 \section{Usability and Humanity Requirements}
 \subsection{Ease of Use Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-EZ-1] \emph{Cold start to “Ready” shall require no more than five operator steps; reset between launches shall be $\leq$ 2 minutes.}\\
-  \textbf{Rationale:} Field workflow demands rapid setup, turnaround, and minimal touches at the pad.\\
-  \textbf{Fit Criterion:} Three operators independently achieve average reset time $\leq$ 120 s and $\leq$ 5 steps from cold start to “Ready”.
+  \item[USR-EZ-1] \emph{Cold start to “Ready” shall require no more than five operator
+          steps; reset between launches shall be $\leq$ 2 minutes.}\\ \textbf{Rationale:}
+        Field workflow demands rapid setup, turnaround, and minimal touches at the
+        pad.\\ \textbf{Fit Criterion:} Three operators independently achieve average
+        reset time $\leq$ 120 s and $\leq$ 5 steps from cold start to “Ready”.
 
-  \item[USR-EZ-2] \emph{The full operational flow (power on, checks, arm, record, shutdown) shall be executable remotely without visiting the camera site.}\\
-  \textbf{Rationale:} Reduces exposure to hazardous zones and supports protected control-tent operation.\\
-  \textbf{Fit Criterion:} A complete session is performed from the control station with zero physical interaction at the camera.
+  \item[USR-EZ-2] \emph{The full operational flow (power on, checks, arm, record,
+          shutdown) shall be executable remotely without visiting the camera site.}\\
+        \textbf{Rationale:} Reduces exposure to hazardous zones and supports protected
+        control-tent operation.\\ \textbf{Fit Criterion:} A complete session is
+        performed from the control station with zero physical interaction at the
+        camera.
 \end{itemize}
-
 
 \subsection{Personalization and Internationalization Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-PI-1] \emph{The user interface shall support English and French(chinese), switchable at runtime.}\\
-  \textbf{Rationale:} Matches Canadian event context and bilingual stakeholders.\\
-  \textbf{Fit Criterion:} All primary UI elements are fully localized for EN/FR/CN; language can be switched without restart.
+  \item[USR-PI-1] \emph{The user interface shall support English and French(chinese),
+          switchable at runtime.}\\ \textbf{Rationale:} Matches Canadian event context
+        and bilingual stakeholders.\\ \textbf{Fit Criterion:} All primary UI elements
+        are fully localized for EN/FR/CN; language can be switched without restart.
 \end{itemize}
 
 \subsection{Learning Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-LR-1] \emph{A first-time operator shall be able to complete a full run in “Simulation Input Mode” within 30 minutes.}\\
-  \textbf{Rationale:} Simulation accelerates training and reduces field risk.\\
-  \textbf{Fit Criterion:} Three novice users complete the simulated end-to-end flow in $\leq$ 30 minutes each.
+  \item[USR-LR-1] \emph{A first-time operator shall be able to complete a full run in
+          “Simulation Input Mode” within 30 minutes.}\\ \textbf{Rationale:} Simulation
+        accelerates training and reduces field risk.\\ \textbf{Fit Criterion:} Three
+        novice users complete the simulated end-to-end flow in $\leq$ 30 minutes each.
 \end{itemize}
 
 \subsection{Understandability and Politeness Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-UP-1] \emph{Alerts shall include both the cause and an actionable suggestion (e.g., “Tracking lost: try manual reselect”).}\\
-  \textbf{Rationale:} Reduces cognitive load and speeds recovery.\\
-  \textbf{Fit Criterion:} Five sampled alert types each contain a cause and a next-step recommendation.
+  \item[USR-UP-1] \emph{Alerts shall include both the cause and an actionable
+          suggestion (e.g., “Tracking lost: try manual reselect”).}\\ \textbf{Rationale:}
+        Reduces cognitive load and speeds recovery.\\ \textbf{Fit Criterion:} Five
+        sampled alert types each contain a cause and a next-step recommendation.
 \end{itemize}
 
 \subsection{Accessibility Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-AC-1] \emph{Minimum text size shall be 12\,pt; critical readouts shall be $\geq$16\,pt; status indicators shall remain distinguishable under common color-vision deficiencies.}\\
-  \textbf{Rationale:} Ensures legibility for diverse users and conditions.\\
-  \textbf{Fit Criterion:} UI passes color-vision simulations and size checks in a design audit.
+  \item[USR-AC-1] \emph{Minimum text size shall be 12\,pt; critical readouts shall be
+          $\geq$16\,pt; status indicators shall remain distinguishable under common
+          color-vision deficiencies.}\\ \textbf{Rationale:} Ensures legibility for
+        diverse users and conditions.\\ \textbf{Fit Criterion:} UI passes color-vision
+        simulations and size checks in a design audit.
 \end{itemize}
 
 \section{Performance Requirements}
 \subsection{Speed and Latency Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-SPD-1] \emph{End-to-end live streaming latency shall be $\leq$ 300\,ms (p95); on-device preview latency shall be $\leq$ 100\,ms (p95).}\\
-  \textbf{Rationale:} Live production and manual intervention depend on low latency.\\
-  \textbf{Fit Criterion:} Time-synchronized probes confirm p95 $\leq$ 300\,ms (glass-to-glass) and p95 $\leq$ 100\,ms (local preview).
+  \item[PR-SPD-1] \emph{End-to-end live streaming latency shall be $\leq$ 300\,ms
+          (p95); on-device preview latency shall be $\leq$ 100\,ms (p95).}\\
+        \textbf{Rationale:} Live production and manual intervention depend on low
+        latency.\\ \textbf{Fit Criterion:} Time-synchronized probes confirm p95 $\leq$
+        300\,ms (glass-to-glass) and p95 $\leq$ 100\,ms (local preview).
 
-  \item[PR-SPD-2] \emph{AI inference latency per frame shall be $\leq$ 50\,ms (p95) at the target resolution.}\\
-  \textbf{Rationale:} Keeps the track-control loop within the motion budget.\\
-  \textbf{Fit Criterion:} Profiling at the specified model/resolution shows p95 $\leq$ 50\,ms.
+  \item[PR-SPD-2] \emph{AI inference latency per frame shall be $\leq$ 50\,ms (p95) at
+          the target resolution.}\\ \textbf{Rationale:} Keeps the track-control loop
+        within the motion budget.\\ \textbf{Fit Criterion:} Profiling at the specified
+        model/resolution shows p95 $\leq$ 50\,ms.
 \end{itemize}
 \subsection{Safety-Critical Requirements}
 \begin{itemize}[leftmargin=*]
