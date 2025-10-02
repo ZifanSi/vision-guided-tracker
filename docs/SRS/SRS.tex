@@ -322,7 +322,65 @@ not applicable
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
-\lips
+\begin{enumerate}[label=FR \arabic*., wide=0pt, leftmargin=*]
+
+  \item \emph{The system shall acquire images/video from a connected camera.}\\[2mm]
+    {\bf Rationale:} Image acquisition is the first step of the proof-of-concept (POC) and enables all downstream vision tasks.\\
+    {\bf Fit Criterion:} On startup, the system opens the camera and displays incoming frames without errors.\\
+    {\bf Priority:} High
+
+  \item \emph{The system shall segment and detect multiple moving objects in the camera image.}\\[2mm]
+    {\bf Rationale:} The POC specifies segmentation and moving-object detection to initialize tracking candidates.\\
+    {\bf Fit Criterion:} With tracking mode active, the system overlays detections on the preview when at least one object is moving.\\
+    {\bf Priority:} High
+
+  \item \emph{The system shall allow the operator to select a stationary or moving object as the tracking target.}\\[2mm]
+    {\bf Rationale:} Operator target selection is a required step in the POC workflow.\\
+    {\bf Fit Criterion:} In the UI, the operator can click/tap or otherwise choose a detected object and see it marked as the active target.\\
+    {\bf Priority:} High
+
+  \item \emph{The system shall estimate the selected target’s image position each frame during tracking.}\\[2mm]
+    {\bf Rationale:} Continuous target localization is necessary to compute control errors for centering.\\
+    {\bf Fit Criterion:} For each processed frame, the UI/logs expose the target centroid (pixel coordinates) without gaps while lock is maintained.\\
+    {\bf Priority:} High
+
+  \item \emph{The system shall command the gimbal so that the selected target remains centered in the image.}\\[2mm]
+    {\bf Rationale:} The POC requires closed-loop behavior: keeping the target centered yields smooth tracking.\\
+    {\bf Fit Criterion:} When the target moves, the gimbal responds and the target remains near the frame center during the demo.\\
+    {\bf Priority:} High
+
+  \item \emph{The system shall send real-time pan/tilt control commands to the gimbal via an STM32 microcontroller.}\\[2mm]
+    {\bf Rationale:} The Development Plan specifies real-time camera/gimbal control implemented on an STM32.\\
+    {\bf Fit Criterion:} During tracking, control messages are transmitted to the STM32 and result in observable gimbal motion.\\
+    {\bf Priority:} High
+
+  \item \emph{The system shall handle temporary occlusions or loss of the target by attempting automatic re-acquisition.}\\[2mm]
+    {\bf Rationale:} The POC calls out handling occlusion and temporary loss to maintain practical tracking.\\
+    {\bf Fit Criterion:} When the target is briefly occluded, the system transitions to a search/reacquire state and resumes tracking without a restart.\\
+    {\bf Priority:} High
+
+  \item \emph{The system shall allow the operator to manually reselect the target at any time.}\\[2mm]
+    {\bf Rationale:} The POC includes manual re-selection as a recovery path if automatic re-acquisition fails.\\
+    {\bf Fit Criterion:} The UI supports choosing a new target on demand, immediately replacing the previous lock without restarting the system.\\
+    {\bf Priority:} High
+
+  \item \emph{The system shall provide a browser-accessible application for remote management (e.g., connect, arm, start/stop tracking, target selection).}\\[2mm]
+    {\bf Rationale:} The project decomposition assigns the Web App to remote system management.\\
+    {\bf Fit Criterion:} From a laptop browser, an operator can reach the app and successfully perform connect/arm/start/stop and target selection actions.\\
+    {\bf Priority:} Medium
+
+  \item \emph{The system shall expose runtime status to the operator interface, including tracking state and basic performance indicators (e.g., FPS).}\\[2mm]
+    {\bf Rationale:} Operators need visibility to judge tracking health during demos and tests.\\
+    {\bf Fit Criterion:} The UI displays current tracking state (e.g., TRACKING/LOST/SEARCH) and an FPS readout while the system runs.\\
+    {\bf Priority:} Medium
+
+  \item \emph{The system shall support a proof-of-concept workflow demonstrating image acquisition, activation of tracking, operator target selection, and closed-loop gimbal control.}\\[2mm]
+    {\bf Rationale:} The Development Plan defines the end-to-end POC sequence to validate feasibility.\\
+    {\bf Fit Criterion:} In a single session, the team executes the POC steps (1–4) without manual restarts, showing each stage functioning as described.\\
+    {\bf Priority:} High
+
+\end{enumerate}
+
 
 \section{Look and Feel Requirements}
 \subsection{Appearance Requirements}
