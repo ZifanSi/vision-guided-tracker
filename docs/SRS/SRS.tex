@@ -11,9 +11,10 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{enumitem}
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
-      colorlinks=true,      % false: boxed links; true: colored links
+    colorlinks=true,        % false: boxed links; true: colored links
     linkcolor=red,          % color of internal links (change box color with linkbordercolor)
     citecolor=green,        % color of links to bibliography
     filecolor=magenta,      % color of file links
@@ -27,15 +28,13 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: subtitle describing software}
+\title{Software Requirements Specification for \progname: High Performance Vision-Guided Rocket Tracker}
 \author{\authname}
 \date{\today}
 
 \maketitle
 
 ~\newpage
-
-\pagenumbering{roman}
 
 \tableofcontents
 
@@ -56,44 +55,228 @@
 ~\newpage
 \section{Purpose of the Project}
 \subsection{User Business}
-\lips
+
+Student and amateur rocketry teams, launch organizers, and technical judges
+need reliable, high-fidelity visual evidence of rocket flights to analyze
+staging behavior, parachute deployment, and flight anomalies that occur at
+extreme speeds and altitudes. Manual camera operation is impractical in these
+conditions, and existing tools (manual PTZ/GPS-centric systems) often fail to
+maintain visual lock on small, fast-moving vehicles. The project addresses this
+gap with an autonomous, vision-based tracking camera designed to lock onto and
+follow rockets from launch through early descent, providing real-time and
+recorded footage for post-flight analysis and event operations.
+
+Beyond a single event, the system is intended to integrate into ground
+operations for student and commercial launches, strengthening Canada’s student
+rocketry and broader aerospace ecosystem by improving diagnostics,
+documentation, and training outcomes.
+
+From a commercialization lens, the solution targets academic rocketry
+competitions first (where capable tracking is scarce or costly), then expands
+toward high-power amateur and small-launch markets. Differentiation rests on
+fully autonomous visual tracking and robust re-identification under sub-optimal
+conditions, opening paths to kit/service offerings and SaaS add-ons (cloud
+analytics, model updates).
+
 \subsection{Goals of the Project}
-\lips
+
+The goal of the project is to track small-scale model rocket launches with
+apogee \textless 200m, while achieving all the performance objectives.
+
 \section{Stakeholders}
+
 \subsection{Client}
-\lips
+
+The client of this project is McMaster Rocketry Team. they are the primary end
+users who will deploy the system during launches. They depend on accurate
+real-time tracking to analyze staging, parachute deployment, and overall flight
+performance.
+
 \subsection{Customer}
-\lips
+
+\begin{enumerate}
+  \item \textbf{Aerospace Engineers and Researchers}: Benefit from
+        high-quality flight footage to validate models, improve rocket
+        designs, and support experimental research.
+
+  \item \textbf{Event Organizers and Safety Officers}: Rely on
+        reliable tracking for live monitoring of rocket flights,
+        particularly for confirming parachute deployment and safe
+        recovery during launch events.
+
+  \item \textbf{Engineering and Robotics Community}: May adapt the
+        system's design principles for other domains requiring precise
+        tracking of fast-moving objects, such as UAV navigation, sports
+        analytics, or autonomous robotics.
+
+  \item \textbf{Potential Commercial and Industrial Users}: Could
+        adopt the system for broader applications in surveillance,
+        wildlife monitoring, or industrial inspections where real-time
+        vision-guided tracking is valuable.
+\end{enumerate}
+
 \subsection{Other Stakeholders}
-\lips
+
+\begin{enumerate}
+  \item \textbf{Dr. Shahin Sirouspour (Supervisor)}: Provides
+        technical guidance, project oversight, and mentorship. Ensures
+        the project aligns with academic standards, engineering best
+        practices, and capstone deliverable expectations.
+\end{enumerate}
+
 \subsection{Hands-On Users of the Project}
-\lips
+
+The only hands on user of the project would be the camera operator, which can
+be any one of the stakeholders or anyone else tasked by one of the
+stakeholders. The camera operator controls the camera through the UI,
+starts/stops recordings, manages lock-on/target selection, and monitors
+preview.
+
 \subsection{Personas}
-\lips
+
+\subsubsection*{Alex Chen}
+
+\textbf{Age}: 22
+
+\textbf{Job Title}: Camera Operator
+
+\textbf{Education}: B.Eng. candidate (Electrical/Mechatronics)
+
+\textbf{Work Environment}: Outdoor launch range; tripod/gimbal on uneven terrain;
+laptop/tablet UI at the ground station; radio comms with Mission Control.
+
+\textbf{Professional Background}: Operates field equipment for the rocketry team; basic
+Linux/Jetson administration; familiar with gimbals, lens swaps, focus checks,
+and safety procedures.
+
+\textbf{Need}: Fast setup and calibration; immediate lock-on
+after launch cue; low-latency preview that stays readable in bright sunlight;
+simple controls for start/stop recording and target selection; clear
+system-state indicators (ready/locked/error).
+
+\textbf{Challenges}: Harsh conditions
+(wind, glare, dust, cold); intermittent power/network; gloves reduce fine
+control; pressure at T-0; distance from pad complicates cabling; strict range
+safety rules.
+
+\subsubsection*{Maya Patel}
+
+\textbf{Age}: 24
+
+\textbf{Job Title}: Flight Performance Analyst (Rocketry Team)
+
+\textbf{Education}: B.Eng. (Software/Controls) or Honours Physics; heavy MATLAB/Python use
+
+\textbf{Work Environment}: Post-flight lab analysis; imports footage + telemetry into scripts and reports.
+
+\textbf{Professional Background}: Builds tooling to study staging timing, parachute events, and stability; integrates video with onboard logs.
+
+\textbf{Need}: Time-synchronized 1080p60 footage with frame timestamps; exports of gimbal azimuth/elevation vs. time (CSV/JSON); markers for detected events (ignition, staging, chute) and easy clip extraction; consistent file naming and metadata for repeatable analyses.
+
+\textbf{Challenges}: Clock drift between video and sensors; dropped frames; incomplete metadata; inconsistent camera calibration notes; large file sizes slowing transfer and processing.
+
+\subsubsection*{Jordan Lee}
+
+\textbf{Age}: 59
+
+\textbf{Job Title}: Event Organizer / Live Stream Technician
+
+\textbf{Education}: College diploma or industry certifications (broadcast/AV)
+
+\textbf{Work Environment}: Control tent; HDMI/SDI switcher or OBS rig; long Ethernet runs; noisy RF environment.
+
+\textbf{Professional Background}: Manages livestreams at student launches; coordinates feeds from multiple cameras to a program output.
+
+\textbf{Need}: Clean 1080p60 video feed compatible with common switchers/encoders; stable, low end-to-end latency preview; obvious health/status indicators; quick, safe setup between flights; minimal operator steps to get a reliable program feed.
+
+\textbf{Challenges}: RF congestion and interference; power distribution limits; weatherproofing; cable management over long distances; ensuring the tracking feed doesn’t drop mid-event; coordinating with safety calls and launch cadence.
+
 \subsection{Priorities Assigned to Users}
-\lips
+
+\textbf{Key Users}: Flight Performance Analyst, Safety Officer, Camera Operator
+
+\textbf{Secondary User}: Event Organizer
+
 \subsection{User Participation}
-\lips
+
+Through out the development process, the development team will reach out to
+users to gather requirements and feedback on usability.
+
 \subsection{Maintenance Users and Service Technicians}
-\lips
+
+Due to the nature of this project as a capstone requirement, there are
+currently no expected maintenance users
 
 \section{Mandated Constraints}
 \subsection{Solution Constraints}
-\lips
+
+\begin{enumerate}[label=MD-SL \arabic*., wide=0pt, leftmargin=*]
+  \item \emph{The system must be hands-off (autonomous) from ignition through rocket landing.}\\[2mm]
+        {\bf Rationale:} During live launches, human operators must prioritize range safety and situational awareness; approaching the camera or issuing fine controls during ascent/descent is unsafe and impractical due to line-of-sight, blast hazards, and rapid dynamics. Environmental factors (wind, glare, dust, acoustic vibration) also degrade manual operation at critical moments.\\
+        {\bf Fit Criterion:} From ignition detection until a declared “landing/clear” signal, the system performs target detection, tracking, zoom/FOV management, and recording without requiring any manual pan/tilt/zoom commands. Event logs show no manual overrides in this window; tracked target remains within a defined bounding box around frame center (e.g., ±10\% of width/height) for $\ge$80\% of observable flight time.
+
+  \item \emph{The system must be remote controllable.}\\[2mm]
+        {\bf Rationale:} The camera and gimbal may need to be positioned near hazardous zones (pad, ballistic landing corridors) or at distant vantage points with no safe operator access during the countdown and flight. Remote setup, arming, health checks, and teardown reduce personnel exposure and allow operation from a protected control area.\\
+        {\bf Fit Criterion:} All pre-/post-flight operations (boot, status, calibration checks, arming, recording start/stop, data offload) are executable over a network link (wired or long-run Ethernet) from the control station. Authentication is required; a complete session can be performed with no physical interaction at the camera site once deployed.
+
+  \item \emph{The system must output a live video stream via HDMI.}\\[2mm]
+        {\bf Rationale:} The event’s broadcast/recording workflow and on-site switchers/encoders accept HDMI as the integration standard; alternative connectors (e.g., SDI/USB/UVC-only) would require additional, failure-prone adapters and complicate field cabling.\\
+        {\bf Fit Criterion:} A stable, clean (non-OSD) HDMI program feed at 1920×1080@60\,fps is available at the control station for the duration of the launch window. The feed syncs with common mixers/encoders (e.g., OBS/capture cards) without HDCP or proprietary handshakes and remains within acceptable glass-to-glass latency for live use.
+
+  \item \emph{The solution must provide a flexible interface to support multiple gimbal systems.}\\[2mm]
+        {\bf Rationale:} Different test contexts require different hardware: lighter indoor rigs for algorithm development, weatherized outdoor rigs for launches, and varying payload (camera/lens) masses. A hardware-abstraction layer reduces rework and enables swapping gimbals without changing core tracking logic.\\
+        {\bf Fit Criterion:} A documented gimbal adapter interface (API/protocol bindings) supports at least: (a) an indoor development gimbal, (b) an outdoor launch-capable gimbal, and (c) a higher-payload option. For each, the system can command pan/tilt/zoom, read state, and complete calibration; end-to-end control latency remains within the tracking budget, and per-gimbal mounting/calibration data can be loaded without code changes.
+\end{enumerate}
+
 \subsection{Implementation Environment of the Current System}
-\lips
+
+There are no constrains on the hardware platform the project need to use or run
+on.
+
 \subsection{Partner or Collaborative Applications}
-\lips
+
+none
+
 \subsection{Off-the-Shelf Software}
-\lips
+
+none
+
 \subsection{Anticipated Workplace Environment}
-\lips
+
+what is this?
+
 \subsection{Schedule Constraints}
-\lips
+
+\begin{enumerate}[label=SCHD \arabic*., wide=0pt, leftmargin=*]
+  \item \emph{The project shall be completed by April 2026, with
+          interim deadlines for key milestones such as Proof of Concept
+          (November 2025) and the final demonstration (March 2026).}\\[2mm]
+        {\bf Rationale:} These deadlines are based on the academic
+        timeline and the expectations of the capstone course.\\
+        {\bf Fit Criterion:} All project components must be completed and
+        fully functional by the final demonstration in March 2026.
+\end{enumerate}
+
 \subsection{Budget Constraints}
-\lips
+
+\begin{enumerate}[label=BDGT \arabic*., wide=0pt, leftmargin=*]
+  \item \emph{The project shall not exceed the budget of 500CAD}\\[2mm]
+        {\bf Rationale:} Limited by the capstone project requirement\\
+        {\bf Fit Criterion:} The project must be implemented using free
+        tools and libraries and hosted on GitHub.
+\end{enumerate}
+
 \subsection{Enterprise Constraints}
-\lips
+
+\begin{enumerate}[label=ENTP \arabic*., wide=0pt, leftmargin=*]
+  \item \emph{The product shall be built to comply with the standards
+          of McMaster University's capstone project requirements and
+          academic integrity policies.}\\[2mm]
+        {\bf Rationale:} The project is part of the university's
+        curriculum and must adhere to its standards.\\
+        {\bf Fit Criterion:} The product must meet the requirements
+        specified by the course syllabus and project advisor.
+\end{enumerate}
 
 \section{Naming Conventions and Terminology}
 \subsection{Glossary of All Terms, Including Acronyms, Used by Stakeholders
@@ -102,115 +285,767 @@
 
 \section{Relevant Facts And Assumptions}
 \subsection{Relevant Facts}
-\lips
+
+not applicable
+
 \subsection{Business Rules}
-\lips
+
+not applicable
+
 \subsection{Assumptions}
-\lips
+
+not applicable
 
 \section{The Scope of the Work}
 \subsection{The Current Situation}
-\lips
+
+Currently, the process of recording and analyzing rocket flights relies on
+manual camera operators positioned at safe distances from the launch pad. These
+operators attempt to visually follow the rocket during ascent and descent using
+consumer or semi-professional video cameras mounted on tripods or pan–tilt
+systems.
+
+This approach suffers from several limitations:
+
+Accuracy: Human reaction time and limited field of view make it nearly
+impossible to keep fast-moving rockets (often exceeding Mach speeds) centered
+in frame. The footage is frequently lost during liftoff or staging events,
+leaving gaps in post-flight analysis.
+
+Safety Constraints: Because a human operator must be physically present, camera
+placement is restricted to safe zones, which may not provide optimal viewing
+angles. Cameras cannot always be positioned where the best line-of-sight
+exists.
+
+Operational Overhead: Each launch requires trained operators, setup time, and
+coordination with the launch control team. Fatigue, stress, and environmental
+conditions (sun glare, wind, dust) further degrade performance.
+
+Data Limitations: The video produced by manual operators is often shaky,
+inconsistently framed, and lacking synchronization with other flight data
+(e.g., telemetry or gimbal angle). This reduces its value for engineering
+analysis and competition reporting.
+
+Some groups have experimented with semi-automated processes, such as
+pre-programming PTZ cameras to follow a predicted trajectory or integrating
+GPS-based tracking systems. However, these solutions are not reliable for small
+rockets: trajectory predictions are often inaccurate, GPS updates are too slow
+for visual framing, and commercial PTZ controllers lack the precision and
+responsiveness required.
+
+In practice, most teams continue to rely on manual processes, which creates a
+bottleneck in safety assurance, event documentation, and engineering
+validation. The proposed tracking camera system aims to replace these manual
+workflows with an autonomous, computer-vision-driven process that minimizes
+operator involvement during critical launch phases, expands safe deployment
+options, and provides high-quality synchronized data for analysis.
+
 \subsection{The Context of the Work}
-\lips
+
+The tracking camera system operates within the broader workflow of a rocket
+launch event. The work boundary is defined as the combination of hardware
+(camera, gimbal, compute unit) and software (tracking algorithms, control
+interfaces, recording/streaming services) that together deliver real-time
+rocket tracking and recording.
+
+The following table identifies the adjacent systems (people, organizations,
+hardware, and software) and the data/material exchanged across the boundary:
+
+\begin{enumerate}[wide=0pt, leftmargin=*]
+  \item \textbf{Rocket Launch Vehicle}
+        \emph{Input:} Visual signature of rocket (plume, body, trajectory).
+        \emph{Output:} None (passive observation only).
+        \emph{Rationale:} The rocket itself is the tracked subject; no control
+        interaction occurs.
+
+  \item \textbf{Camera Operator (Client User)}
+        \emph{Input:} High-level commands (start/stop recording, target lock
+        selection, zoom override if needed).
+        \emph{Output:} Live preview video, system status indicators, error
+        alerts.
+        \emph{Rationale:} Provides human oversight and session management while
+        staying hands-off during launch.
+
+  \item \textbf{Mission Control / Launch Operations}
+        \emph{Input:} Launch cues (T-0 ignition signal, countdown sync, “end of
+        flight” flag).
+        \emph{Output:} Optional video confirmation of ignition, staging, and
+        parachute events.
+        \emph{Rationale:} Ensures synchronization with the launch timeline and
+        provides situational awareness for the operations crew.
+
+  \item \textbf{Recovery Team}
+        \emph{Input:} None.
+        \emph{Output:} Live/near-real-time video stream for chute deployment
+        confirmation and landing direction.
+        \emph{Rationale:} Supports safe and timely rocket recovery operations.
+
+  \item \textbf{Event Organizers / Safety Officers (RSO)}
+        \emph{Input:} Safety requirements, operating constraints (safe zones,
+        setup timing).
+        \emph{Output:} Live HDMI output for event broadcast; visual confirmation
+        of safe flight events.
+        \emph{Rationale:} Ensures compliance with range safety rules and enables
+        public/official monitoring.
+
+  \item \textbf{Live Streaming / Broadcast System}
+        \emph{Input:} HDMI video signal.
+        \emph{Output:} Public/live event stream.
+        \emph{Rationale:} Integrates the camera feed into broader event
+        broadcasting systems.
+
+  \item \textbf{Analysis Tools (Researchers, Software Pipelines)}
+        \emph{Input:} None.
+        \emph{Output:} Recorded video files, metadata (timestamps, gimbal angles,
+        session logs).
+        \emph{Rationale:} Enables post-flight performance analysis, academic
+        studies, and competition reporting.
+
+  \item \textbf{Gimbal Hardware}
+        \emph{Input:} Control signals (pan, tilt, zoom commands).
+        \emph{Output:} State feedback (position, speed, limits).
+        \emph{Rationale:} Provides mechanical actuation for tracking.
+
+  \item \textbf{Compute Platform (Jetson / Embedded PC)}
+        \emph{Input:} Power supply, OS environment.
+        \emph{Output:} Processed tracking data, control outputs to gimbal.
+        \emph{Rationale:} Runs the tracking algorithms and serves as the
+        execution environment.
+
+  \item \textbf{University / Supervisor / Capstone Review}
+        \emph{Input:} Project standards, milestone requirements.
+        \emph{Output:} Documentation, demonstrations, performance evidence.
+        \emph{Rationale:} Ensures academic quality and alignment with course
+        objectives.
+
+  \item \textbf{Environment (Weather, Terrain, Lighting)}
+        \emph{Input:} Ambient conditions (wind, dust, rain, lighting,
+        background).
+        \emph{Output:} None (affects system performance only).
+        \emph{Rationale:} External factor influencing system design
+        (robustness, IP rating, algorithm reliability).
+\end{enumerate}
+
 \subsection{Work Partitioning}
-\lips
+
+The following business events define the scope of the work. Each event
+represents a trigger from the real world or from an adjacent system, and the
+system’s response is defined as a Business Use Case (BUC).
+
+\begin{enumerate}[wide=0pt, leftmargin=*]
+
+  \item \textbf{Event: System Power-On and Initialization}
+        \emph{Input:} Operator command to boot system (Camera Operator).
+        \emph{Outputs:} Status indicators, system logs.
+        \emph{Summary BUC:} The system initializes the compute platform,
+        establishes gimbal communication, and enters idle state ready for
+        calibration.
+        \emph{Business Data:} System configuration parameters, calibration state.
+
+  \item \textbf{Event: Launch Countdown Cue (T-0)}
+        \emph{Input:} Launch cue from Mission Control.
+        \emph{Outputs:} Tracking initialization, first lock attempt, live HDMI preview.
+        \emph{Summary BUC:} Upon receiving T-0, the system begins autonomous
+        detection and attempts lock-on of rocket at ignition plume.
+        \emph{Business Data:} Launch ID, timestamp, initial target coordinates.
+
+  \item \textbf{Event: Rocket Ignition Visual Detection}
+        \emph{Input:} Visual plume/body signature (Rocket Launch Vehicle).
+        \emph{Outputs:} Pan/tilt/zoom gimbal commands; live HDMI feed with
+        centered rocket; recording file started.
+        \emph{Summary BUC:} The system detects the rocket visually and
+        transitions from idle to active tracking.
+        \emph{Business Data:} Target bounding box, gimbal angles, detection confidence.
+
+  \item \textbf{Event: In-Flight Tracking Updates}
+        \emph{Input:} Continuous visual feed from camera sensor.
+        \emph{Outputs:} Updated gimbal control commands, updated live preview,
+        recorded frames.
+        \emph{Summary BUC:} While rocket is airborne, the system continuously
+        adjusts PTZ to keep the rocket centered and updates metadata.
+        \emph{Business Data:} Frame sequence, gimbal telemetry, tracking logs.
+
+  \item \textbf{Event: Staging or Parachute Deployment}
+        \emph{Input:} Visual signature of separation or chute deployment.
+        \emph{Outputs:} Video with event recorded, preview for operators,
+        timestamped log entry.
+        \emph{Summary BUC:} System continues tracking through events of
+        interest, marking these occurrences for later analysis.
+        \emph{Business Data:} Event markers (staging time, chute time),
+        synchronized frame timestamps.
+
+  \item \textbf{Event: End of Flight (Landing/Clear Signal)}
+        \emph{Input:} Mission Control “end of flight” cue or visual disappearance.
+        \emph{Outputs:} Recording file closed, final log entry, HDMI feed reverts
+        to standby.
+        \emph{Summary BUC:} The system finalizes session, stores video, and
+        transitions to idle state for next launch.
+        \emph{Business Data:} Session metadata (launch ID, duration, file paths).
+
+  \item \textbf{Event: Post-Flight Analysis Request}
+        \emph{Input:} Request from Analysts/Researchers.
+        \emph{Outputs:} Exported video files, telemetry logs, event markers.
+        \emph{Summary BUC:} The system provides outputs in formats suitable for
+        engineering review and report preparation.
+        \emph{Business Data:} Export package (video, gimbal data, event logs).
+
+  \item \textbf{Event: Remote System Control / Health Check}
+        \emph{Input:} Operator command over remote interface.
+        \emph{Outputs:} System status report, diagnostic data.
+        \emph{Summary BUC:} Operators check system readiness, adjust
+        parameters, or reboot remotely for safety.
+        \emph{Business Data:} Health logs, diagnostic metrics.
+
+  \item \textbf{Event: Environmental Conditions Affect Performance}
+        \emph{Input:} Wind, rain, lighting changes (Environment).
+        \emph{Outputs:} Adjusted tracking parameters, possible alerts to operator.
+        \emph{Summary BUC:} The system adapts to degraded visibility or warns
+        operator when performance may be compromised.
+        \emph{Business Data:} Environmental state markers, degraded performance
+        flags.
+
+\end{enumerate}
+
 \subsection{Specifying a Business Use Case (BUC)}
-\lips
+
+\textbf{Event Trigger:} Mission Control sends a T-0 ignition signal
+(or operator marks T-0 manually if no digital cue is available).
+
+\textbf{Primary Actor:} Mission Control (adjacent system).
+\textbf{Supporting Actors:} Camera Operator, Tracking Camera System (work boundary).
+
+\textbf{Preconditions:}
+\begin{itemize}
+  \item System is powered on and initialized in idle state.
+  \item Gimbal and camera are calibrated.
+  \item HDMI/live preview feed is active but not tracking.
+  \item Recording is armed (ready to start on cue).
+\end{itemize}
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item Mission Control issues the T-0 cue (e.g., countdown ``zero'' command or TTL
+        trigger).
+  \item Tracking system receives the cue via network input or operator input.
+  \item System transitions from idle to ``takeoff mode.''
+        \begin{itemize}
+          \item Records timestamp and launch ID in logs.
+          \item Starts a new recording file for this launch session.
+        \end{itemize}
+  \item Initial lock-on process begins.
+        \begin{itemize}
+          \item Detection algorithms search for ignition plume/rocket body near pad
+                coordinates.
+          \item Target is initialized and bounding box assigned.
+        \end{itemize}
+  \item Gimbal commands issued.
+        \begin{itemize}
+          \item PTZ angles updated to center target in frame.
+          \item Control loop begins continuous updates (tracking state active).
+        \end{itemize}
+  \item Outputs generated.
+        \begin{itemize}
+          \item HDMI feed shows live video with rocket centered.
+          \item Operator preview updated with tracking overlay/status.
+          \item Logs updated with ``tracking started'' entry.
+        \end{itemize}
+  \item Mission Control receives confirmation.
+        \begin{itemize}
+          \item Optional confirmation message or operator visual check that rocket is visible
+                in live feed.
+        \end{itemize}
+  \item System continues into \emph{In-Flight Tracking Updates} BUC.
+\end{enumerate}
+
+\textbf{Postconditions:}
+\begin{itemize}
+  \item System is actively tracking rocket in flight.
+  \item Recording is running, storing synchronized video and gimbal data.
+  \item Launch session ID and event markers established for later analysis.
+\end{itemize}
+
+\textbf{Business Data Involved:}
+\begin{itemize}
+  \item Launch ID
+  \item Timestamp (T-0, start of file)
+  \item Initial target coordinates (bounding box, gimbal azimuth/elevation)
+  \item Status logs (idle $\rightarrow$ takeoff $\rightarrow$ tracking transition)
+\end{itemize}
 
 \section{Business Data Model and Data Dictionary}
 \subsection{Business Data Model}
-\lips
+
+A list of videos of recorded launches
+
 \subsection{Data Dictionary}
 \lips
 
 \section{The Scope of the Product}
 \subsection{Product Boundary}
-\lips
+
+The product boundary defines which parts of the work are handled by the
+tracking camera system (automated product use cases) and which parts remain the
+responsibility of human actors (manual tasks). By inspecting the business use
+cases and consulting with stakeholders, the following partition has been
+established.
+
+The tracking camera system is responsible for automating the detection,
+tracking, recording, and output of rocket flight data. Human actors are
+responsible for initiating sessions, providing launch cues, and consuming the
+outputs for analysis, safety, or broadcast.
+
 \subsection{Product Use Case Table}
-\lips
+
+\begin{enumerate}[wide=0pt, leftmargin=*]
+  \item \textbf{Initialize and Configure System}
+        \emph{Actor:} Camera Operator.
+        \emph{Product Responsibility:} Load stored configuration, establish
+        gimbal communication, report system health and readiness.
+        \emph{Actor Responsibility:} Provide power, initiate startup, select
+        session parameters.
+
+  \item \textbf{Start Recording Session at T-0}
+        \emph{Actor:} Mission Control (via cue) or Camera Operator (manual trigger).
+        \emph{Product Responsibility:} Detect cue, create new recording file,
+        time-stamp session ID, and transition to tracking state.
+        \emph{Actor Responsibility:} Issue cue at correct launch time.
+
+  \item \textbf{Detect and Track Rocket}
+        \emph{Actor:} Rocket Launch Vehicle (provides visual signature).
+        \emph{Product Responsibility:} Apply detection algorithms, command
+        gimbal PTZ to keep rocket centered, log telemetry.
+        \emph{Actor Responsibility:} None (passive role).
+
+  \item \textbf{Manage Zoom and Field of View}
+        \emph{Actor:} Camera Operator (optional override).
+        \emph{Product Responsibility:} Automatically adjust zoom to maintain
+        visible rocket size above detection threshold.
+        \emph{Actor Responsibility:} Optional manual override if auto-zoom fails.
+
+  \item \textbf{Provide Live Video Output}
+        \emph{Actor:} Event Organizers, Safety Officers, Livestream Technicians.
+        \emph{Product Responsibility:} Deliver stable HDMI feed at 1080p/60 for
+        integration into switchers or livestream software.
+        \emph{Actor Responsibility:} Connect, ingest, and broadcast feed.
+
+  \item \textbf{Record and Store Flight Session}
+        \emph{Actor:} Analysts, Media Leads.
+        \emph{Product Responsibility:} Record video with timestamps and gimbal
+        data, close session cleanly at end-of-flight.
+        \emph{Actor Responsibility:} Retrieve stored files, archive them, or
+        prepare them for analysis.
+
+  \item \textbf{Export Data for Analysis}
+        \emph{Actor:} Researchers, Rocketry Team Analysts.
+        \emph{Product Responsibility:} Provide synchronized video, telemetry,
+        and event logs in standard formats.
+        \emph{Actor Responsibility:} Perform engineering analysis, reporting,
+        and interpretation of the data.
+
+  \item \textbf{Remote Control and Health Monitoring}
+        \emph{Actor:} Camera Operator.
+        \emph{Product Responsibility:} Respond to remote commands for status,
+        diagnostics, and reboot; maintain safe operation when placed in
+        hazardous zones.
+        \emph{Actor Responsibility:} Issue remote commands, interpret health
+        reports, and take corrective actions.
+\end{enumerate}
+
 \subsection{Individual Product Use Cases (PUC's)}
-\lips
+
+Product Use Case: Detect and Track Rocket
+
+\textbf{Primary Actor:} Tracking Camera System (automated).  
+\textbf{Supporting Actor:} Rocket Launch Vehicle (provides visual target).  
+
+\textbf{Preconditions:}
+\begin{itemize}
+  \item System has received launch cue and is in ``takeoff mode.''
+  \item Camera and gimbal are powered, calibrated, and aligned with launch pad coordinates.
+  \item Recording session has been initialized.
+\end{itemize}
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item System continuously receives video frames from the camera sensor.
+  \item Detection algorithm processes frames to identify rocket plume or body.
+  \item If candidate target is detected, the system validates confidence score against threshold.
+  \item A bounding box is assigned to the target and updated each frame.
+  \item Target position is mapped to screen coordinates relative to frame center.
+  \item Gimbal controller calculates required pan/tilt adjustments using PID (or equivalent) to re-center target.
+  \item Pan/tilt commands are issued to the gimbal hardware.
+  \item Optional: zoom controller adjusts focal length to maintain target resolution above minimum threshold.
+  \item Updated gimbal state is logged along with timestamp and detection confidence.
+  \item HDMI output and operator preview are refreshed with updated framing.
+  \item Loop repeats for each frame until end-of-flight signal is received.
+\end{enumerate}
+
+\textbf{Alternative Flows:}
+\begin{itemize}
+  \item \emph{Detection Lost:} If no target is detected for $>$N consecutive frames, the system widens search area (zoom out or broaden ROI) and flags status as ``searching.''
+  \item \emph{False Detection:} If multiple objects match, system prioritizes trajectory consistent with launch path and highest confidence score.
+\end{itemize}
+
+\textbf{Postconditions:}
+\begin{itemize}
+  \item Rocket remains within a defined bounding region (e.g., $\pm$10\% frame center) for at least 80\% of observable flight.
+  \item Continuous log of gimbal angles, bounding box coordinates, and confidence values is maintained.
+  \item Recorded video contains centered rocket imagery for subsequent analysis.
+\end{itemize}
+
+\textbf{Business Data Involved:}
+\begin{itemize}
+  \item Frame sequence and timestamps.
+  \item Bounding box coordinates.
+  \item Gimbal pan/tilt/zoom values.
+  \item Detection confidence scores.
+\end{itemize}
+
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
-\lips
+
+\begin{itemize}
+
+  \item[FR-SYS-1] \emph{The system must acquire live images or video streams from an
+          onboard camera.}\\[2mm]
+        {\bf Rationale:} Image acquisition is the first step of the vision-guided pipeline and enables all downstream processing.\\
+        {\bf Fit Criterion:} The system successfully captures frames at a usable resolution and passes them to the CV pipeline.\\
+        {\bf Priority:} High
+
+  \item[FR-SYS-2] \emph{The system must segment the scene and detect multiple moving
+          objects in real time.}\\[2mm]
+        {\bf Rationale:} Object detection enables the tracker to identify possible targets for selection and tracking.\\
+        {\bf Fit Criterion:} At least two moving objects can be detected simultaneously at $\geq$ 15 FPS on Jetson hardware.\\
+        {\bf Priority:} High
+
+  \item[FR-SYS-3] \emph{The system must allow the operator to select a stationary or
+          moving object as the target.}\\[2mm]
+        {\bf Rationale:} Manual target selection is essential for flexibility, ensuring the system can track user-specified objects.\\
+        {\bf Fit Criterion:} Operator input is received and the chosen target is registered by the tracking system.\\
+        {\bf Priority:} High
+
+  \item[FR-SYS-4] \emph{The system must continuously estimate the target’s position and
+          keep it centered in the image.}\\[2mm]
+        {\bf Rationale:} Accurate target tracking is the core function of the system to maintain visual lock.\\
+        {\bf Fit Criterion:} Target remains within 40 px of frame center at 1080p resolution under smooth motion.\\
+        {\bf Priority:} High
+
+  \item[FR-SYS-5] \emph{The system must send real-time pan/tilt commands to the STM32
+          microcontroller for gimbal control.}\\[2mm]
+        {\bf Rationale:} Gimbal control keeps the target centered physically, extending camera field of view.\\
+        {\bf Fit Criterion:} Latency between detected movement and gimbal adjustment is $\leq$ 120 ms.\\
+        {\bf Priority:} High
+
+  \item[FR-SYS-6] \emph{The system must detect target occlusion or loss and attempt
+          automatic re-acquisition, with manual reselection available.}\\[2mm]
+        {\bf Rationale:} Targets may be temporarily obstructed; recovery ensures robustness of the tracking loop.\\
+        {\bf Fit Criterion:} The system reacquires a target within 1 second (p95) or allows operator reselection.\\
+        {\bf Priority:} Medium
+
+  \item[FR-SYS-7] \emph{The system must provide remote management capabilities for
+          operators.}\\[2mm]
+        {\bf Rationale:} Remote access supports field deployment and safety by allowing off-device control.\\
+        {\bf Fit Criterion:} Operators can access system controls via a web interface on a remote device.\\
+        {\bf Priority:} Medium
+
+  \item[FR-SYS-8] \emph{The system must display runtime information including system
+          state, FPS, and tracking status.}\\[2mm]
+        {\bf Rationale:} Visibility into runtime performance is critical for debugging and operator trust.\\
+        {\bf Fit Criterion:} The interface updates system status in real time with FPS $\pm$ 1 frame accuracy.\\
+        {\bf Priority:} Medium
+
+  \item[FR-SYS-9] \emph{The system must demonstrate the complete workflow: Acquire
+          $\rightarrow$ Detect $\rightarrow$ Select $\rightarrow$ Track $\rightarrow$
+          Control.}\\[2mm]
+        {\bf Rationale:} The proof-of-concept requires showing the integration of all subsystems working together.\\
+        {\bf Fit Criterion:} During demo, the system executes all five stages successfully without manual patching.\\
+        {\bf Priority:} High
+
+        % --- Web End Requirements ---
+  \item[FR-WEB-1] \emph{The web application must provide a browser-based interface for
+          remote management of the system.}\\[2mm]
+        {\bf Rationale:} Operators need remote access to safely configure and monitor the system during field testing.\\
+        {\bf Fit Criterion:} Operators can log in through a standard browser and access system controls without requiring local installation.\\
+        {\bf Priority:} Medium
+
+  \item[FR-WEB-2] \emph{The web application must display runtime status information
+          such as system state, frame rate, and tracking status.}\\[2mm]
+        {\bf Rationale:} Operators need real-time visibility into performance to make informed decisions and detect issues.\\
+        {\bf Fit Criterion:} The dashboard shows current state, FPS, and tracking status, updating within 1 second of backend changes.\\
+        {\bf Priority:} Medium
+
+  \item[FR-WEB-3] \emph{The web application must provide controls for manual target
+          reselection when automatic tracking fails.}\\[2mm]
+        {\bf Rationale:} Manual override enables recovery when auto-reacquisition is unsuccessful.\\
+        {\bf Fit Criterion:} When a target is lost, the operator can reselect a target via the web UI and the system resumes tracking within 1 second.\\
+        {\bf Priority:} High
+
+  \item[FR-WEB-4] \emph{The web application must allow operators to view the live video
+          stream from the camera.}\\[2mm]
+        {\bf Rationale:} Visual confirmation of what the system is tracking is necessary for effective operation.\\
+        {\bf Fit Criterion:} The live camera feed is viewable in the web interface with end-to-end latency $\leq$ 500 ms relative to the source.\\
+        {\bf Priority:} High
+
+  \item[FR-WEB-5] \emph{The web application must allow operators to record video
+          sessions for later review.}\\[2mm]
+        {\bf Rationale:} Recording supports debugging, validation, and demonstration.\\
+        {\bf Fit Criterion:} Operators can start and stop recording from the web UI and access the saved video files afterward.\\
+        {\bf Priority:} Medium
+
+  \item[FR-WEB-6] \emph{The web application must provide playback and basic management
+          of recorded videos (list, delete, download).}\\[2mm]
+        {\bf Rationale:} Reviewing and managing captured sessions supports performance analysis and documentation.\\
+        {\bf Fit Criterion:} Operators can select a recording, play it in the web UI, and perform list/delete/download actions.\\
+        {\bf Priority:} Low
+
+\end{itemize}
 
 \section{Look and Feel Requirements}
 \subsection{Appearance Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[LFR-AP-1] \emph{The dashboard shall use a light background with high-contrast
+          status colors (green=Ready, amber=Armed, red=Fault/Lost).}\\
+        \textbf{Rationale:} Improves readability under bright outdoor lighting and
+        noisy environments.\\ \textbf{Fit Criterion:} In a 300-lux outdoor setting, at
+        least 19 out of 20 status checks by five users are correctly identified within
+        2 seconds.
+
+  \item[LFR-AP-2] \emph{Key readouts (FPS, end-to-end latency estimate, tracking
+          confidence) shall be visible in the main view without scrolling on a 1080p
+          display.}\\ \textbf{Rationale:} Operators need immediate awareness of system
+        health and tracking quality.\\ \textbf{Fit Criterion:} On a 1920×1080 monitor,
+        all three readouts are simultaneously visible in the primary screen.
+\end{itemize}
+
 \subsection{Style Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[LFR-ST-1] \emph{Units and terminology shall be consistent: speed (°/s),
+          resolution (px), frame rate (FPS), distance (km), temperature (°C).}\\
+        \textbf{Rationale:} Consistency reduces operator error during high-pressure
+        launch operations.\\ \textbf{Fit Criterion:} A style audit of 10 UI readouts
+        finds zero unit inconsistencies.
+\end{itemize}
 
 \section{Usability and Humanity Requirements}
 \subsection{Ease of Use Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[USR-EZ-1] \emph{Cold start to “Ready” shall require no more than five operator
+          steps; reset between launches shall be $\leq$ 2 minutes.}\\ \textbf{Rationale:}
+        Field workflow demands rapid setup, turnaround, and minimal touches at the
+        pad.\\ \textbf{Fit Criterion:} Three operators independently achieve average
+        reset time $\leq$ 120 s and $\leq$ 5 steps from cold start to “Ready”.
+
+  \item[USR-EZ-2] \emph{The full operational flow (power on, checks, arm, record,
+          shutdown) shall be executable remotely without visiting the camera site.}\\
+        \textbf{Rationale:} Reduces exposure to hazardous zones and supports protected
+        control-tent operation.\\ \textbf{Fit Criterion:} A complete session is
+        performed from the control station with zero physical interaction at the
+        camera.
+\end{itemize}
+
 \subsection{Personalization and Internationalization Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[USR-PI-1] \emph{The user interface shall support English and French(chinese),
+          switchable at runtime.}\\ \textbf{Rationale:} Matches Canadian event context
+        and bilingual stakeholders.\\ \textbf{Fit Criterion:} All primary UI elements
+        are fully localized for EN/FR/CN; language can be switched without restart.
+\end{itemize}
+
 \subsection{Learning Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[USR-LR-1] \emph{A first-time operator shall be able to complete a full run in
+          “Simulation Input Mode” within 30 minutes.}\\ \textbf{Rationale:} Simulation
+        accelerates training and reduces field risk.\\ \textbf{Fit Criterion:} Three
+        novice users complete the simulated end-to-end flow in $\leq$ 30 minutes each.
+\end{itemize}
+
 \subsection{Understandability and Politeness Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[USR-UP-1] \emph{Alerts shall include both the cause and an actionable
+          suggestion (e.g., “Tracking lost: try manual reselect”).}\\ \textbf{Rationale:}
+        Reduces cognitive load and speeds recovery.\\ \textbf{Fit Criterion:} Five
+        sampled alert types each contain a cause and a next-step recommendation.
+\end{itemize}
+
 \subsection{Accessibility Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[USR-AC-1] \emph{Minimum text size shall be 12\,pt; critical readouts shall be
+          $\geq$16\,pt; status indicators shall remain distinguishable under common
+          color-vision deficiencies.}\\ \textbf{Rationale:} Ensures legibility for
+        diverse users and conditions.\\ \textbf{Fit Criterion:} UI passes color-vision
+        simulations and size checks in a design audit.
+\end{itemize}
 
 \section{Performance Requirements}
 \subsection{Speed and Latency Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-SPD-1] \emph{End-to-end live streaming latency shall be $\leq$ 300\,ms
+          (p95); on-device preview latency shall be $\leq$ 100\,ms (p95).}\\
+        \textbf{Rationale:} Live production and manual intervention depend on low
+        latency.\\ \textbf{Fit Criterion:} Time-synchronized probes confirm p95 $\leq$
+        300\,ms (glass-to-glass) and p95 $\leq$ 100\,ms (local preview).
+
+  \item[PR-SPD-2] \emph{AI inference latency per frame shall be $\leq$ 50\,ms (p95) at
+          the target resolution.}\\ \textbf{Rationale:} Keeps the track-control loop
+        within the motion budget.\\ \textbf{Fit Criterion:} Profiling at the specified
+        model/resolution shows p95 $\leq$ 50\,ms.
+\end{itemize}
 \subsection{Safety-Critical Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-SF-1] \emph{Manual override shall preempt automated control at any time.}\\
+  \textbf{Rationale:} Ensures a safe fallback in ambiguous or degraded conditions.\\
+  \textbf{Fit Criterion:} In three injected-fault scenarios (loss, misdetection, link jitter), override takes effect within 200\,ms.
+\end{itemize}
 \subsection{Precision or Accuracy Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-ACU-1] \emph{During ascent, target detection/association accuracy shall be $\geq$ 75\% against human-labeled ground truth.}\\
+  \textbf{Rationale:} Guarantees usable footage and telemetry for analysis.\\
+  \textbf{Fit Criterion:} IoU or hit-rate metrics over ascent meet or exceed 75\%.
+\end{itemize}
 \subsection{Robustness or Fault-Tolerance Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-RB-1] \emph{After short occlusion or loss, the system shall attempt auto re-acquisition with p95 $\leq$ 1\,s; if unsuccessful, it shall prompt manual reselect.}\\
+  \textbf{Rationale:} Maintains lock through realistic field interruptions.\\
+  \textbf{Fit Criterion:} In 10 occlusion trials, p95 re-acquisition time $\leq$ 1\,s; UI exposes manual reselect on failure.
+\end{itemize}
+
 \subsection{Capacity Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-CAP-1] \emph{Local storage shall retain at least three complete launch sessions at 1080p@30 before requiring cleanup or offload.}\\
+  \textbf{Rationale:} Ensures sufficient retention for review and backup.\\
+  \textbf{Fit Criterion:} Three full sessions can be recorded and listed for playback/export without space errors.
+\end{itemize}
 \subsection{Scalability or Extensibility Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-SCL-1] \emph{The inference stack shall support ONNX deployment and TensorRT optimization.}\\
+  \textbf{Rationale:} Preserves portability and performance tuning headroom.\\
+  \textbf{Fit Criterion:} Models load and run via ONNX; TensorRT engine builds succeed for the target GPU.
+\end{itemize}
 \subsection{Longevity Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[PR-LNG-1] \emph{System endurance shall be $\geq$ 6 hours of continuous operation; daily operating cost shall be $<\$100$.}\\
+  \textbf{Rationale:} Matches event-day duty cycles and budget constraints.\\
+  \textbf{Fit Criterion:} Battery/Power tests show $\geq$ 6 hours; cost worksheet shows $<\$100$/day.
+\end{itemize}
 
 \section{Operational and Environmental Requirements}
+
 \subsection{Expected Physical Environment}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[OER-ENV-1] \emph{Operating temperature range shall be -10\,°C to 45\,°C; relative humidity up to 90\%.}\\
+  \textbf{Rationale:} Outdoor launch sites present cold, heat, and moisture.\\
+  \textbf{Fit Criterion:} Climatic tests at endpoints for 2 hours show stable operation without thermal shutdown.
+\end{itemize}
+
 \subsection{Wider Environment Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[OER-WE-1] \emph{The enclosure and cabling shall meet IP65 or better for dust and weather protection.}\\
+  \textbf{Rationale:} Wind, dust, and precipitation are common on ranges.\\
+  \textbf{Fit Criterion:} Provide test certificates or equivalent field test records meeting IP65 criteria.
+\end{itemize}
 \subsection{Requirements for Interfacing with Adjacent Systems}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[OER-INT-1] \emph{Provide an HDMI program feed and an IP stream compatible with common switchers/encoders; remote control range shall be $\geq$ 1\,km.}\\
+  \textbf{Rationale:} Integrates with broadcast rigs and supports distant safe operation.\\
+  \textbf{Fit Criterion:} Verified ingest into OBS/capture cards; stable remote control over a measured 1\,km link.
+\end{itemize}
+
 \subsection{Productization Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[OER-PZ-1] \emph{The field kit shall support integrated cabling and allow deployment/teardown within 15 minutes.}\\
+  \textbf{Rationale:} Minimizes schedule impact between flights.\\
+  \textbf{Fit Criterion:} Three drills show average deploy or teardown time $\leq$ 15 minutes.
+\end{itemize}
 \subsection{Release Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[OER-REL-1] \emph{Each public release shall include a parameter sheet and links to system, network, and power documentation.}\\
+  \textbf{Rationale:} Speeds onboarding of new crew and stakeholders.\\
+  \textbf{Fit Criterion:} Release bundle contains the parameter sheet and referenced chapters.
+\end{itemize}
 
 \section{Maintainability and Support Requirements}
+
 \subsection{Maintenance Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[MSR-MA-1] \emph{Thresholds for FPS, latency, and confidence shall be adjustable via configuration or admin UI without recompilation.}\\
+  \textbf{Rationale:} Facilitates tuning across sites and hardware.\\
+  \textbf{Fit Criterion:} Changes take effect without backend restart and within 60 seconds.
+\end{itemize}
+
 \subsection{Supportability Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[MSR-SP-1] \emph{Exportable logs shall include frame timestamps, tracking error, and event markers (e.g., ignition, staging, chute).}\\
+  \textbf{Rationale:} Enables post-flight analysis and issue triage.\\
+  \textbf{Fit Criterion:} After a launch, CSV/JSON with the three fields is available for download.
+\end{itemize}
+
 \subsection{Adaptability Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[MSR-AD-1] \emph{A gimbal-abstraction layer shall allow swapping at least three gimbals (indoor dev, outdoor weatherized, high-payload) without changing core tracking code.}\\
+  \textbf{Rationale:} Different contexts require different rigs.\\
+  \textbf{Fit Criterion:} All three gimbals pass pan/tilt/zoom command and calibration tests.
+\end{itemize}
 
 \section{Security Requirements}
+
 \subsection{Access Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-AC-1] \emph{Remote management UI shall require authentication; three consecutive failed logins shall trigger a lockout of at least 5 minutes.}\\
+  \textbf{Rationale:} Protects control paths exposed over the network.\\
+  \textbf{Fit Criterion:} Black-box tests confirm lockout after three failed attempts.
+\end{itemize}
+
 \subsection{Integrity Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-IN-1] \emph{Configurations and logs shall include checksums or signatures; control commands shall use authenticated channels.}\\
+  \textbf{Rationale:} Prevents tampering and unauthorized actuation.\\
+  \textbf{Fit Criterion:} Tampering is detected; unauthenticated devices cannot issue PTZ commands.
+\end{itemize}
+
 \subsection{Privacy Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-PV-1] \emph{Access to recordings and logs shall be role-based (Operator/Analyst/Admin) with least-privilege defaults.}\\
+  \textbf{Rationale:} Aligns access with duties while limiting exposure.\\
+  \textbf{Fit Criterion:} Role matrix is enforced in acceptance tests.
+\end{itemize}
+
 \subsection{Audit Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-AU-1] \emph{Audit logs shall record login, configuration changes, manual overrides, and deletion of recordings.}\\
+  \textbf{Rationale:} Supports accountability and incident reconstruction.\\
+  \textbf{Fit Criterion:} Each audited event contains actor, timestamp, action, and target.
+\end{itemize}
+
 \subsection{Immunity Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[SEC-IM-1] \emph{On communication loss or heavy jitter, the system shall enter a safe-hold state and avoid hazardous motion; upon recovery it shall reconnect smoothly.}\\
+  \textbf{Rationale:} Prevents unsafe behavior under network faults.\\
+  \textbf{Fit Criterion:} Injected 10+ second outages cause no dangerous actuation; control recovers automatically.
+\end{itemize}
 
 \section{Cultural Requirements}
-\subsection{Cultural Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[CUL-1] \emph{The product shall suit university competition settings: bilingual EN/FR/CN support and neutral, non-biased terminology in UI and logs.}\\
+  \textbf{Rationale:} Inclusive collaboration across teams and organizers.\\
+  \textbf{Fit Criterion:} Terminology review finds no culturally biased phrasing; EN/FR/CN toggle is available.
+\end{itemize}
 
 \section{Compliance Requirements}
+
 \subsection{Legal Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[CMP-LG-1] \emph{Recording, streaming, and data retention shall follow event and venue policies regarding image rights and privacy.}\\
+  \textbf{Rationale:} Ensures lawful operation at competitions and ranges.\\
+  \textbf{Fit Criterion:} A pre-event compliance checklist is reviewed and approved by the organizer.
+\end{itemize}
+
 \subsection{Standards Compliance Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[CMP-ST-1] \emph{Networking/interfaces shall use standard IP/HTTP and common video formats; AI deployment shall be compatible with ONNX and TensorRT.}\\
+  \textbf{Rationale:} Interoperability with broadcast tools and GPU inference stacks.\\
+  \textbf{Fit Criterion:} Ingest succeeds in mainstream encoders/capture tools; ONNX models load and run with TensorRT optimization.
+\end{itemize}
 
 \section{Open Issues}
 \lips
