@@ -11,9 +11,10 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{enumitem}
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
-      colorlinks=true,      % false: boxed links; true: colored links
+    colorlinks=true,        % false: boxed links; true: colored links
     linkcolor=red,          % color of internal links (change box color with linkbordercolor)
     citecolor=green,        % color of links to bibliography
     filecolor=magenta,      % color of file links
@@ -27,7 +28,7 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: subtitle describing software}
+\title{Software Requirements Specification for \progname: High Performance Vision-Guided Rocket Tracker}
 \author{\authname}
 \date{\today}
 
@@ -54,44 +55,228 @@
 ~\newpage
 \section{Purpose of the Project}
 \subsection{User Business}
-\lips
+
+Student and amateur rocketry teams, launch organizers, and technical judges
+need reliable, high-fidelity visual evidence of rocket flights to analyze
+staging behavior, parachute deployment, and flight anomalies that occur at
+extreme speeds and altitudes. Manual camera operation is impractical in these
+conditions, and existing tools (manual PTZ/GPS-centric systems) often fail to
+maintain visual lock on small, fast-moving vehicles. The project addresses this
+gap with an autonomous, vision-based tracking camera designed to lock onto and
+follow rockets from launch through early descent, providing real-time and
+recorded footage for post-flight analysis and event operations.
+
+Beyond a single event, the system is intended to integrate into ground
+operations for student and commercial launches, strengthening Canada’s student
+rocketry and broader aerospace ecosystem by improving diagnostics,
+documentation, and training outcomes.
+
+From a commercialization lens, the solution targets academic rocketry
+competitions first (where capable tracking is scarce or costly), then expands
+toward high-power amateur and small-launch markets. Differentiation rests on
+fully autonomous visual tracking and robust re-identification under sub-optimal
+conditions, opening paths to kit/service offerings and SaaS add-ons (cloud
+analytics, model updates).
+
 \subsection{Goals of the Project}
-\lips
+
+The goal of the project is to track small-scale model rocket launches with
+apogee \textless 200m, while achieving all the performance objectives.
+
 \section{Stakeholders}
+
 \subsection{Client}
-\lips
+
+The client of this project is McMaster Rocketry Team. they are the primary end
+users who will deploy the system during launches. They depend on accurate
+real-time tracking to analyze staging, parachute deployment, and overall flight
+performance.
+
 \subsection{Customer}
-\lips
+
+\begin{enumerate}
+  \item \textbf{Aerospace Engineers and Researchers}: Benefit from
+        high-quality flight footage to validate models, improve rocket
+        designs, and support experimental research.
+
+  \item \textbf{Event Organizers and Safety Officers}: Rely on
+        reliable tracking for live monitoring of rocket flights,
+        particularly for confirming parachute deployment and safe
+        recovery during launch events.
+
+  \item \textbf{Engineering and Robotics Community}: May adapt the
+        system's design principles for other domains requiring precise
+        tracking of fast-moving objects, such as UAV navigation, sports
+        analytics, or autonomous robotics.
+
+  \item \textbf{Potential Commercial and Industrial Users}: Could
+        adopt the system for broader applications in surveillance,
+        wildlife monitoring, or industrial inspections where real-time
+        vision-guided tracking is valuable.
+\end{enumerate}
+
 \subsection{Other Stakeholders}
-\lips
+
+\begin{enumerate}
+  \item \textbf{Dr. Shahin Sirouspour (Supervisor)}: Provides
+        technical guidance, project oversight, and mentorship. Ensures
+        the project aligns with academic standards, engineering best
+        practices, and capstone deliverable expectations.
+\end{enumerate}
+
 \subsection{Hands-On Users of the Project}
-\lips
+
+The only hands on user of the project would be the camera operator, which can
+be any one of the stakeholders or anyone else tasked by one of the
+stakeholders. The camera operator controls the camera through the UI,
+starts/stops recordings, manages lock-on/target selection, and monitors
+preview.
+
 \subsection{Personas}
-\lips
+
+\subsubsection*{Alex Chen}
+
+\textbf{Age}: 22
+
+\textbf{Job Title}: Camera Operator
+
+\textbf{Education}: B.Eng. candidate (Electrical/Mechatronics)
+
+\textbf{Work Environment}: Outdoor launch range; tripod/gimbal on uneven terrain;
+laptop/tablet UI at the ground station; radio comms with Mission Control.
+
+\textbf{Professional Background}: Operates field equipment for the rocketry team; basic
+Linux/Jetson administration; familiar with gimbals, lens swaps, focus checks,
+and safety procedures.
+
+\textbf{Need}: Fast setup and calibration; immediate lock-on
+after launch cue; low-latency preview that stays readable in bright sunlight;
+simple controls for start/stop recording and target selection; clear
+system-state indicators (ready/locked/error).
+
+\textbf{Challenges}: Harsh conditions
+(wind, glare, dust, cold); intermittent power/network; gloves reduce fine
+control; pressure at T-0; distance from pad complicates cabling; strict range
+safety rules.
+
+\subsubsection*{Maya Patel}
+
+\textbf{Age}: 24
+
+\textbf{Job Title}: Flight Performance Analyst (Rocketry Team)
+
+\textbf{Education}: B.Eng. (Software/Controls) or Honours Physics; heavy MATLAB/Python use
+
+\textbf{Work Environment}: Post-flight lab analysis; imports footage + telemetry into scripts and reports.
+
+\textbf{Professional Background}: Builds tooling to study staging timing, parachute events, and stability; integrates video with onboard logs.
+
+\textbf{Need}: Time-synchronized 1080p60 footage with frame timestamps; exports of gimbal azimuth/elevation vs. time (CSV/JSON); markers for detected events (ignition, staging, chute) and easy clip extraction; consistent file naming and metadata for repeatable analyses.
+
+\textbf{Challenges}: Clock drift between video and sensors; dropped frames; incomplete metadata; inconsistent camera calibration notes; large file sizes slowing transfer and processing.
+
+\subsubsection*{Jordan Lee}
+
+\textbf{Age}: 59
+
+\textbf{Job Title}: Event Organizer / Live Stream Technician
+
+\textbf{Education}: College diploma or industry certifications (broadcast/AV)
+
+\textbf{Work Environment}: Control tent; HDMI/SDI switcher or OBS rig; long Ethernet runs; noisy RF environment.
+
+\textbf{Professional Background}: Manages livestreams at student launches; coordinates feeds from multiple cameras to a program output.
+
+\textbf{Need}: Clean 1080p60 video feed compatible with common switchers/encoders; stable, low end-to-end latency preview; obvious health/status indicators; quick, safe setup between flights; minimal operator steps to get a reliable program feed.
+
+\textbf{Challenges}: RF congestion and interference; power distribution limits; weatherproofing; cable management over long distances; ensuring the tracking feed doesn’t drop mid-event; coordinating with safety calls and launch cadence.
+
 \subsection{Priorities Assigned to Users}
-\lips
+
+\textbf{Key Users}: Flight Performance Analyst, Safety Officer, Camera Operator
+
+\textbf{Secondary User}: Event Organizer
+
 \subsection{User Participation}
-\lips
+
+Through out the development process, the development team will reach out to
+users to gather requirements and feedback on usability.
+
 \subsection{Maintenance Users and Service Technicians}
-\lips
+
+Due to the nature of this project as a capstone requirement, there are
+currently no expected maintenance users
 
 \section{Mandated Constraints}
 \subsection{Solution Constraints}
-\lips
+
+\begin{enumerate}[label=MD-SL \arabic*., wide=0pt, leftmargin=*]
+  \item \emph{The system must be hands-off (autonomous) from ignition through rocket landing.}\\[2mm]
+        {\bf Rationale:} During live launches, human operators must prioritize range safety and situational awareness; approaching the camera or issuing fine controls during ascent/descent is unsafe and impractical due to line-of-sight, blast hazards, and rapid dynamics. Environmental factors (wind, glare, dust, acoustic vibration) also degrade manual operation at critical moments.\\
+        {\bf Fit Criterion:} From ignition detection until a declared “landing/clear” signal, the system performs target detection, tracking, zoom/FOV management, and recording without requiring any manual pan/tilt/zoom commands. Event logs show no manual overrides in this window; tracked target remains within a defined bounding box around frame center (e.g., ±10\% of width/height) for $\ge$80\% of observable flight time.
+
+  \item \emph{The system must be remote controllable.}\\[2mm]
+        {\bf Rationale:} The camera and gimbal may need to be positioned near hazardous zones (pad, ballistic landing corridors) or at distant vantage points with no safe operator access during the countdown and flight. Remote setup, arming, health checks, and teardown reduce personnel exposure and allow operation from a protected control area.\\
+        {\bf Fit Criterion:} All pre-/post-flight operations (boot, status, calibration checks, arming, recording start/stop, data offload) are executable over a network link (wired or long-run Ethernet) from the control station. Authentication is required; a complete session can be performed with no physical interaction at the camera site once deployed.
+
+  \item \emph{The system must output a live video stream via HDMI.}\\[2mm]
+        {\bf Rationale:} The event’s broadcast/recording workflow and on-site switchers/encoders accept HDMI as the integration standard; alternative connectors (e.g., SDI/USB/UVC-only) would require additional, failure-prone adapters and complicate field cabling.\\
+        {\bf Fit Criterion:} A stable, clean (non-OSD) HDMI program feed at 1920×1080@60\,fps is available at the control station for the duration of the launch window. The feed syncs with common mixers/encoders (e.g., OBS/capture cards) without HDCP or proprietary handshakes and remains within acceptable glass-to-glass latency for live use.
+
+  \item \emph{The solution must provide a flexible interface to support multiple gimbal systems.}\\[2mm]
+        {\bf Rationale:} Different test contexts require different hardware: lighter indoor rigs for algorithm development, weatherized outdoor rigs for launches, and varying payload (camera/lens) masses. A hardware-abstraction layer reduces rework and enables swapping gimbals without changing core tracking logic.\\
+        {\bf Fit Criterion:} A documented gimbal adapter interface (API/protocol bindings) supports at least: (a) an indoor development gimbal, (b) an outdoor launch-capable gimbal, and (c) a higher-payload option. For each, the system can command pan/tilt/zoom, read state, and complete calibration; end-to-end control latency remains within the tracking budget, and per-gimbal mounting/calibration data can be loaded without code changes.
+\end{enumerate}
+
 \subsection{Implementation Environment of the Current System}
-\lips
+
+There are no constrains on the hardware platform the project need to use or run
+on.
+
 \subsection{Partner or Collaborative Applications}
-\lips
+
+none
+
 \subsection{Off-the-Shelf Software}
-\lips
+
+none
+
 \subsection{Anticipated Workplace Environment}
-\lips
+
+what is this?
+
 \subsection{Schedule Constraints}
-\lips
+
+\begin{enumerate}[label=SCHD \arabic*., wide=0pt, leftmargin=*]
+  \item \emph{The project shall be completed by April 2026, with
+          interim deadlines for key milestones such as Proof of Concept
+          (November 2025) and the final demonstration (March 2026).}\\[2mm]
+        {\bf Rationale:} These deadlines are based on the academic
+        timeline and the expectations of the capstone course.\\
+        {\bf Fit Criterion:} All project components must be completed and
+        fully functional by the final demonstration in March 2026.
+\end{enumerate}
+
 \subsection{Budget Constraints}
-\lips
+
+\begin{enumerate}[label=BDGT \arabic*., wide=0pt, leftmargin=*]
+  \item \emph{The project shall not exceed the budget of 500CAD}\\[2mm]
+        {\bf Rationale:} Limited by the capstone project requirement\\
+        {\bf Fit Criterion:} The project must be implemented using free
+        tools and libraries and hosted on GitHub.
+\end{enumerate}
+
 \subsection{Enterprise Constraints}
-\lips
+
+\begin{enumerate}[label=ENTP \arabic*., wide=0pt, leftmargin=*]
+  \item \emph{The product shall be built to comply with the standards
+          of McMaster University's capstone project requirements and
+          academic integrity policies.}\\[2mm]
+        {\bf Rationale:} The project is part of the university's
+        curriculum and must adhere to its standards.\\
+        {\bf Fit Criterion:} The product must meet the requirements
+        specified by the course syllabus and project advisor.
+\end{enumerate}
 
 \section{Naming Conventions and Terminology}
 \subsection{Glossary of All Terms, Including Acronyms, Used by Stakeholders
@@ -100,11 +285,16 @@
 
 \section{Relevant Facts And Assumptions}
 \subsection{Relevant Facts}
-\lips
+
+not applicable
+
 \subsection{Business Rules}
-\lips
+
+not applicable
+
 \subsection{Assumptions}
-\lips
+
+not applicable
 
 \section{The Scope of the Work}
 \subsection{The Current Situation}
