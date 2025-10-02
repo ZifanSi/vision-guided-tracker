@@ -411,7 +411,16 @@ not applicable
 
 \section{Look and Feel Requirements}
 \subsection{Appearance Requirements}
-\lips
+\begin{itemize}[leftmargin=*]
+  \item[LFR-AP-1] \emph{The dashboard shall use a light background with high-contrast status colors (green=Ready, amber=Armed, red=Fault/Lost).}\\
+  \textbf{Rationale:} Improves readability under bright outdoor lighting and noisy environments.\\
+  \textbf{Fit Criterion:} In a 300-lux outdoor setting, at least 19 out of 20 status checks by five users are correctly identified within 2 seconds.
+
+  \item[LFR-AP-2] \emph{Key readouts (FPS, end-to-end latency estimate, tracking confidence) shall be visible in the main view without scrolling on a 1080p display.}\\
+  \textbf{Rationale:} Operators need immediate awareness of system health and tracking quality.\\
+  \textbf{Fit Criterion:} On a 1920×1080 monitor, all three readouts are simultaneously visible in the primary screen.
+\end{itemize}
+
 \subsection{Style Requirements}
 \lips
 
