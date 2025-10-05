@@ -315,8 +315,11 @@ The following is a list of primary risks to consider for the PoC:
         \end{itemize}
   \item The STM32 may not deliver real-time control to the camera.
         \begin{itemize}
-          \item If this occurs, we will consider using a more powerful microcontroller, or a
-                different control technique.
+        \item If this occurs, we will optimize the existing model, consider using a more
+            powerful board such as the \href{https://developer.nvidia.com/embedded/jetson-xavier-nx}{NVIDIA Jetson Xavier NX},
+            lower the frame rate, or use a traditional algorithmic approach
+            that detects motion via pixel-wise image comparison.
+
         \end{itemize}
   \item Integration of the frontend, backend, computer vision model, and
         microcontroller may be more difficult than expected.
