@@ -30,7 +30,7 @@
     Sept. 10, 2025 & Jianqing Liu          & Refine inputs, outputs, and goals \\
     Sept. 12, 2025 & Jianqing Liu          & Update Depolyment Environment     \\
     Sept. 13, 2025 & Xiaotian Lou          & Update Citation                   \\
-    Oct.  4,  2025 & Zifan Si              & Fix based on TA feedback                   \\
+    Oct.  4,  2025 & Zifan Si              & Fix based on TA feedback          \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -38,17 +38,16 @@
 \newpage{}
 
 \section{Problem Statement}
-The problem statement outlines the motivation and context behind our project, ROCAM
-(High Performance Vision-Guided Rocket Tracker). It defines the specific
+The problem statement outlines the motivation and context behind our project,
+ROCAM (High Performance Vision-Guided Rocket Tracker). It defines the specific
 engineering problem of achieving reliable, real-time visual tracking for
-small-scale model rockets using a gimbal-mounted optical camera system.
-It also identifies the inputs and outputs of ROCAM, such as live camera
-feeds, gimbal state data, and stabilized video streams, and states the
-performance objectives and key stakeholders involved in its development.
-The goal is to enable accurate mid-flight observation for analysis of
-staging and parachute deployment, thereby improving both safety and
-performance in future rocket launches.
-
+small-scale model rockets using a gimbal-mounted optical camera system. It also
+identifies the inputs and outputs of ROCAM, such as live camera feeds, gimbal
+state data, and stabilized video streams, and states the performance objectives
+and key stakeholders involved in its development. The goal is to enable
+accurate mid-flight observation for analysis of staging and parachute
+deployment, thereby improving both safety and performance in future rocket
+launches.
 
 \wss{You should check your problem statement with the
   \href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
@@ -70,8 +69,8 @@ Model rockets travel at very high speeds, sometimes faster than Mach 3 and over
 100 km in altitude \citep{SpaceConcordiaRocketry2025}. Under these conditions,
 manual camera tracking is not possible.
 
-Tracking a small model rocket is even harder than tracking large rockets such as
-the Falcon 9. Smaller size and uncontrolled launch conditions make accurate
+Tracking a small model rocket is even harder than tracking large rockets such
+as the Falcon 9. Smaller size and uncontrolled launch conditions make accurate
 detection and continuous tracking much more difficult.
 
 Some commercial tracking systems exist \citep{AverTR3XX2021}, but they lack the
@@ -79,13 +78,13 @@ speed and precision needed for small, fast-moving rockets. To address this gap,
 our project, ROCAM, aims to develop a real-time camera tracking system that can
 automatically follow model rockets during flight for clear mid-air observation.
 
-
 \subsection{Inputs and Outputs}
 \begin{itemize}
   \item \textbf{Inputs}
         \begin{itemize}
           \item Realtime camera feed of the rocket during flight
-          \item State information from the camera gimbal (a motorized mount that stabilizes and aims the camera)
+          \item State information from the camera gimbal (a motorized mount that stabilizes and
+                aims the camera)
           \item Manual camera gimbal adjustment commands from user
         \end{itemize}
 
@@ -101,7 +100,8 @@ automatically follow model rockets during flight for clear mid-air observation.
 \label{sec:performance}
 
 \begin{itemize}
-  \item The system should be able to process a 1080p 60 fps input video feed from the camera
+  \item The system should be able to process a 1080p 60 fps input video feed from the
+        camera
   \item The System should be able to output 1080p 60fps to the live streaming equipment
   \item Real time video preview should be at least 15fps
 \end{itemize}
@@ -110,15 +110,14 @@ automatically follow model rockets during flight for clear mid-air observation.
 
 \subsubsection*{Direct Stakeholders}
 \begin{enumerate}
-    \item \textbf{McMaster Rocketry Team}: The primary end users who will deploy
-    the system during launches. They rely on accurate real-time tracking to analyze
-    staging events, parachute deployment, and overall flight performance.
+  \item \textbf{McMaster Rocketry Team}: The primary end users who will deploy
+        the system during launches. They rely on accurate real-time tracking to analyze
+        staging events, parachute deployment, and overall flight performance.
 
-    \item \textbf{Faculty Supervisor}: Provides technical guidance, project
-    oversight, and mentorship. Dr.~Shahin Sirouspour serves in this role, ensuring
-    that the project aligns with academic standards, engineering best practices,
-    and capstone deliverable expectations.
-
+  \item \textbf{Faculty Supervisor}: Provides technical guidance, project
+        oversight, and mentorship. Dr.~Shahin Sirouspour serves in this role, ensuring
+        that the project aligns with academic standards, engineering best practices,
+        and capstone deliverable expectations.
 
 \end{enumerate}
 
@@ -162,7 +161,6 @@ maintain a stable visual lock on the rocket using a motorized gimbal, process a
 stabilized footage. By meeting these goals, ROCAM will provide clear mid-flight
 visual data to support analysis of staging events, parachute deployment, and
 overall flight performance.
-
 
 \section{Stretch Goals}
 
@@ -210,8 +208,21 @@ understand how to use the system.
 
 \section*{Appendix --- Reflection}
 
-Our team collaborated effectively on this deliverable, maintaining clear communication and giving constructive feedback to improve each section. The writing process went smoothly overall, and adding the “Performance Objectives” section helped clarify what we meant by high performance and made our project goals more specific. Some challenges arose, such as defining what “high performance” should mean for our system and deciding how complex the implementation should be, but we discussed these issues together and reached a clear, realistic definition supported by measurable goals. Learning to write in \LaTeX{} and follow the template format also took time, but sharing examples and helping one another fixed most formatting issues quickly. As the main editor, keeping everyone’s updates synchronized before the deadline was difficult, so we set small internal deadlines and used GitHub to track edits efficiently. Overall, the team worked cohesively, divided tasks fairly, and refined the document through supervisor and TA feedback to produce a clear and well-organized final version.
-
+Our team collaborated effectively on this deliverable, maintaining clear
+communication and giving constructive feedback to improve each section. The
+writing process went smoothly overall, and adding the “Performance Objectives”
+section helped clarify what we meant by high performance and made our project
+goals more specific. Some challenges arose, such as defining what “high
+performance” should mean for our system and deciding how complex the
+implementation should be, but we discussed these issues together and reached a
+clear, realistic definition supported by measurable goals. Learning to write in
+\LaTeX{} and follow the template format also took time, but sharing examples
+and helping one another fixed most formatting issues quickly. As the main
+editor, keeping everyone’s updates synchronized before the deadline was
+difficult, so we set small internal deadlines and used GitHub to track edits
+efficiently. Overall, the team worked cohesively, divided tasks fairly, and
+refined the document through supervisor and TA feedback to produce a clear and
+well-organized final version.
 
 \bibliographystyle{plainnat}
 \bibliography{../../refs/References}
