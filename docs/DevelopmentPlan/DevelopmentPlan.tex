@@ -140,10 +140,7 @@ would leave gaps in how we share information.
   not necessary at this stage.  In a student team the role of the individuals will
   likely change throughout the year.}
 
-The following roles have been defined for the team. These roles are not fixed and may
-rotate as the project progresses to balance workload and skill development.
-However, an initial assignment has been made based on each member’s strengths and
-availability.
+The roles are not fixed, since workload, availability, and project needs will change over the term.
 
 \begin{itemize}
   \item \textbf{Project Manager}: Oversees project timeline, coordinates tasks between team members, manages deliverables and deadlines, and serves as primary point of contact with supervisor and stakeholders.
@@ -308,28 +305,29 @@ The following is a list of primary risks to consider for the PoC:
   \item The computer vision system may not process images at a sufficient frame rate.
         \begin{itemize}
           \item If this occurs, we will optimize the existing model, consider using a more
-                powerful board, lower the frame rate, or use a traditional algorithmic approach
-                that detects motion via pixel-wise image comparison.
-          \item We also reserve the option to use models trained for a specific set of objects
-                to increase throughput.
+                powerful board such as the \href{https://developer.nvidia.com/embedded/jetson-xavier-nx}{NVIDIA Jetson Xavier NX},
+                lower the frame rate, or switch to traditional algorithmic methods
+                (e.g., frame differencing, background subtraction, optical flow).
+          \item We also reserve the option to use models trained for a narrower class of targets
+                (e.g., rockets only) to increase throughput.
         \end{itemize}
+
   \item The STM32 may not deliver real-time control to the camera.
         \begin{itemize}
-        \item If this occurs, we will optimize the existing model, consider using a more
-            powerful board such as the \href{https://developer.nvidia.com/embedded/jetson-xavier-nx}{NVIDIA Jetson Xavier NX},
-            lower the frame rate, or use a traditional algorithmic approach
-            that detects motion via pixel-wise image comparison.
-
+          \item If this occurs, we will optimize the control firmware and scheduling, migrate to a
+                higher-performance MCU (e.g., \textit{STM32H7} or \textit{Teensy 4.1}),
+                and/or offload time-critical loops to dedicated motor drivers with hardware timers.
         \end{itemize}
-  \item Integration of the frontend, backend, computer vision model, and
-        microcontroller may be more difficult than expected.
+
+  \item Integration of the frontend, backend, computer vision model, and microcontroller may be more difficult than expected.
         \begin{itemize}
-        \item If this occurs, we will consider using a more powerful integrated single-board
-            computer such as the \href{https://developer.nvidia.com/embedded/jetson-xavier-nx}{NVIDIA Jetson Xavier NX},
-            deploying certain components via cloud computation if network conditions allow,
-            or redesigning our control flow to simplify integration and reduce local processing load.
+          \item If this occurs, we will consider using a more powerful integrated SBC such as the
+                \href{https://developer.nvidia.com/embedded/jetson-xavier-nx}{Jetson Xavier NX},
+                deploying selected components via cloud computation if network conditions allow,
+                or redesigning the control flow to reduce coupling and local processing load.
         \end{itemize}
 \end{enumerate}
+
 
 Other smaller risks to consider:
 \begin{enumerate}
