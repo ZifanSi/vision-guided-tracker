@@ -30,6 +30,7 @@
     Sept. 10, 2025 & Jianqing Liu          & Refine inputs, outputs, and goals \\
     Sept. 12, 2025 & Jianqing Liu          & Update Depolyment Environment     \\
     Sept. 13, 2025 & Xiaotian Lou          & Update Citation                   \\
+    Oct.  4,  2025 & Zifan Si              & Fix based on TA feedback          \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -37,6 +38,16 @@
 \newpage{}
 
 \section{Problem Statement}
+The problem statement outlines the motivation and context behind our project,
+ROCAM (High Performance Vision-Guided Rocket Tracker). It defines the specific
+engineering problem of achieving reliable, real-time visual tracking for
+small-scale model rockets using a gimbal-mounted optical camera system. It also
+identifies the inputs and outputs of ROCAM, such as live camera feeds, gimbal
+state data, and stabilized video streams, and states the performance objectives
+and key stakeholders involved in its development. The goal is to enable
+accurate mid-flight observation for analysis of staging and parachute
+deployment, thereby improving both safety and performance in future rocket
+launches.
 
 \wss{You should check your problem statement with the
   \href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
@@ -58,30 +69,30 @@ Model rockets travel at very high speeds, sometimes faster than Mach 3 and over
 100 km in altitude \citep{SpaceConcordiaRocketry2025}. Under these conditions,
 manual camera tracking is not possible.
 
-Tracking a small model rocket is even harder than tracking large rockets suchas
-the Falcon 9. Smaller size and uncontrolled launch conditions make accurate
+Tracking a small model rocket is even harder than tracking large rockets such
+as the Falcon 9. Smaller size and uncontrolled launch conditions make accurate
 detection and continuous tracking much more difficult.
 
-Some commercial tracking systems exist \citep{AverTR3XX2021}, but they do not
-have the accuracy or speed needed to follow small, fast-moving rockets. This
-gap shows the need for a dedicated system that can provide clear, real-time
-observation of rocket flights.
+Some commercial tracking systems exist \citep{AverTR3XX2021}, but they lack the
+speed and precision needed for small, fast-moving rockets. To address this gap,
+our project, ROCAM, aims to develop a real-time camera tracking system that can
+automatically follow model rockets during flight for clear mid-air observation.
 
 \subsection{Inputs and Outputs}
 \begin{itemize}
   \item \textbf{Inputs}
         \begin{itemize}
-          \item Realtime camera feed
-          \item State information from gimbal
+          \item Realtime camera feed of the rocket during flight
+          \item State information from the camera gimbal (a motorized mount that stabilizes and
+                aims the camera)
           \item Manual camera gimbal adjustment commands from user
         \end{itemize}
 
   \item \textbf{Outputs}
         \begin{itemize}
-          \item Camera gimbal adjustment commands to maintain visual lock of the rocket
-          \item Realtime video preview for the operator
-          \item Realtime stabilized video output to the live streaming equipment
-          \item Recorded video with the rocket centered in frame
+          \item Commands that move the camera gimbal to keep the rocket in frame
+          \item Real time video preview for the operator
+          \item Real time stabilized video output to the live streaming equipment
         \end{itemize}
 \end{itemize}
 
@@ -89,27 +100,28 @@ observation of rocket flights.
 \label{sec:performance}
 
 \begin{itemize}
-  \item System should be able to handle 1080p 60fps camera feed
-  \item System should be able to output 1080p 60fps to the live streaming equipment
-  \item Realtime video preview should be at least 15fps
+  \item The system should be able to process a 1080p 60 fps input video feed from the
+        camera
+  \item The System should be able to output 1080p 60fps to the live streaming equipment
+  \item Real time video preview should be at least 15fps
 \end{itemize}
 
 \subsection{Stakeholders}
 
-\subsubsection*{\color{blue}{Direct Stakeholders}}
+\subsubsection*{Direct Stakeholders}
 \begin{enumerate}
-  \item \textbf{McMaster Rocketry Team}: The primary end users who
-        will deploy the system during launches. They depend on accurate
-        real-time tracking to analyze staging, parachute deployment, and
-        overall flight performance.
+  \item \textbf{McMaster Rocketry Team}: The primary end users who will deploy
+        the system during launches. They rely on accurate real-time tracking to analyze
+        staging events, parachute deployment, and overall flight performance.
 
-  \item \textbf{Dr. Shahin Sirouspour (Supervisor)}: Provides
-        technical guidance, project oversight, and mentorship. Ensures
-        the project aligns with academic standards, engineering best
-        practices, and capstone deliverable expectations.
+  \item \textbf{Faculty Supervisor}: Provides technical guidance, project
+        oversight, and mentorship. Dr.~Shahin Sirouspour serves in this role, ensuring
+        that the project aligns with academic standards, engineering best practices,
+        and capstone deliverable expectations.
+
 \end{enumerate}
 
-\subsubsection*{\color{blue}{Indirect Stakeholders}}
+\subsubsection*{Indirect Stakeholders}
 \begin{enumerate}
   \item \textbf{Aerospace Engineers and Researchers}: Benefit from
         high-quality flight footage to validate models, improve rocket
@@ -141,9 +153,14 @@ observation of rocket flights.
 
 \section{Goals}
 
-The goal of the project is to track small-scale model rocket launches with
-apogee \textless 200m, while achieving all the performance objectives listed in
-Section \ref{sec:performance}.
+The goal of this project is to design and implement ROCAM, a real-time camera
+tracking system that automatically detects and follows small-scale model
+rockets during launch, ascent, and descent (apogee < 200 m). The system aims to
+maintain a stable visual lock on the rocket using a motorized gimbal, process a
+1080p 60 fps video feed in real time, and output both live and recorded
+stabilized footage. By meeting these goals, ROCAM will provide clear mid-flight
+visual data to support analysis of staging events, parachute deployment, and
+overall flight performance.
 
 \section{Stretch Goals}
 
@@ -157,6 +174,13 @@ Section \ref{sec:performance}.
 \end{itemize}
 
 \section{Extras}
+In addition to the core goals of ROCAM, our team plans to include a few
+value-added components that enhance the overall quality and usability of the
+system. These extras aim to demonstrate practical integration between hardware
+and software, improve accessibility for end users, and provide clearer insight
+into the system’s design and operation. The selected extras include the design
+of the control circuit used to drive the gimbal actuators and the creation of a
+user instructional video for system setup and operation.
 
 \wss{Teams may wish to include extras as either potential bonus grades, or to
   make up for a less advanced challenge level.  Potential extras
@@ -170,9 +194,10 @@ Section \ref{sec:performance}.
 
 \subsection{Circuit Design}
 
-As this project require to use of a mechanical gimbal, electrical circuit is
-needed to interface between the host computer and the actuators. A seperate
-document will be authored to detail the circuit design.
+As this project requires the use of a mechanical gimbal, an electrical circuit
+is needed to interface between the host computer and the gimbal actuators. The
+circuit will handle motor control, feedback sensing, and communication with the
+main software to enable precise and stable camera movement.
 
 \subsection{User Instructional Video}
 
@@ -183,59 +208,21 @@ understand how to use the system.
 
 \section*{Appendix --- Reflection}
 
-\wss{Not required for CAS 741}
-
-\input{../Reflection.tex}
-
-\begin{enumerate}
-  \item What went well while writing this deliverable?
-  \item What pain points did you experience during this deliverable, and how did you
-        resolve them?
-  \item How did you and your team adjust the scope of your goals to ensure they are
-        suitable for a Capstone project (not overly ambitious but also of appropriate
-        complexity for a senior design project)?
-\end{enumerate}
-
-\subsection*{\color{blue}{Jianqing Liu}}
-
-I'm responsible for drafting most of the sections of this deliverable except
-stakeholders and environment. Section 1.1 "Problem" is actually the most
-difficult section to write, as the field of model rocketry is not familiar to
-most people. I showed that section to multiple people and modified it based on
-the feedback. I had to add a "Performance Objectives" section to further
-specify the "high-performance" part of the project, which is not in the
-original template, but I think it worked out well. I had some disagreements
-with my teammates on the enviroument section, but we cleared up the differences
-by talking to a TA. Luckly, no adjustments to the project goals were needed.
-\subsection*{\color{blue}{Xiaotian Lou}}
-\begin{description}
-  \item[\textit{What went well while writing this deliverable?}]
-        Our team started with a clear objective and a lightweight task
-        management plan, which helped keep ownership visible and discussions
-        focused. We also successfully connected with a faculty advisor relevant
-        to our domain. Team communication was smooth and inclusive; ideas were
-        surfaced early, discussed openly, and consolidated into a shared view
-        without blocking progress.
-
-  \item[\textit{What pain points did you experience during this deliverable, and how did you resolve them?}]
-        Authoring in \LaTeX{} was initially time--consuming and a bit
-        frustrating. We mitigated this by adopting editor plugins, templates,
-        and a simple compile pipeline. Conceptually, a few sections felt vague
-        at first; we resolved this through multiple short meetings, refining
-        definitions, assumptions, and success criteria until the problem
-        framing was concrete.
-
-\end{description}
-
-\subsection{\color{blue}{Shike Chen}}
-
-The team is very cohesive with a clear goal on our project. It was very easy
-for us to identify our objectives. The only struggle invovled in this
-deliverable is the standards to "high-performance". The definition of
-"high-performance" largely dictates the complexity of the project. In order to
-constrain the scope of the project and ensure the project is suitable for a
-Capstone project, we added some constrains and extra goals to confine the
-domain of "high-performance".
+Our team collaborated effectively on this deliverable, maintaining clear
+communication and giving constructive feedback to improve each section. The
+writing process went smoothly overall, and adding the “Performance Objectives”
+section helped clarify what we meant by high performance and made our project
+goals more specific. Some challenges arose, such as defining what “high
+performance” should mean for our system and deciding how complex the
+implementation should be, but we discussed these issues together and reached a
+clear, realistic definition supported by measurable goals. Learning to write in
+\LaTeX{} and follow the template format also took time, but sharing examples
+and helping one another fixed most formatting issues quickly. As the main
+editor, keeping everyone’s updates synchronized before the deadline was
+difficult, so we set small internal deadlines and used GitHub to track edits
+efficiently. Overall, the team worked cohesively, divided tasks fairly, and
+refined the document through supervisor and TA feedback to produce a clear and
+well-organized final version.
 
 \bibliographystyle{plainnat}
 \bibliography{../../refs/References}

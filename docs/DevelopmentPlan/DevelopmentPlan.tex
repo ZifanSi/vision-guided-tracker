@@ -140,6 +140,9 @@ would leave gaps in how we share information.
   not necessary at this stage.  In a student team the role of the individuals will
   likely change throughout the year.}
 
+The roles are not fixed, since workload, availability, and project needs will
+change over the term.
+
 \begin{itemize}
   \item \textbf{Project Manager}: Oversees project timeline, coordinates tasks between team members, manages deliverables and deadlines, and serves as primary point of contact with supervisor and stakeholders.
   \item \textbf{Meeting Chair}: Leads team meetings, prepares agendas, ensures discussions stay on track, facilitates decision-making, and manages meeting time effectively.
@@ -155,16 +158,28 @@ and someone to check the quality of our work (Quality Assurance). Together,
 they cover planning, communication, documentation, and review, so nothing
 important is left out.
 
+% Part 7
 \section{Workflow Plan}
+
+The workflow plan defines how our team manages development, collaboration, and
+quality assurance throughout the project. We use GitHub as the central platform
+for version control, issue tracking, and code review. Each task follows a
+structured process from planning to completion, ensuring that work remains
+transparent and traceable. This plan balances organization and efficiency — it
+enforces accountability while keeping overhead minimal. Major features follow a
+formal review-based process, while minor changes can be handled through a
+faster, simplified workflow. This structure helps the team maintain
+consistency, avoid merge conflicts, and ensure that all code entering the main
+branch meets the team’s quality standards.
 
 \subsection{Normal Features}
 
 \begin{enumerate}
   \item Planning
         \begin{enumerate}
-          \item Create an issue in GitHub Projects under "Backlog" using an appropriate
+          \item Create an issue in GitHub Projects under \texttt{Backlog} using an appropriate
                 template (bug or enhancement), and assign it to the correct subproject.
-          \item Backlog issues will be discussed during meetings to refine scope and
+          \item \texttt{Backlog} issues will be discussed during meetings to refine scope and
                 requirements.
           \item If the issue is approved for development, assign an owner and a deadline, then
                 move it into "Todo".
@@ -210,6 +225,7 @@ make sure mistakes get caught early. Using GitHub Projects ties everything toget
 so planning, coding, and reviewing all stay in one place. More complicated processes
 would just slow us down, while skipping steps would risk bugs and confusion.
 
+% Part 8
 \section{Project Decomposition and Scheduling}
 
 This project is decomposed into the following subprojects:
@@ -226,7 +242,8 @@ GitHub Projects is used for project management and can be accessed
 \href{https://github.com/users/ZifanSi/projects/1}{here}.
 
 While development will be broken down into smaller features with individual
-deadlines, the overall project will follow the major deadlines below.
+deadlines, the overall project will follow the major deadlines listed in
+Table~\ref{TblMajorDeliverables}.
 
 \FloatBarrier
 \begin{table}[h]
@@ -235,8 +252,8 @@ deadlines, the overall project will follow the major deadlines below.
     \toprule
     \textbf{Date}    & \textbf{Deliverable}                          & \textbf{Files}                                                                                                                                   \\
     \midrule
-    Sept. 22, 2025   & Problem Statement, POC Plan, Development Plan & \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/ProblemStatementAndGoals/ProblemStatement.pdf}{Problem Statement} \newline
-    \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/DevelopmentPlan/DevelopmentPlan.pdf}{POC and Development Plan}                                                                                \\
+    Sept. 22, 2025   & Problem Statement, PoC Plan, Development Plan & \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/ProblemStatementAndGoals/ProblemStatement.pdf}{Problem Statement} \newline
+    \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/DevelopmentPlan/DevelopmentPlan.pdf}{PoC and Development Plan}                                                                                \\
     Oct. 6, 2025     & Req. Doc. and Hazard Analysis Revision 0      & \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/SRS/SRS.pdf}{Req. Doc.}    \newline
     \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/HazardAnalysis/HazardAnalysis.pdf}{Hazard Analysis}                                                                                           \\
     Oct. 27, 2025    & V\&V Plan Revision 0                          & \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/VnVPlan/VnVPlan.pdf}{V\&V Plan}                                            \\
@@ -269,15 +286,19 @@ to the actual code, so we don’t need extra tools that could complicate trackin
 
 \section{Proof-of-Concept Demonstration Plan}
 
-The following are the planned steps of the POC:
+The following are the planned steps of the PoC:
 
 \begin{enumerate}
   \item Acquire an initial image from a camera with a stationary target.
   \item Activate the system's tracking mode. It will segment and detect multiple moving
         objects in the image.
         \begin{itemize}
-          \item Segmentation and moving-object detection will use computer vision techniques.
-          \item The computer vision model will be deployed on a Jetson Nano.
+          \item Segmentation and moving-object detection will use computer vision techniques
+                such as background subtraction, contour detection, and optical flow analysis.
+          \item The computer vision model will be deployed on an
+                \href{https://developer.nvidia.com/embedded/jetson-nano-developer-kit}{NVIDIA
+                  Jetson Nano} for efficient real-time processing.
+
         \end{itemize}
   \item The user selects a stationary or moving object as the target.
   \item As the target moves, the system keeps it centered in the image for smooth
@@ -289,27 +310,35 @@ The following are the planned steps of the POC:
         \end{itemize}
 \end{enumerate}
 
-The following is a list of primary risks to consider for the POC:
+The following is a list of primary risks to consider for the PoC:
 \begin{enumerate}
   \item The computer vision system may not process images at a sufficient frame rate.
         \begin{itemize}
           \item If this occurs, we will optimize the existing model, consider using a more
-                powerful board, lower the frame rate, or use a traditional algorithmic approach
-                that detects motion via pixel-wise image comparison.
-          \item We also reserve the option to use models trained for a specific set of objects
-                to increase throughput.
+                powerful board such as the
+                \href{https://developer.nvidia.com/embedded/jetson-xavier-nx}{NVIDIA Jetson
+                  Xavier NX}, lower the frame rate, or switch to traditional algorithmic methods
+                (e.g., frame differencing, background subtraction, optical flow).
+          \item We also reserve the option to use models trained for a narrower class of
+                targets (e.g., rockets only) to increase throughput.
         \end{itemize}
+
   \item The STM32 may not deliver real-time control to the camera.
         \begin{itemize}
-          \item If this occurs, we will consider using a more powerful microcontroller, or a
-                different control technique.
+          \item If this occurs, we will optimize the control firmware and scheduling, migrate
+                to a higher-performance MCU (e.g., \textit{STM32H7} or \textit{Teensy 4.1}),
+                and/or offload time-critical loops to dedicated motor drivers with hardware
+                timers.
         \end{itemize}
+
   \item Integration of the frontend, backend, computer vision model, and
         microcontroller may be more difficult than expected.
         \begin{itemize}
-          \item If this occurs, we will consider using a more powerful integrated single-board
-                computer, deploying via cloud computation, or redesigning our control flow to
-                simplify integration.
+          \item If this occurs, we will consider using a more powerful integrated SBC such as
+                the \href{https://developer.nvidia.com/embedded/jetson-xavier-nx}{Jetson Xavier
+                  NX}, deploying selected components via cloud computation if network conditions
+                allow, or redesigning the control flow to reduce coupling and local processing
+                load.
         \end{itemize}
 \end{enumerate}
 
@@ -326,7 +355,7 @@ Other smaller risks to consider:
 \textcolor{blue}{Justification:} These steps give us just enough to prove the idea works
 without overloading the demo. Taking a picture, tracking movement, picking a target,
 and keeping it in view are the core things we need to show. We also listed the biggest
-risks so we’re ready if something goes wrong. This way the POC is doable, but it still
+risks so we’re ready if something goes wrong. This way the PoC is doable, but it still
 shows the hardest and most important parts of the system.
 
 \section{Expected Technology}
@@ -432,134 +461,18 @@ guides means anyone reading or reviewing our code will find it easy to follow.
 
 \wss{Not required for CAS 741}
 
-\input{../Reflection.tex}
-
-\begin{enumerate}
-  \item Why is it important to create a development plan prior to starting the project?
-  \item In your opinion, what are the advantages and disadvantages of using CI/CD?
-  \item What disagreements did your group have in this deliverable, if any, and how did
-        you resolve them?
-\end{enumerate}
-
-\subsection*{Development Plan Reflection (Hardware) --- Jianqing Liu}
-
-\begin{enumerate}
-  \item \textit{Why is it important to create a development plan prior to starting the project?}
-
-        I'm responsible for drafting most of the sections of this deliverable except
-        Proof-of-Concept Demonstration Plan and part of Expected Technology. One
-        section I want to highlight is "7.2 Minor Changes (Expedited Workflow)". I got
-        this idea from my time working in a coop position, where the high overhead of
-        project management prevented me from fixing small issues I encountered during
-        development, as the fix was unrelated to the feature I was working on. I hope
-        this will not turn into a loophole where all the pull requests are labeled as
-        "minor" to bypass the normal planning process.
-
-        I also didn’t realize the usefulness of the development plan until I started
-        working on it. It makes a lot of implicit assumptions explicit (especially the
-        workflow plan and team meeting plan, which were only communicated verbally in
-        my previous positions), and helps the team better collaborate.
-
-  \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
-
-        The advantages of CI far outweigh the disadvantages. The most important use for
-        it in my opinion is to enforce coding standards and catch regressions early.
-        The only disadvantage I can think of is the extra overhead of setting up CI,
-        but it is worth it.
-
-        CD is a nice to have, but sometimes not feasible. For our project, since we
-        need to deploy to actual hardware (Jetson and STM32), it is not feasible to set
-        up CD. However, we can create a deployment script to simplify the process.
-
-  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
-
-        We did not have any disagreements in this deliverable.
-\end{enumerate}
-
-\subsection*{Development Plan Reflection (QA) --- Xiaotian Lou}
-
-\begin{enumerate}
-  \item \textit{Why is it important to create a development plan prior to starting the project?}
-
-        I am the QA for this team, so having a clear plan is very important to me. A
-        plan shows problems early and makes sure everyone knows their role. It also
-        gives me a way to see when and how to check quality during the project. By
-        connecting goals to tasks, timelines, and risks, the plan keeps the team on the
-        same page and makes it easier to track progress.
-
-  \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
-
-        From a QA view, CI/CD is very helpful. It runs tests on every change, catches
-        bugs early, and makes sure the code stays consistent. This keeps the project
-        stable and saves time later when fixing problems. The downside is that it takes
-        effort to set up, and if the pipeline is not correct, it can slow things down.
-        But overall, the benefits are much bigger than the drawbacks.
-
-  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
-
-        We did not have big disagreements. The only small issue is that sometimes the
-        team is very optimistic, which can hide risks. To fix this, we added schedule
-        buffers, milestone checkpoints, and a short risk log. This helps us stay
-        positive but also realistic, so we are ready if something takes longer than
-        expected.
-\end{enumerate}
-
-\subsection*{Development Plan Reflection (CV) --- Shike Chen}
-
-\begin{enumerate}
-  \item \textit{Why is it important to create a development plan prior to starting the project?}
-
-        I have helped in drafting and revising the development plan. I realized the
-        importance of the development plan as I was working on the proof of concept. In
-        the process of writing the proof of concept, I went through many risks of the
-        project that I had not thought of before. I believe the development plan is
-        vital at the beginning of the project, as it helps the team identify the risks
-        and feasibility of the project.
-
-  \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
-
-        CI/CD is useful because it lets us add small changes, fixes, and updates
-        quickly. For CV, this means things like models or scripts can be tested and
-        merged right away, so we know they work. This makes the system stronger and
-        easier to improve. The downside is that setup takes time, and if something bad
-        gets into the main branch it can cause issues. But overall, the benefits are
-        much bigger than the downsides.
-
-  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
-
-        We did not have any disagreements in this deliverable.
-
-\end{enumerate}
-
-\subsection*{Development Plan Reflection (Web) --- Zifan Si}
-
-\begin{enumerate}
-  \item \textit{Why is it important to create a development plan prior to starting the project?}
-
-        I worked on the web side of the project, making sure the frontend and tech
-        stack were included. While writing, I saw how much the web app depends on the
-        backend on the Jetson. Things like speed, bandwidth, and deployment all affect
-        how the frontend feels. Having a plan made these links clear early and kept the
-        team on the same page. I also learned that web work here isn’t just about the
-        frontend --- hardware and network limits change the design, so I had to think
-        about the whole system, not just my part.
-
-  \item \textit{In your opinion, what are the advantages and disadvantages of using CI/CD?}
-
-        From the web side, CI is helpful because it can run tests on the React code and
-        API calls, catching small bugs before they reach users. It also keeps the
-        frontend consistent as new features are added. The downside is that setup takes
-        time, and since we depend on the backend and Jetson hardware, a broken pipeline
-        can also break the web side. Still, it makes development faster and more
-        reliable overall.
-
-  \item \textit{What disagreements did your group have in this deliverable, if any, and how did you resolve them?}
-
-        We did not have big disagreements. The only question from my end was how much
-        detail to write for the web app, like API design for a complex pipeline. Since
-        a lot depends on backend performance, I decided to save those details for a
-        later phase and focus on clear communication with the team.
-\end{enumerate}
+As a team, we found that creating the development plan before starting work
+made assumptions explicit, aligned roles and expectations, and provided a
+concrete workflow for planning, development, review, and meetings. In our view,
+CI/CD is highly beneficial because it enforces coding standards, runs tests on
+every change, and catches regressions early; the main drawbacks are initial
+setup overhead and occasional pipeline friction, especially when
+hardware-in-the-loop is required (e.g., Jetson/STM32), which we will mitigate
+with scripts and clear fallbacks. We had no major disagreements; minor
+differences (e.g., scope detail, risk posture, and environment descriptions)
+were resolved through short reviews, schedule buffers, milestone checkpoints,
+and supervisor/TA feedback, resulting in a clearer, shared understanding of the
+project.
 
 \newpage{}
 \section*{Appendix --- Team Charter}
