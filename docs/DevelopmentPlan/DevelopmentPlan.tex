@@ -245,7 +245,7 @@ Table~\ref{TblMajorDeliverables}.
     \toprule
     \textbf{Date}    & \textbf{Deliverable}                          & \textbf{Files}                                                                                                                                   \\
     \midrule
-    Sept. 22, 2025   & Problem Statement, POC Plan, Development Plan & \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/ProblemStatementAndGoals/ProblemStatement.pdf}{Problem Statement} \newline
+    Sept. 22, 2025   & Problem Statement, PoC Plan, Development Plan & \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/ProblemStatementAndGoals/ProblemStatement.pdf}{Problem Statement} \newline
     \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/DevelopmentPlan/DevelopmentPlan.pdf}{PoC and Development Plan}                                                                                \\
     Oct. 6, 2025     & Req. Doc. and Hazard Analysis Revision 0      & \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/SRS/SRS.pdf}{Req. Doc.}    \newline
     \href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/HazardAnalysis/HazardAnalysis.pdf}{Hazard Analysis}                                                                                           \\
@@ -279,14 +279,15 @@ to the actual code, so we don’t need extra tools that could complicate trackin
 
 \section{Proof-of-Concept Demonstration Plan}
 
-The following are the planned steps of the POC:
+The following are the planned steps of the PoC:
 
 \begin{enumerate}
   \item Acquire an initial image from a camera with a stationary target.
   \item Activate the system's tracking mode. It will segment and detect multiple moving
         objects in the image.
         \begin{itemize}
-          \item Segmentation and moving-object detection will use computer vision techniques.
+        \item Segmentation and moving-object detection will use computer vision techniques
+      such as background subtraction, contour detection, and optical flow analysis.
           \item The computer vision model will be deployed on a Jetson Nano.
         \end{itemize}
   \item The user selects a stationary or moving object as the target.
@@ -299,7 +300,7 @@ The following are the planned steps of the POC:
         \end{itemize}
 \end{enumerate}
 
-The following is a list of primary risks to consider for the POC:
+The following is a list of primary risks to consider for the PoC:
 \begin{enumerate}
   \item The computer vision system may not process images at a sufficient frame rate.
         \begin{itemize}
@@ -336,7 +337,7 @@ Other smaller risks to consider:
 \textcolor{blue}{Justification:} These steps give us just enough to prove the idea works
 without overloading the demo. Taking a picture, tracking movement, picking a target,
 and keeping it in view are the core things we need to show. We also listed the biggest
-risks so we’re ready if something goes wrong. This way the POC is doable, but it still
+risks so we’re ready if something goes wrong. This way the PoC is doable, but it still
 shows the hardest and most important parts of the system.
 
 \section{Expected Technology}
