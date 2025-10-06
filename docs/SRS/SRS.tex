@@ -889,157 +889,187 @@ Product Use Case: Detect and Track Rocket
 \subsection{Safety-Critical Requirements}
 \begin{itemize}[leftmargin=*]
   \item[PR-SF-1] \emph{Manual override shall preempt automated control at any time.}\\
-  \textbf{Rationale:} Ensures a safe fallback in ambiguous or degraded conditions.\\
-  \textbf{Fit Criterion:} In three injected-fault scenarios (loss, misdetection, link jitter), override takes effect within 200\,ms.
+        \textbf{Rationale:} Ensures a safe fallback in ambiguous or degraded
+        conditions.\\ \textbf{Fit Criterion:} In three injected-fault scenarios (loss,
+        misdetection, link jitter), override takes effect within 200\,ms.
 \end{itemize}
 \subsection{Precision or Accuracy Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-ACU-1] \emph{During ascent, target detection/association accuracy shall be $\geq$ 75\% against human-labeled ground truth.}\\
-  \textbf{Rationale:} Guarantees usable footage and telemetry for analysis.\\
-  \textbf{Fit Criterion:} IoU or hit-rate metrics over ascent meet or exceed 75\%.
+  \item[PR-ACU-1] \emph{During ascent, target detection/association accuracy shall be
+          $\geq$ 75\% against human-labeled ground truth.}\\ \textbf{Rationale:}
+        Guarantees usable footage and telemetry for analysis.\\ \textbf{Fit Criterion:}
+        IoU or hit-rate metrics over ascent meet or exceed 75\%.
 \end{itemize}
 \subsection{Robustness or Fault-Tolerance Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-RB-1] \emph{After short occlusion or loss, the system shall attempt auto re-acquisition with p95 $\leq$ 1\,s; if unsuccessful, it shall prompt manual reselect.}\\
-  \textbf{Rationale:} Maintains lock through realistic field interruptions.\\
-  \textbf{Fit Criterion:} In 10 occlusion trials, p95 re-acquisition time $\leq$ 1\,s; UI exposes manual reselect on failure.
+  \item[PR-RB-1] \emph{After short occlusion or loss, the system shall attempt auto
+          re-acquisition with p95 $\leq$ 1\,s; if unsuccessful, it shall prompt manual
+          reselect.}\\ \textbf{Rationale:} Maintains lock through realistic field
+        interruptions.\\ \textbf{Fit Criterion:} In 10 occlusion trials, p95
+        re-acquisition time $\leq$ 1\,s; UI exposes manual reselect on failure.
 \end{itemize}
 
 \subsection{Capacity Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-CAP-1] \emph{Local storage shall retain at least three complete launch sessions at 1080p@30 before requiring cleanup or offload.}\\
-  \textbf{Rationale:} Ensures sufficient retention for review and backup.\\
-  \textbf{Fit Criterion:} Three full sessions can be recorded and listed for playback/export without space errors.
+  \item[PR-CAP-1] \emph{Local storage shall retain at least three complete launch
+          sessions at 1080p@30 before requiring cleanup or offload.}\\
+        \textbf{Rationale:} Ensures sufficient retention for review and backup.\\
+        \textbf{Fit Criterion:} Three full sessions can be recorded and listed for
+        playback/export without space errors.
 \end{itemize}
 \subsection{Scalability or Extensibility Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-SCL-1] \emph{The inference stack shall support ONNX deployment and TensorRT optimization.}\\
-  \textbf{Rationale:} Preserves portability and performance tuning headroom.\\
-  \textbf{Fit Criterion:} Models load and run via ONNX; TensorRT engine builds succeed for the target GPU.
+  \item[PR-SCL-1] \emph{The inference stack shall support ONNX deployment and TensorRT
+          optimization.}\\ \textbf{Rationale:} Preserves portability and performance
+        tuning headroom.\\ \textbf{Fit Criterion:} Models load and run via ONNX;
+        TensorRT engine builds succeed for the target GPU.
 \end{itemize}
 \subsection{Longevity Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-LNG-1] \emph{System endurance shall be $\geq$ 6 hours of continuous operation; daily operating cost shall be $<\$100$.}\\
-  \textbf{Rationale:} Matches event-day duty cycles and budget constraints.\\
-  \textbf{Fit Criterion:} Battery/Power tests show $\geq$ 6 hours; cost worksheet shows $<\$100$/day.
+  \item[PR-LNG-1] \emph{System endurance shall be $\geq$ 6 hours of continuous
+          operation; daily operating cost shall be $<\$100$.}\\ \textbf{Rationale:}
+        Matches event-day duty cycles and budget constraints.\\ \textbf{Fit Criterion:}
+        Battery/Power tests show $\geq$ 6 hours; cost worksheet shows $<\$100$/day.
 \end{itemize}
 
 \section{Operational and Environmental Requirements}
 
 \subsection{Expected Physical Environment}
 \begin{itemize}[leftmargin=*]
-  \item[OER-ENV-1] \emph{Operating temperature range shall be -10\,°C to 45\,°C; relative humidity up to 90\%.}\\
-  \textbf{Rationale:} Outdoor launch sites present cold, heat, and moisture.\\
-  \textbf{Fit Criterion:} Climatic tests at endpoints for 2 hours show stable operation without thermal shutdown.
+  \item[OER-ENV-1] \emph{Operating temperature range shall be -10\,°C to 45\,°C;
+          relative humidity up to 90\%.}\\ \textbf{Rationale:} Outdoor launch sites
+        present cold, heat, and moisture.\\ \textbf{Fit Criterion:} Climatic tests at
+        endpoints for 2 hours show stable operation without thermal shutdown.
 \end{itemize}
 
 \subsection{Wider Environment Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[OER-WE-1] \emph{The enclosure and cabling shall meet IP65 or better for dust and weather protection.}\\
-  \textbf{Rationale:} Wind, dust, and precipitation are common on ranges.\\
-  \textbf{Fit Criterion:} Provide test certificates or equivalent field test records meeting IP65 criteria.
+  \item[OER-WE-1] \emph{The enclosure and cabling shall meet IP65 or better for dust
+          and weather protection.}\\ \textbf{Rationale:} Wind, dust, and precipitation
+        are common on ranges.\\ \textbf{Fit Criterion:} Provide test certificates or
+        equivalent field test records meeting IP65 criteria.
 \end{itemize}
 \subsection{Requirements for Interfacing with Adjacent Systems}
 \begin{itemize}[leftmargin=*]
-  \item[OER-INT-1] \emph{Provide an HDMI program feed and an IP stream compatible with common switchers/encoders; remote control range shall be $\geq$ 1\,km.}\\
-  \textbf{Rationale:} Integrates with broadcast rigs and supports distant safe operation.\\
-  \textbf{Fit Criterion:} Verified ingest into OBS/capture cards; stable remote control over a measured 1\,km link.
+  \item[OER-INT-1] \emph{Provide an HDMI program feed and an IP stream compatible with
+          common switchers/encoders; remote control range shall be $\geq$ 1\,km.}\\
+        \textbf{Rationale:} Integrates with broadcast rigs and supports distant safe
+        operation.\\ \textbf{Fit Criterion:} Verified ingest into OBS/capture cards;
+        stable remote control over a measured 1\,km link.
 \end{itemize}
 
 \subsection{Productization Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[OER-PZ-1] \emph{The field kit shall support integrated cabling and allow deployment/teardown within 15 minutes.}\\
-  \textbf{Rationale:} Minimizes schedule impact between flights.\\
-  \textbf{Fit Criterion:} Three drills show average deploy or teardown time $\leq$ 15 minutes.
+  \item[OER-PZ-1] \emph{The field kit shall support integrated cabling and allow
+          deployment/teardown within 15 minutes.}\\ \textbf{Rationale:} Minimizes
+        schedule impact between flights.\\ \textbf{Fit Criterion:} Three drills show
+        average deploy or teardown time $\leq$ 15 minutes.
 \end{itemize}
 \subsection{Release Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[OER-REL-1] \emph{Each public release shall include a parameter sheet and links to system, network, and power documentation.}\\
-  \textbf{Rationale:} Speeds onboarding of new crew and stakeholders.\\
-  \textbf{Fit Criterion:} Release bundle contains the parameter sheet and referenced chapters.
+  \item[OER-REL-1] \emph{Each public release shall include a parameter sheet and links
+          to system, network, and power documentation.}\\ \textbf{Rationale:} Speeds
+        onboarding of new crew and stakeholders.\\ \textbf{Fit Criterion:} Release
+        bundle contains the parameter sheet and referenced chapters.
 \end{itemize}
 
 \section{Maintainability and Support Requirements}
 
 \subsection{Maintenance Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[MSR-MA-1] \emph{Thresholds for FPS, latency, and confidence shall be adjustable via configuration or admin UI without recompilation.}\\
-  \textbf{Rationale:} Facilitates tuning across sites and hardware.\\
-  \textbf{Fit Criterion:} Changes take effect without backend restart and within 60 seconds.
+  \item[MSR-MA-1] \emph{Thresholds for FPS, latency, and confidence shall be adjustable
+          via configuration or admin UI without recompilation.}\\ \textbf{Rationale:}
+        Facilitates tuning across sites and hardware.\\ \textbf{Fit Criterion:} Changes
+        take effect without backend restart and within 60 seconds.
 \end{itemize}
 
 \subsection{Supportability Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[MSR-SP-1] \emph{Exportable logs shall include frame timestamps, tracking error, and event markers (e.g., ignition, staging, chute).}\\
-  \textbf{Rationale:} Enables post-flight analysis and issue triage.\\
-  \textbf{Fit Criterion:} After a launch, CSV/JSON with the three fields is available for download.
+  \item[MSR-SP-1] \emph{Exportable logs shall include frame timestamps, tracking error,
+          and event markers (e.g., ignition, staging, chute).}\\ \textbf{Rationale:}
+        Enables post-flight analysis and issue triage.\\ \textbf{Fit Criterion:} After
+        a launch, CSV/JSON with the three fields is available for download.
 \end{itemize}
 
 \subsection{Adaptability Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[MSR-AD-1] \emph{A gimbal-abstraction layer shall allow swapping at least three gimbals (indoor dev, outdoor weatherized, high-payload) without changing core tracking code.}\\
-  \textbf{Rationale:} Different contexts require different rigs.\\
-  \textbf{Fit Criterion:} All three gimbals pass pan/tilt/zoom command and calibration tests.
+  \item[MSR-AD-1] \emph{A gimbal-abstraction layer shall allow swapping at least three
+          gimbals (indoor dev, outdoor weatherized, high-payload) without changing core
+          tracking code.}\\ \textbf{Rationale:} Different contexts require different
+        rigs.\\ \textbf{Fit Criterion:} All three gimbals pass pan/tilt/zoom command
+        and calibration tests.
 \end{itemize}
 
 \section{Security Requirements}
 
 \subsection{Access Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-AC-1] \emph{Remote management UI shall require authentication; three consecutive failed logins shall trigger a lockout of at least 5 minutes.}\\
-  \textbf{Rationale:} Protects control paths exposed over the network.\\
-  \textbf{Fit Criterion:} Black-box tests confirm lockout after three failed attempts.
+  \item[SEC-AC-1] \emph{Remote management UI shall require authentication; three
+          consecutive failed logins shall trigger a lockout of at least 5 minutes.}\\
+        \textbf{Rationale:} Protects control paths exposed over the network.\\
+        \textbf{Fit Criterion:} Black-box tests confirm lockout after three failed
+        attempts.
 \end{itemize}
 
 \subsection{Integrity Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-IN-1] \emph{Configurations and logs shall include checksums or signatures; control commands shall use authenticated channels.}\\
-  \textbf{Rationale:} Prevents tampering and unauthorized actuation.\\
-  \textbf{Fit Criterion:} Tampering is detected; unauthenticated devices cannot issue PTZ commands.
+  \item[SEC-IN-1] \emph{Configurations and logs shall include checksums or signatures;
+          control commands shall use authenticated channels.}\\ \textbf{Rationale:}
+        Prevents tampering and unauthorized actuation.\\ \textbf{Fit Criterion:}
+        Tampering is detected; unauthenticated devices cannot issue PTZ commands.
 \end{itemize}
 
 \subsection{Privacy Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-PV-1] \emph{Access to recordings and logs shall be role-based (Operator/Analyst/Admin) with least-privilege defaults.}\\
-  \textbf{Rationale:} Aligns access with duties while limiting exposure.\\
-  \textbf{Fit Criterion:} Role matrix is enforced in acceptance tests.
+  \item[SEC-PV-1] \emph{Access to recordings and logs shall be role-based
+          (Operator/Analyst/Admin) with least-privilege defaults.}\\ \textbf{Rationale:}
+        Aligns access with duties while limiting exposure.\\ \textbf{Fit Criterion:}
+        Role matrix is enforced in acceptance tests.
 \end{itemize}
 
 \subsection{Audit Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-AU-1] \emph{Audit logs shall record login, configuration changes, manual overrides, and deletion of recordings.}\\
-  \textbf{Rationale:} Supports accountability and incident reconstruction.\\
-  \textbf{Fit Criterion:} Each audited event contains actor, timestamp, action, and target.
+  \item[SEC-AU-1] \emph{Audit logs shall record login, configuration changes, manual
+          overrides, and deletion of recordings.}\\ \textbf{Rationale:} Supports
+        accountability and incident reconstruction.\\ \textbf{Fit Criterion:} Each
+        audited event contains actor, timestamp, action, and target.
 \end{itemize}
 
 \subsection{Immunity Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-IM-1] \emph{On communication loss or heavy jitter, the system shall enter a safe-hold state and avoid hazardous motion; upon recovery it shall reconnect smoothly.}\\
-  \textbf{Rationale:} Prevents unsafe behavior under network faults.\\
-  \textbf{Fit Criterion:} Injected 10+ second outages cause no dangerous actuation; control recovers automatically.
+  \item[SEC-IM-1] \emph{On communication loss or heavy jitter, the system shall enter a
+          safe-hold state and avoid hazardous motion; upon recovery it shall reconnect
+          smoothly.}\\ \textbf{Rationale:} Prevents unsafe behavior under network
+        faults.\\ \textbf{Fit Criterion:} Injected 10+ second outages cause no
+        dangerous actuation; control recovers automatically.
 \end{itemize}
 
 \section{Cultural Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[CUL-1] \emph{The product shall suit university competition settings: bilingual EN/FR/CN support and neutral, non-biased terminology in UI and logs.}\\
-  \textbf{Rationale:} Inclusive collaboration across teams and organizers.\\
-  \textbf{Fit Criterion:} Terminology review finds no culturally biased phrasing; EN/FR/CN toggle is available.
+  \item[CUL-1] \emph{The product shall suit university competition settings: bilingual
+          EN/FR/CN support and neutral, non-biased terminology in UI and logs.}\\
+        \textbf{Rationale:} Inclusive collaboration across teams and organizers.\\
+        \textbf{Fit Criterion:} Terminology review finds no culturally biased phrasing;
+        EN/FR/CN toggle is available.
 \end{itemize}
 
 \section{Compliance Requirements}
 
 \subsection{Legal Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[CMP-LG-1] \emph{Recording, streaming, and data retention shall follow event and venue policies regarding image rights and privacy.}\\
-  \textbf{Rationale:} Ensures lawful operation at competitions and ranges.\\
-  \textbf{Fit Criterion:} A pre-event compliance checklist is reviewed and approved by the organizer.
+  \item[CMP-LG-1] \emph{Recording, streaming, and data retention shall follow event and
+          venue policies regarding image rights and privacy.}\\ \textbf{Rationale:}
+        Ensures lawful operation at competitions and ranges.\\ \textbf{Fit Criterion:}
+        A pre-event compliance checklist is reviewed and approved by the organizer.
 \end{itemize}
 
 \subsection{Standards Compliance Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[CMP-ST-1] \emph{Networking/interfaces shall use standard IP/HTTP and common video formats; AI deployment shall be compatible with ONNX and TensorRT.}\\
-  \textbf{Rationale:} Interoperability with broadcast tools and GPU inference stacks.\\
-  \textbf{Fit Criterion:} Ingest succeeds in mainstream encoders/capture tools; ONNX models load and run with TensorRT optimization.
+  \item[CMP-ST-1] \emph{Networking/interfaces shall use standard IP/HTTP and common
+          video formats; AI deployment shall be compatible with ONNX and TensorRT.}\\
+        \textbf{Rationale:} Interoperability with broadcast tools and GPU inference
+        stacks.\\ \textbf{Fit Criterion:} Ingest succeeds in mainstream
+        encoders/capture tools; ONNX models load and run with TensorRT optimization.
 \end{itemize}
 
 \section{Open Issues}
