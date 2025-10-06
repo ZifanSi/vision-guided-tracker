@@ -281,3 +281,14 @@ TSWLatexianTemp*
 
 data/
 ultralytics/
+*.mp4
+*.pythontex
+*.pth 
+/runs
+/weights
+*.pt
+*.avi
+
+#ignore temperary latex
+temp.tex
+temp.pdf

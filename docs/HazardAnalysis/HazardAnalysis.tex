@@ -1,10 +1,22 @@
-\documentclass{article}
+\documentclass[11pt]{article}
 \pdfinfoomitdate=1
 \pdftrailerid{}
+
+% Preamble
+\usepackage{array}                % <-- required for \newcolumntype and \arraybackslash
+\setlength{\tabcolsep}{3pt}       % shrink inter-column padding (default is 6pt)
+\renewcommand{\arraystretch}{1.15}
 
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{ragged2e}
+\usepackage[hidelinks]{hyperref}
+\renewcommand{\arraystretch}{1.2}
+\usepackage[margin=1in]{geometry}
+\newcolumntype{R}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+
 
 \hypersetup{
     colorlinks=true,       % false: boxed links; true: colored links
@@ -36,9 +48,8 @@
     \toprule
     \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}        \\
     \midrule
-    Date1         & Name(s)               & Description of changes \\
-    Date2         & Name(s)               & Description of changes \\
-    ...           & ...                   & ...                    \\
+    Date1         & Shike Chen              & Initial draft \\
+    Date2         & Shike Chen              & Detailed draft \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -52,15 +63,58 @@
 \wss{You are free to modify this template.}
 
 \section{Introduction}
-
-\wss{You can include your definition of what a hazard is here.}
+Hazard is generally defined as a harm or potential harm or effect caused by a 
+system which may lead to personal injury, property damage, environmental damage 
+etc. As an integrated system with both hardware and software components, hazards 
+may arise due to improper design, malfunction of the system, unexpected user
+behavior, etc. Therefore, it is critical to identify potential hazards and 
+mitigate them in the early stage of the project. 
+In the case of the RoCam project, the potential hazards could cause physical 
+injury of the user or malfunction of a larger system.
 
 \section{Scope and Purpose of Hazard Analysis}
 
-\wss{You should say what \textbf{loss} could be incurred because of the
-  hazards.}
+The hazard analysis will identify any direct or potential hazards caused by the 
+system which includes hazardous materials, design, user safety, etc. 
+The hazard analysis will also address the general hazardous effects of this system 
+which includes hazards effects in the events of malfunction, misuse or environmental
+damage. However, since the project is open source, any use case that is beyond the
+scope of this project will not be included in this hazard analysis.
+
+Such hazard analysis will not only used to identify potential hazards caused by the 
+system, but also to minimize risks related in unforeseen cases. The purpose of this 
+hazard analysis is to properly address the potential harm and risks caused by the 
+product to the user and the external environment.
 
 \section{System Boundaries and Components}
+
+\subsection{Hardware Components}
+\subsubsection{Motion control modules}
+The motion control module consists of a custom-designed PCB board utilizing an STM32 
+microcontroller. This module is responsible for controlling the movement of the camera
+gimbal. It receives commands from our Computer Vision module and translates them into
+precise motor movements in real time. 
+\subsubsection{Camera gimbal}
+The camera gimbal used in this project is a existing Camera Gimbal designed by the 
+McMaster Rocketry team. Since our team is not responsible for the design of the gimbal, 
+we can only estimate the potential hazards based on similar products in the market. 
+\subsubsection{Jetson Orin Nano}
+The Jetson Orin Nano is small, lightweight AI computer designed by NVIDIA. It will
+be used to deploy our computer vision moodule and communicate directly with the motion
+control module.
+\subsubsection{camera}
+The camera is a off the shelf camera that is compatible with the Jetson Orin Nano. It 
+is able to provide 4k video input in real time. 
+
+\subsection{Software Components}
+\subsubsection{Computer Vision Module}
+Our computer vision module will be developed in Python. The base architecture will be 
+torch and pandas. It will be accerlerated with TensorRT in Jetson to achieve real time
+stable performance. 
+\subsubsection{User Interface Module}
+The user interface module will be developed using React. It will provide a web-based
+interface for users to interact with the system, view camera feeds, and control the
+camera gimbal.
 
 \wss{Dividing the system into components will help you brainstorm the hazards.
   You shouldn't do a full design of the components, just get a feel for the major
@@ -70,12 +124,122 @@
 
 \section{Critical Assumptions}
 
+\subsection{Assumptions about the Operating Environment}
+The system will not operating in any extreme environment (e.g., extreme temperature, 
+acidic environments, etc.). The system will be operating within 10 to 25 degree Celsius.
+The system will operate with a stable power supply. 
+\subsection{Assumptions about the User}
+Anyone above 14 years old who uses electronic and exposed to software interface on a
+daily basis for over 2 years with good intent. 
+\subsection{Assumptions about general of the shelf hardware components}
+All off-the-shelf hardware components will function as advertised and
+will be compatible with our system. This includes the camera, gimbal, Jetson Orin Nano
+etc. 
+\subsection{Assumptions about the software libraries}
+All software libraries used will not have any unknown security vulnerabilities.
+
 \wss{These assumptions that are made about the software or system.  You should
   minimize the number of assumptions that remove potential hazards.  For instance,
   you could assume a part will never fail, but it is generally better to include
   this potential failure mode.}
 
 \section{Failure Mode and Effect Analysis}
+
+\begin{longtable}{|R{2.2cm}|R{3.2cm}|R{3.0cm}|R{3.0cm}|R{3.2cm}|R{1.6cm}|R{1.2cm}|}
+  \caption{FMEA} \\
+  \hline
+  \multicolumn{7}{|c|}{\textbf{Failure Mode and Effects Analysis}}\\
+  \multicolumn{7}{|l|}{\textbf{System}: Audio to sheet music generator}\\
+  \multicolumn{7}{|l|}{\textbf{Phase/Mode}: System Requirements}\\
+  \hline
+  \textbf{Design Function} & \textbf{Failure Modes} & \textbf{Effects of Failure} &
+  \textbf{Causes of Failure} & \textbf{Recommended Action} & \textbf{SR} & \textbf{Ref.}\\
+  \hline
+  \endfirsthead
+
+  \hline
+  \multicolumn{7}{|l|}{\emph{Continued from previous page}}\\
+  \hline
+  \textbf{Design Function} & \textbf{Failure Modes} & \textbf{Effects of Failure} &
+  \textbf{Causes of Failure} & \textbf{Recommended Action} & \textbf{SR} & \textbf{Ref.}\\
+  \hline
+  \endhead
+
+  \hline
+  \multicolumn{7}{|r|}{\emph{Continued on next page}}\\
+  \hline
+  \endfoot
+
+  \hline
+  \endlastfoot
+
+  % ===== Rows (edit/extend as needed) =====
+  Generate sheet music
+  & Sheet music flashes on the screen
+  & Potential trigger for users with epilepsy
+  & Incorrect rendering or scrolling through the sheet music
+  & Limit or disable visual flicker; provide user setting
+  & \hyperref[PR-SC1]{PR-SC1}
+  & \\ \cline{2-7}
+
+  & A bad microphone causes notes to be off due to pitch drift
+  & Embarrassment for the user
+  & Microphone exhibits pitch drift (mechanical issue)
+  & Troubleshooting steps; suggest higher-quality microphone
+  & N/A
+  & \\ \hline
+
+  Process audio
+  & Audio improperly recorded
+  & Loss of musical performance
+  & Microphone error
+  & Notify user about microphone issue; retry guidance
+  & N/A
+  & \\ \cline{4-7}
+
+  &  &  & Signal processing error
+  & Notify user a processing error occurred
+  & \href{https://github.com/emilyperica/ScoreGen/blob/main/docs/SRS/SRS.pdf}{FR-SP4}
+  & \\ \hline
+
+  File functions
+  & Files outside scope of the application are deleted
+  & Possible system failure if critical files removed
+  & Improper file I/O actions
+  & Restrict permissions; sandbox; confirmations
+  & \hyperref[S-P1]{S-P1}
+  & \\ \cline{2-7}
+
+  & Files outside scope of the application are modified
+  & System instability / data loss
+  & Improper file I/O actions
+  & Same mitigations as above
+  & \hyperref[S-P1]{S-P1}
+  & \\ \hline
+
+  Output audio
+  & Overly loud audio emitted
+  & Hearing damage / startle
+  & Miscalibrated volume path
+  & Output limiter; safe defaults; pre-playback check
+  & N/A
+  & \\ \cline{3-7}
+
+  &  & User is surprised and has a health incident
+  & Miscalibrated volume path
+  & Same as above
+  & N/A
+  & \\ \hline
+
+  Application runtime
+  & App crashes unexpectedly
+  & User loses progress
+  & Power outage, OOM error, overheating, malware
+  & Autosave (with consent); crash recovery; logging
+  & \href{https://github.com/emilyperica/ScoreGen/blob/main/docs/SRS/SRS.pdf}{PR-RFT3}
+  & \\ \hline
+
+\end{longtable}
 
 \wss{Include your FMEA table here. This is the most important part of this document.}
 \wss{The safety requirements in the table do not have to have the prefix SR.
