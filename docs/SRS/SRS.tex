@@ -70,17 +70,19 @@ recorded footage for post-flight analysis and event operations.
 
 \textbf{Purpose:}
 
-To track small-scale model rocket launches with apogee less than 200m.
+Develop a system that can be connected to a camera gimbal that is able to track
+model rocket launches.
 
 \textbf{Advantage:}
 
-We want to provide insights into the flight performance by having high quality
+The system provides insights into the flight performance by having high quality
 flight footage.
 
 \textbf{Measure:}
 
-Deploy the project at model rocket launch sites and see if it successfully
-trackes the rockets.
+Deploy the system at small-scale model rocket launch site with apogee less than
+200 meters. The system should provide higher quality flight footage than the
+manual camera operation.
 
 \section{Stakeholders}
 
@@ -296,6 +298,9 @@ conditions with few or no clouds.
 Additionally, users often wear hearing protection devices to mitigate high
 acoustic noise from tools, filling tanks, and generators.
 
+Launch sites are typically in a remote area, with limited or no internet
+access.
+
 \subsection{Schedule Constraints}
 
 \begin{enumerate}[label=SCHD \arabic*., wide=0pt, leftmargin=*]
@@ -331,20 +336,36 @@ acoustic noise from tools, filling tanks, and generators.
 \section{Naming Conventions and Terminology}
 \subsection{Glossary of All Terms, Including Acronyms, Used by Stakeholders
   involved in the Project}
-\lips
+
+\begin{enumerate}
+  \item \textbf{Gimbal}: A gimbal is a mechanical device that allows for the
+        rotational movement of a camera.
+  \item \textbf{PTZ Camera}: A PTZ camera is a camera that can be remotely
+        controlled to pan, tilt, and zoom.
+  \item \textbf{HDMI}: HDMI is a digital video interface that is used to
+        transmit video and audio signals.
+\end{enumerate}
 
 \section{Relevant Facts And Assumptions}
 \subsection{Relevant Facts}
 
-not applicable
+None.
 
 \subsection{Business Rules}
 
-not applicable
+None.
 
 \subsection{Assumptions}
 
-not applicable
+\begin{enumerate}
+  \item We assume that the system will not be connected to the public internet. Thus no
+        authentication is required.
+  \item We assume the gimbal connected to the system has adequate performance to track
+        the rocket. (For example, it can turn fast enough and has enough range of motion.)
+  \item We assume 110V AC power is available at the launch site.
+  \item We assume it will always be sunny at the launch site, because the launch would
+        be cancelled in case of bad weather.
+\end{enumerate}
 
 \section{The Scope of the Work}
 \subsection{The Current Situation}
