@@ -116,124 +116,185 @@ interested in using the project:
 
 \subsection{Hands-On Users of the Project}
 
-The only hands on user of the project would be the camera operator, which can
-be any one of the stakeholders or anyone else tasked by one of the
-stakeholders. The camera operator controls the camera through the UI,
-starts/stops recordings, manages lock-on/target selection, and monitors
-preview.
+Here are the users that will be interacting with the product directly.
+
+\textbf{Role}: Camera Operator
+
+The camera operator controls the camera through the UI, starts/stops
+recordings, manages lock-on/target selection, and monitors preview. The camera
+operator is assumed to decent level of familiarity with technology, and have
+been trained on the use of the product.
+
+\textbf{Role}: Live Stream Technician
+
+The live stream technician manages the video feed from the camera to the live
+streaming equipments. The live stream technician is assumed to have a high
+level of familiarity with live streaming software and hardware.
+
+\textbf{Role}: Flight Performance Analyst
+
+The flight performance analyst is a member of the rocketry team that
+reconstructs flight profiles from sensor data and camera footage to understand
+how the rocket behaves during ascent and recovery. The flight performance
+analyst is assumed to have a high level of familiarity with rocket flight
+dynamics and software used for analysis.
+
+\textbf{Role}: Live Stream / Recordings Viewers
+
+People who view the live stream or recorded videos. They can be anyone from the
+general public that are interested in the launch, or the team members
+themselves. They are assumed to have a basic level of familiarity with
+technology.
 
 \subsection{Personas}
 
-\subsubsection*{Karen Chen}
+\subsubsection*{Alexis Andrade}
 
-\textbf{Age}: 22
+\textbf{Age}: 28
 
-\textbf{Job Title}: Camera Operator
+\textbf{Role}: Camera Operator
 
-\textbf{Education}: B.Eng. candidate (Electrical/Mechatronics)
+Alexis works as an industrial automation technician in Hamilton, Ontario, where
+she designs and maintains robotic assembly systems for a manufacturing firm.
+Outside of work, her real passion lies in high-speed imaging and experimental
+photography — a hobby that naturally led her to volunteer as a staff camera
+operator at university rocketry competitions. She loves the mix of engineering
+precision and adrenaline that comes with capturing a successful rocket launch.
 
-\textbf{Work Environment}: Outdoor launch range; tripod/gimbal on uneven terrain;
-laptop/tablet UI at the ground station; radio comms with Mission Control.
+She lives with her partner and their energetic border collie, Pixel. Alexis
+spends her weekends hiking the Bruce Trail, refurbishing vintage lenses, or
+volunteering at local maker fairs. Her favorite food is falafel, and she always
+packs a thermos of strong coffee for early launch mornings. She listens to
+synthwave and retro electronic music on long drives to test sites, finding it
+helps her stay calm and focused.
 
-\textbf{Professional Background}: Operates field equipment for the rocketry team; basic
-Linux/Jetson administration; familiar with gimbals, lens swaps, focus checks,
-and safety procedures.
+Alexis is confident with technology but prefers systems that are reliable and
+straightforward. She values hands-on work, hates clunky software interfaces,
+and believes in simplicity over flashiness. “If I need a manual,” she likes to
+say, “the interface is wrong.” Her cool temperament and technical precision
+make her a trusted member of the launch operations crew.
 
-\textbf{Need}: Fast setup and calibration; immediate lock-on
-after launch cue; low-latency preview that stays readable in bright sunlight;
-simple controls for start/stop recording and target selection; clear
-system-state indicators (ready/locked/error).
+\subsubsection*{Brandon Brooks}
 
-\textbf{Challenges}: Harsh conditions
-(wind, glare, dust, cold); intermittent power/network; gloves reduce fine
-control; pressure at T-0; distance from pad complicates cabling; strict range
-safety rules.
+\textbf{Age}: 23
 
-\subsubsection*{Maya Patel}
+\textbf{Role}: Flight Performance Analyst
 
-\textbf{Age}: 24
+Brandon is in his final year of mechanical engineering at a Canadian university
+and serves as a flight performance analyst for his rocketry team. His specialty
+is reconstructing flight profiles from sensor data and camera footage to
+understand how the rocket behaves during ascent and recovery. He joined the
+team for the engineering challenge but stayed because he loves the mix of
+theory, experimentation, and teamwork.
 
-\textbf{Job Title}: Flight Performance Analyst (Rocketry Team)
+Originally from Calgary, Brandon now lives in a small off-campus apartment
+filled with model rockets, whiteboards, and a curious cat named Fourier. He’s
+known for his patience and meticulous documentation — traits that make him the
+go-to person for post-launch analysis. When he’s not studying or coding MATLAB
+scripts, he’s cooking ramen, taking photos, or biking along Lake Ontario.
 
-\textbf{Education}: B.Eng. (Software/Controls) or Honours Physics; heavy MATLAB/Python use
+Brandon listens to ambient and post-rock while he works, loves strong coffee,
+and dislikes chaotic testing days where data logging gets overlooked. His
+attitude toward technology is analytical but practical: he values transparency,
+well-documented systems, and data that “speaks for itself.” For him, every
+successful flight is a story written in numbers and motion.
 
-\textbf{Work Environment}: Post-flight lab analysis; imports footage + telemetry into scripts and reports.
-
-\textbf{Professional Background}: Builds tooling to study staging timing, parachute events, and stability; integrates video with onboard logs.
-
-\textbf{Need}: Time-synchronized 1080p60 footage with frame timestamps; exports of gimbal azimuth/elevation vs. time (CSV/JSON); markers for detected events (ignition, staging, chute) and easy clip extraction; consistent file naming and metadata for repeatable analyses.
-
-\textbf{Challenges}: Clock drift between video and sensors; dropped frames; incomplete metadata; inconsistent camera calibration notes; large file sizes slowing transfer and processing.
-
-\subsubsection*{Jordan Lee}
+\subsubsection*{Christopher Chou}
 
 \textbf{Age}: 59
 
-\textbf{Job Title}: Event Organizer / Live Stream Technician
+\textbf{Role}: Event Organizer / Live Stream Technician
 
-\textbf{Education}: College diploma or industry certifications (broadcast/AV)
+Christopher is a retired broadcast engineer who spent three decades working in
+television production for CBC Toronto. After retirement, he moved to Burlington
+and found a new passion in volunteer work, helping organize live streams and
+event logistics for student rocketry competitions. For him, it’s the perfect
+blend of his lifelong love of broadcasting and his fascination with aerospace
+technology.
 
-\textbf{Work Environment}: Control tent; HDMI/SDI switcher or OBS rig; long Ethernet runs; noisy RF environment.
+He’s married with two grown children who live abroad, and he often jokes that
+the rocketry community has become his “third family.” Christopher loves cooking
+Cantonese comfort food — especially steamed dumplings and congee — and enjoys
+jazz and classic rock in equal measure. He spends his spare time restoring old
+audio equipment, gardening, and taking long weekend drives along the Niagara
+Escarpment.
 
-\textbf{Professional Background}: Manages livestreams at student launches; coordinates feeds from multiple cameras to a program output.
-
-\textbf{Need}: Clean 1080p60 video feed compatible with common switchers/encoders; stable, low end-to-end latency preview; obvious health/status indicators; quick, safe setup between flights; minimal operator steps to get a reliable program feed.
-
-\textbf{Challenges}: RF congestion and interference; power distribution limits; weatherproofing; cable management over long distances; ensuring the tracking feed doesn’t drop mid-event; coordinating with safety calls and launch cadence.
-
+Christopher’s approach to technology is deeply pragmatic: he respects
+automation but insists that every system should have a manual override. He
+likes tidy wiring, clear documentation, and software that doesn’t crash
+midstream. He dislikes unnecessary complexity and “updates that fix what wasn’t
+broken.” To younger team members, he’s both a mentor and the steady hand who
+keeps the broadcast running when chaos hits.
 \subsection{Priorities Assigned to Users}
 
-\textbf{Key Users}: Flight Performance Analyst, Safety Officer, Camera Operator
+\textbf{Key Users}: Camera Operator, Live Stream Technician
 
-\textbf{Secondary User}: Event Organizer
+\textbf{Secondary User}: Flight Performance Analyst, Live Stream / Recordings Viewers, Event Organizer
 
 \subsection{User Participation}
 
-Through out the development process, the development team will reach out to
-users to gather requirements and feedback on usability.
+Through out the development process, the development team will continue to
+iterate on the requirements based on feedback from these users:
+
+\begin{enumerate}
+  \item \textbf{Camera Operator}: At least three field tests will be conducted
+        to gather feedback from the camera operator. Each field test will last
+        half a day to a day.
+  \item \textbf{Live Stream Technician}: At least two meetings will be conducted
+        to gather feedback from the live stream technician.
+\end{enumerate}
 
 \subsection{Maintenance Users and Service Technicians}
 
 Due to the nature of this project as a capstone requirement, there are
-currently no expected maintenance users
+currently no expected maintenance users.
 
 \section{Mandated Constraints}
 \subsection{Solution Constraints}
 
 \begin{enumerate}[label=MD-SL \arabic*., wide=0pt, leftmargin=*]
-  \item \emph{The system must be hands-off (autonomous) from ignition through rocket landing.}\\[2mm]
-        {\bf Rationale:} During live launches, human operators must prioritize range safety and situational awareness; approaching the camera or issuing fine controls during ascent/descent is unsafe and impractical due to line-of-sight, blast hazards, and rapid dynamics. Environmental factors (wind, glare, dust, acoustic vibration) also degrade manual operation at critical moments.\\
-        {\bf Fit Criterion:} From ignition detection until a declared “landing/clear” signal, the system performs target detection, tracking, zoom/FOV management, and recording without requiring any manual pan/tilt/zoom commands. Event logs show no manual overrides in this window; tracked target remains within a defined bounding box around frame center (e.g., ±10\% of width/height) for $\ge$80\% of observable flight time.
+  \item \emph{The system must be hands-off (autonomous) from rocket ignition through landing.}\\[2mm]
+        {\bf Rationale:} During live launches, human operators must prioritize range safety and situational awareness\\
+        {\bf Fit Criterion:} Once armed, no manual inputs are necessary for the nominal operation of the system until a declared “landed/clear” signal from the mission control.
 
   \item \emph{The system must be remote controllable.}\\[2mm]
-        {\bf Rationale:} The camera and gimbal may need to be positioned near hazardous zones (pad, ballistic landing corridors) or at distant vantage points with no safe operator access during the countdown and flight. Remote setup, arming, health checks, and teardown reduce personnel exposure and allow operation from a protected control area.\\
-        {\bf Fit Criterion:} All pre-/post-flight operations (boot, status, calibration checks, arming, recording start/stop, data offload) are executable over a network link (wired or long-run Ethernet) from the control station. Authentication is required; a complete session can be performed with no physical interaction at the camera site once deployed.
+        {\bf Rationale:} The system may need to be positioned inside hazardous zones (launch pad, ballistic landing areas) or at distant vantage points with no safe operator access during the countdown and flight.\\
+        {\bf Fit Criterion:} The system should be able to perform multiple full tracking sessions with no physical interaction at the camera site once deployed.
 
   \item \emph{The system must output a live video stream via HDMI.}\\[2mm]
-        {\bf Rationale:} The event’s broadcast/recording workflow and on-site switchers/encoders accept HDMI as the integration standard; alternative connectors (e.g., SDI/USB/UVC-only) would require additional, failure-prone adapters and complicate field cabling.\\
-        {\bf Fit Criterion:} A stable, clean (non-OSD) HDMI program feed at 1920×1080@60\,fps is available at the control station for the duration of the launch window. The feed syncs with common mixers/encoders (e.g., OBS/capture cards) without HDCP or proprietary handshakes and remains within acceptable glass-to-glass latency for live use.
+        {\bf Rationale:} The customer's live streaming equipments accept HDMI as the integration standard; alternative connectors would require additional adapters.\\
+        {\bf Fit Criterion:} The system should be able to output a live video stream via HDMI, confirmed by connecting a monitor to the system.
 
-  \item \emph{The solution must provide a flexible interface to support multiple gimbal systems.}\\[2mm]
-        {\bf Rationale:} Different test contexts require different hardware: lighter indoor rigs for algorithm development, weatherized outdoor rigs for launches, and varying payload (camera/lens) masses. A hardware-abstraction layer reduces rework and enables swapping gimbals without changing core tracking logic.\\
-        {\bf Fit Criterion:} A documented gimbal adapter interface (API/protocol bindings) supports at least: (a) an indoor development gimbal, (b) an outdoor launch-capable gimbal, and (c) a higher-payload option. For each, the system can command pan/tilt/zoom, read state, and complete calibration; end-to-end control latency remains within the tracking budget, and per-gimbal mounting/calibration data can be loaded without code changes.
+  \item \emph{The system must provide a flexible interface for gimbal hardware.}\\[2mm]
+        {\bf Rationale:} Different deployment contexts require different hardware: lighter gimbal for algorithm development and small scale launches, or full-scale gimbal for large scale launches with telescoping lens.\\
+        {\bf Fit Criterion:} A documented gimbal interface for both hardware and software.
 \end{enumerate}
 
 \subsection{Implementation Environment of the Current System}
 
-There are no constrains on the hardware platform the project need to use or run
-on.
+There are no constrains on the hardware platform the project need to use.
 
 \subsection{Partner or Collaborative Applications}
 
-none
+The system does not collaborate with any other external or internal
+applications.
 
 \subsection{Off-the-Shelf Software}
 
-none
+There are no constrains on the off-the-shelf software the project need to use.
 
 \subsection{Anticipated Workplace Environment}
 
-what is this?
+The system should be designed to operate in a large-scale outdoor launch
+environment, for example, the Launch Canada launch site in Timmins, Ontario, Or
+Spaceport America in New Mexico.
+
+The tracking camera will be operated at outdoor launch sites, typically in wide
+open fields or designated rocket ranges. Launches occur only under clear, sunny
+conditions with few or no clouds.
+
+Additionally, users often wear hearing protection devices to mitigate high
+acoustic noise from tools, filling tanks, and generators.
 
 \subsection{Schedule Constraints}
 
@@ -252,8 +313,7 @@ what is this?
 \begin{enumerate}[label=BDGT \arabic*., wide=0pt, leftmargin=*]
   \item \emph{The project shall not exceed the budget of 500CAD}\\[2mm]
         {\bf Rationale:} Limited by the capstone project requirement\\
-        {\bf Fit Criterion:} The project must be implemented using free
-        tools and libraries and hosted on GitHub.
+        {\bf Fit Criterion:} The sum of the costs of the hardware components required for the project must be less than 500CAD.
 \end{enumerate}
 
 \subsection{Enterprise Constraints}
