@@ -70,8 +70,8 @@ recorded footage for post-flight analysis and event operations.
 
 \textbf{Purpose:}
 
-Develop a system that can be connected to a camera gimbal that is able to track
-model rocket launches.
+Develop a software+hardware stack (the system) that is able to command a camera
+gimbal to track and record model rocket launches.
 
 \textbf{Advantage:}
 
@@ -278,8 +278,8 @@ There are no constrains on the hardware platform the project need to use.
 
 \subsection{Partner or Collaborative Applications}
 
-The system does not collaborate with any other external or internal
-applications.
+The system is expected to be used with a camera gimbal. The system will command
+the camera gimbal to track and record model rocket launches.
 
 \subsection{Off-the-Shelf Software}
 
@@ -338,8 +338,8 @@ access.
   involved in the Project}
 
 \begin{enumerate}
-  \item \textbf{Gimbal}: A gimbal is a mechanical device that allows for the
-        rotational movement of a camera.
+  \item \textbf{Gimbal}: A gimbal is a motorized device that rotates a camera
+        based on the commands sent to it.
   \item \textbf{PTZ Camera}: A PTZ camera is a camera that can be remotely
         controlled to pan, tilt, and zoom.
   \item \textbf{HDMI}: HDMI is a digital video interface that is used to
@@ -358,8 +358,9 @@ None.
 \subsection{Assumptions}
 
 \begin{enumerate}
-  \item We assume that the system will not be connected to the public internet. Thus no
+  \item We assume the system will not be connected to the public internet. Thus no
         authentication is required.
+  \item We assume the system will only be physically accessed by authorized personnel.
   \item We assume the gimbal connected to the system has adequate performance to track
         the rocket. (For example, it can turn fast enough and has enough range of
         motion.)
@@ -374,280 +375,110 @@ None.
 Currently, the process of recording and analyzing rocket flights relies on
 manual camera operators positioned at safe distances from the launch pad. These
 operators attempt to visually follow the rocket during ascent and descent using
-consumer or semi-professional video cameras mounted on tripods or pan–tilt
+consumer or semi-professional video cameras mounted on tripods or pan-tilt
 systems.
 
 This approach suffers from several limitations:
 
-Accuracy: Human reaction time and limited field of view make it nearly
+\textbf{Accuracy:} Human reaction time and limited field of view make it nearly
 impossible to keep fast-moving rockets (often exceeding Mach speeds) centered
 in frame. The footage is frequently lost during liftoff or staging events,
 leaving gaps in post-flight analysis.
 
-Safety Constraints: Because a human operator must be physically present, camera
+\textbf{Safety Constraints:} Because a human operator must be physically present, camera
 placement is restricted to safe zones, which may not provide optimal viewing
 angles. Cameras cannot always be positioned where the best line-of-sight
 exists.
 
-Operational Overhead: Each launch requires trained operators, setup time, and
+\textbf{Operational Overhead:} Each launch requires trained operators, setup time, and
 coordination with the launch control team. Fatigue, stress, and environmental
 conditions (sun glare, wind, dust) further degrade performance.
 
-Data Limitations: The video produced by manual operators is often shaky,
+\textbf{Data Quality:} The video produced by manual operators is often shaky,
 inconsistently framed, and lacking synchronization with other flight data
 (e.g., telemetry or gimbal angle). This reduces its value for engineering
 analysis and competition reporting.
 
-Some groups have experimented with semi-automated processes, such as
-pre-programming PTZ cameras to follow a predicted trajectory or integrating
-GPS-based tracking systems. However, these solutions are not reliable for small
-rockets: trajectory predictions are often inaccurate, GPS updates are too slow
-for visual framing, and commercial PTZ controllers lack the precision and
-responsiveness required.
-
-In practice, most teams continue to rely on manual processes, which creates a
-bottleneck in safety assurance, event documentation, and engineering
-validation. The proposed tracking camera system aims to replace these manual
-workflows with an autonomous, computer-vision-driven process that minimizes
-operator involvement during critical launch phases, expands safe deployment
-options, and provides high-quality synchronized data for analysis.
-
 \subsection{The Context of the Work}
 
-The tracking camera system operates within the broader workflow of a rocket
-launch event. The work boundary is defined as the combination of hardware
-(camera, gimbal, compute unit) and software (tracking algorithms, control
-interfaces, recording/streaming services) that together deliver real-time
-rocket tracking and recording.
+\hyperref[img:context-of-work]{Figure 1} identifies the scope of the
+investigation necessary in order to discover the requirements related to the
+work of tracking rockets. The model shows the detailed area of investigation
+and how it connects to the adjacent systems.
 
-The following table identifies the adjacent systems (people, organizations,
-hardware, and software) and the data/material exchanged across the boundary:
-
-\begin{enumerate}[wide=0pt, leftmargin=*]
-  \item \textbf{Rocket Launch Vehicle}
-        \emph{Input:} Visual signature of rocket (plume, body, trajectory).
-        \emph{Output:} None (passive observation only).
-        \emph{Rationale:} The rocket itself is the tracked subject; no control
-        interaction occurs.
-
-  \item \textbf{Camera Operator (Client User)}
-        \emph{Input:} High-level commands (start/stop recording, target lock
-        selection, zoom override if needed).
-        \emph{Output:} Live preview video, system status indicators, error
-        alerts.
-        \emph{Rationale:} Provides human oversight and session management while
-        staying hands-off during launch.
-
-  \item \textbf{Mission Control / Launch Operations}
-        \emph{Input:} Launch cues (T-0 ignition signal, countdown sync, “end of
-        flight” flag).
-        \emph{Output:} Optional video confirmation of ignition, staging, and
-        parachute events.
-        \emph{Rationale:} Ensures synchronization with the launch timeline and
-        provides situational awareness for the operations crew.
-
-  \item \textbf{Recovery Team}
-        \emph{Input:} None.
-        \emph{Output:} Live/near-real-time video stream for chute deployment
-        confirmation and landing direction.
-        \emph{Rationale:} Supports safe and timely rocket recovery operations.
-
-  \item \textbf{Event Organizers / Safety Officers (RSO)}
-        \emph{Input:} Safety requirements, operating constraints (safe zones,
-        setup timing).
-        \emph{Output:} Live HDMI output for event broadcast; visual confirmation
-        of safe flight events.
-        \emph{Rationale:} Ensures compliance with range safety rules and enables
-        public/official monitoring.
-
-  \item \textbf{Live Streaming / Broadcast System}
-        \emph{Input:} HDMI video signal.
-        \emph{Output:} Public/live event stream.
-        \emph{Rationale:} Integrates the camera feed into broader event
-        broadcasting systems.
-
-  \item \textbf{Analysis Tools (Researchers, Software Pipelines)}
-        \emph{Input:} None.
-        \emph{Output:} Recorded video files, metadata (timestamps, gimbal angles,
-        session logs).
-        \emph{Rationale:} Enables post-flight performance analysis, academic
-        studies, and competition reporting.
-
-  \item \textbf{Gimbal Hardware}
-        \emph{Input:} Control signals (pan, tilt, zoom commands).
-        \emph{Output:} State feedback (position, speed, limits).
-        \emph{Rationale:} Provides mechanical actuation for tracking.
-
-  \item \textbf{Compute Platform (Jetson / Embedded PC)}
-        \emph{Input:} Power supply, OS environment.
-        \emph{Output:} Processed tracking data, control outputs to gimbal.
-        \emph{Rationale:} Runs the tracking algorithms and serves as the
-        execution environment.
-
-  \item \textbf{University / Supervisor / Capstone Review}
-        \emph{Input:} Project standards, milestone requirements.
-        \emph{Output:} Documentation, demonstrations, performance evidence.
-        \emph{Rationale:} Ensures academic quality and alignment with course
-        objectives.
-
-  \item \textbf{Environment (Weather, Terrain, Lighting)}
-        \emph{Input:} Ambient conditions (wind, dust, rain, lighting,
-        background).
-        \emph{Output:} None (affects system performance only).
-        \emph{Rationale:} External factor influencing system design
-        (robustness, IP rating, algorithm reliability).
-\end{enumerate}
+\FloatBarrier
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../Images/context_of_work.png}
+  \caption{Context of Work Diagram}
+  \label{img:context-of-work}
+\end{figure}
+\FloatBarrier
 
 \subsection{Work Partitioning}
 
-The following business events define the scope of the work. Each event
-represents a trigger from the real world or from an adjacent system, and the
-system’s response is defined as a Business Use Case (BUC).
+The list below shows all business events happening in the real world that
+affect the work of tracking rockets.
 
-\begin{enumerate}[wide=0pt, leftmargin=*]
-
-  \item \textbf{Event: System Power-On and Initialization}
-        \emph{Input:} Operator command to boot system (Camera Operator).
-        \emph{Outputs:} Status indicators, system logs.
-        \emph{Summary BUC:} The system initializes the compute platform,
-        establishes gimbal communication, and enters idle state ready for
-        calibration.
-        \emph{Business Data:} System configuration parameters, calibration state.
-
-  \item \textbf{Event: Launch Countdown Cue (T-0)}
-        \emph{Input:} Launch cue from Mission Control.
-        \emph{Outputs:} Tracking initialization, first lock attempt, live HDMI preview.
-        \emph{Summary BUC:} Upon receiving T-0, the system begins autonomous
-        detection and attempts lock-on of rocket at ignition plume.
-        \emph{Business Data:} Launch ID, timestamp, initial target coordinates.
-
-  \item \textbf{Event: Rocket Ignition Visual Detection}
-        \emph{Input:} Visual plume/body signature (Rocket Launch Vehicle).
-        \emph{Outputs:} Pan/tilt/zoom gimbal commands; live HDMI feed with
-        centered rocket; recording file started.
-        \emph{Summary BUC:} The system detects the rocket visually and
-        transitions from idle to active tracking.
-        \emph{Business Data:} Target bounding box, gimbal angles, detection confidence.
-
-  \item \textbf{Event: In-Flight Tracking Updates}
-        \emph{Input:} Continuous visual feed from camera sensor.
-        \emph{Outputs:} Updated gimbal control commands, updated live preview,
-        recorded frames.
-        \emph{Summary BUC:} While rocket is airborne, the system continuously
-        adjusts PTZ to keep the rocket centered and updates metadata.
-        \emph{Business Data:} Frame sequence, gimbal telemetry, tracking logs.
-
-  \item \textbf{Event: Staging or Parachute Deployment}
-        \emph{Input:} Visual signature of separation or chute deployment.
-        \emph{Outputs:} Video with event recorded, preview for operators,
-        timestamped log entry.
-        \emph{Summary BUC:} System continues tracking through events of
-        interest, marking these occurrences for later analysis.
-        \emph{Business Data:} Event markers (staging time, chute time),
-        synchronized frame timestamps.
-
-  \item \textbf{Event: End of Flight (Landing/Clear Signal)}
-        \emph{Input:} Mission Control “end of flight” cue or visual disappearance.
-        \emph{Outputs:} Recording file closed, final log entry, HDMI feed reverts
-        to standby.
-        \emph{Summary BUC:} The system finalizes session, stores video, and
-        transitions to idle state for next launch.
-        \emph{Business Data:} Session metadata (launch ID, duration, file paths).
-
-  \item \textbf{Event: Post-Flight Analysis Request}
-        \emph{Input:} Request from Analysts/Researchers.
-        \emph{Outputs:} Exported video files, telemetry logs, event markers.
-        \emph{Summary BUC:} The system provides outputs in formats suitable for
-        engineering review and report preparation.
-        \emph{Business Data:} Export package (video, gimbal data, event logs).
-
-  \item \textbf{Event: Remote System Control / Health Check}
-        \emph{Input:} Operator command over remote interface.
-        \emph{Outputs:} System status report, diagnostic data.
-        \emph{Summary BUC:} Operators check system readiness, adjust
-        parameters, or reboot remotely for safety.
-        \emph{Business Data:} Health logs, diagnostic metrics.
-
-  \item \textbf{Event: Environmental Conditions Affect Performance}
-        \emph{Input:} Wind, rain, lighting changes (Environment).
-        \emph{Outputs:} Adjusted tracking parameters, possible alerts to operator.
-        \emph{Summary BUC:} The system adapts to degraded visibility or warns
-        operator when performance may be compromised.
-        \emph{Business Data:} Environmental state markers, degraded performance
-        flags.
-
+\begin{enumerate}[label=BUC \arabic*., wide=0pt, leftmargin=*]
+  \item {\bf Business Event:} Live stream equipment is ready\\[2mm]
+        {\bf Inputs:} Vocal confirmation from live stream technician\\
+        {\bf Outputs:} Start transmitting the video to the live stream\\
+        {\bf Summary of BUC:} Start transmitting the video to the live
+        stream once the live stream equipment is ready.\\
+  \item {\bf Business Event:} Launch countdown starts\\[2mm]
+        {\bf Inputs:} Vocal count down from Mission Control\\
+        {\bf Outputs:} Start recording the rocket flight\\
+        {\bf Summary of BUC:} Start tracking the rocket once the countdown begins.\\
+  \item {\bf Business Event:} Rocket takes flight\\[2mm]
+        {\bf Inputs:} Video captured from camera\\
+        {\bf Outputs:} Keeps pointing the camera to the rocket\\
+        {\bf Summary of BUC:} Keep tracking the rocket once it takes flight.\\
+  \item {\bf Business Event:} Rocket completes flight\\[2mm]
+        {\bf Inputs:} Video captured from camera\\
+        {\bf Outputs:} Stop tracking the rocket; save the video; update mission control on flight status\\
+        {\bf Summary of BUC:} Stop tracking the rocket once it completes flight.\\
+  \item {\bf Business Event:} Flight performance analyst wants to view the footage\\[2mm]
+        {\bf Inputs:} Request from Flight performance analyst\\
+        {\bf Outputs:} Exported video files and logs\\
+        {\bf Summary of BUC:} Provide the footage to the flight performance analyst.\\
 \end{enumerate}
 
 \subsection{Specifying a Business Use Case (BUC)}
 
-\textbf{Event Trigger:} Mission Control sends a T-0 ignition signal
-(or operator marks T-0 manually if no digital cue is available).
+\textbf{BUC Scenario for BE 5}
 
-\textbf{Primary Actor:} Mission Control (adjacent system).
-\textbf{Supporting Actors:} Camera Operator, Tracking Camera System (work boundary).
+\textbf{Trigger:} Flight performance analyst requests to view the footage.
 
-\textbf{Preconditions:}
-\begin{itemize}
-  \item System is powered on and initialized in idle state.
-  \item Gimbal and camera are calibrated.
-  \item HDMI/live preview feed is active but not tracking.
-  \item Recording is armed (ready to start on cue).
-\end{itemize}
+\textbf{Interested Stakeholders:} Aerospace Engineers and Researchers.
+
+\textbf{Preconditions:} None.
 
 \textbf{Main Flow of Steps:}
 \begin{enumerate}
-  \item Mission Control issues the T-0 cue (e.g., countdown ``zero'' command or TTL
-        trigger).
-  \item Tracking system receives the cue via network input or operator input.
-  \item System transitions from idle to ``takeoff mode.''
-        \begin{itemize}
-          \item Records timestamp and launch ID in logs.
-          \item Starts a new recording file for this launch session.
-        \end{itemize}
-  \item Initial lock-on process begins.
-        \begin{itemize}
-          \item Detection algorithms search for ignition plume/rocket body near pad
-                coordinates.
-          \item Target is initialized and bounding box assigned.
-        \end{itemize}
-  \item Gimbal commands issued.
-        \begin{itemize}
-          \item PTZ angles updated to center target in frame.
-          \item Control loop begins continuous updates (tracking state active).
-        \end{itemize}
-  \item Outputs generated.
-        \begin{itemize}
-          \item HDMI feed shows live video with rocket centered.
-          \item Operator preview updated with tracking overlay/status.
-          \item Logs updated with ``tracking started'' entry.
-        \end{itemize}
-  \item Mission Control receives confirmation.
-        \begin{itemize}
-          \item Optional confirmation message or operator visual check that rocket is visible
-                in live feed.
-        \end{itemize}
-  \item System continues into \emph{In-Flight Tracking Updates} BUC.
+  \item The flight performance analyst provides date and time of the flight.
+  \item The camera operator looks up the flight in the database.
+  \item If the flight is found, the camera operator exports the video files and logs.
+  \item If the flight is not found, the camera operator informs the flight performance
+        analyst that the flight is not found.
 \end{enumerate}
 
-\textbf{Postconditions:}
-\begin{itemize}
-  \item System is actively tracking rocket in flight.
-  \item Recording is running, storing synchronized video and gimbal data.
-  \item Launch session ID and event markers established for later analysis.
-\end{itemize}
-
-\textbf{Business Data Involved:}
-\begin{itemize}
-  \item Launch ID
-  \item Timestamp (T-0, start of file)
-  \item Initial target coordinates (bounding box, gimbal azimuth/elevation)
-  \item Status logs (idle $\rightarrow$ takeoff $\rightarrow$ tracking transition)
-\end{itemize}
+\textbf{Outcome:} The flight performance analyst receives the video files and logs.
 
 \section{Business Data Model and Data Dictionary}
 \subsection{Business Data Model}
 
-A list of videos of recorded launches
+The business data model consists of a list of launches, and for each launch,
+the video footage and logs associated with the launch.
+
+\FloatBarrier
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../Images/business_data_model.png}
+  \caption{Business Data Model}
+  \label{img:business-data-model}
+\end{figure}
+\FloatBarrier
 
 \subsection{Data Dictionary}
 \lips
@@ -655,72 +486,40 @@ A list of videos of recorded launches
 \section{The Scope of the Product}
 \subsection{Product Boundary}
 
-The product boundary defines which parts of the work are handled by the
-tracking camera system (automated product use cases) and which parts remain the
-responsibility of human actors (manual tasks). By inspecting the business use
-cases and consulting with stakeholders, the following partition has been
-established.
+The product boundary defines which parts of the work are handled by the system
+and which parts remain the responsibility of human actors.
 
-The tracking camera system is responsible for automating the detection,
-tracking, recording, and output of rocket flight data. Human actors are
-responsible for initiating sessions, providing launch cues, and consuming the
-outputs for analysis, safety, or broadcast.
+In \hyperref[img:product-boundary]{Figure 3}, The product use cases (PUCs) are
+the ellipses inside the boundary. Each PUC is labeled with one or more BUCs
+that it came from.
+
+\FloatBarrier
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../Images/product_boundary.png}
+  \caption{Product Boundary}
+  \label{img:product-boundary}
+\end{figure}
+\FloatBarrier
 
 \subsection{Product Use Case Table}
 
-\begin{enumerate}[wide=0pt, leftmargin=*]
-  \item \textbf{Initialize and Configure System}
-        \emph{Actor:} Camera Operator.
-        \emph{Product Responsibility:} Load stored configuration, establish
-        gimbal communication, report system health and readiness.
-        \emph{Actor Responsibility:} Provide power, initiate startup, select
-        session parameters.
-
-  \item \textbf{Start Recording Session at T-0}
-        \emph{Actor:} Mission Control (via cue) or Camera Operator (manual trigger).
-        \emph{Product Responsibility:} Detect cue, create new recording file,
-        time-stamp session ID, and transition to tracking state.
-        \emph{Actor Responsibility:} Issue cue at correct launch time.
-
-  \item \textbf{Detect and Track Rocket}
-        \emph{Actor:} Rocket Launch Vehicle (provides visual signature).
-        \emph{Product Responsibility:} Apply detection algorithms, command
-        gimbal PTZ to keep rocket centered, log telemetry.
-        \emph{Actor Responsibility:} None (passive role).
-
-  \item \textbf{Manage Zoom and Field of View}
-        \emph{Actor:} Camera Operator (optional override).
-        \emph{Product Responsibility:} Automatically adjust zoom to maintain
-        visible rocket size above detection threshold.
-        \emph{Actor Responsibility:} Optional manual override if auto-zoom fails.
-
-  \item \textbf{Provide Live Video Output}
-        \emph{Actor:} Event Organizers, Safety Officers, Livestream Technicians.
-        \emph{Product Responsibility:} Deliver stable HDMI feed at 1080p/60 for
-        integration into switchers or livestream software.
-        \emph{Actor Responsibility:} Connect, ingest, and broadcast feed.
-
-  \item \textbf{Record and Store Flight Session}
-        \emph{Actor:} Analysts, Media Leads.
-        \emph{Product Responsibility:} Record video with timestamps and gimbal
-        data, close session cleanly at end-of-flight.
-        \emph{Actor Responsibility:} Retrieve stored files, archive them, or
-        prepare them for analysis.
-
-  \item \textbf{Export Data for Analysis}
-        \emph{Actor:} Researchers, Rocketry Team Analysts.
-        \emph{Product Responsibility:} Provide synchronized video, telemetry,
-        and event logs in standard formats.
-        \emph{Actor Responsibility:} Perform engineering analysis, reporting,
-        and interpretation of the data.
-
-  \item \textbf{Remote Control and Health Monitoring}
-        \emph{Actor:} Camera Operator.
-        \emph{Product Responsibility:} Respond to remote commands for status,
-        diagnostics, and reboot; maintain safe operation when placed in
-        hazardous zones.
-        \emph{Actor Responsibility:} Issue remote commands, interpret health
-        reports, and take corrective actions.
+\begin{enumerate}[label=PUC \arabic*., wide=0pt, leftmargin=*]
+  \item {\bf Name:} Record Footage\\[2mm]
+        {\bf Actors:} Camera Operator, Camera\\
+        {\bf Inputs:} Start / stop commands from camera operator, video feed from camera\\
+        {\bf Outputs:} Recorded video footage and logs\\
+        {\bf BUCs:} BUC 2, BUC 4, BUC 5\\
+  \item {\bf Name:} Live Video Feed\\[2mm]
+        {\bf Actors:} Camera Operator, Camera, Live Stream Technician\\
+        {\bf Inputs:} Start / stop commands from camera operator, video feed from camera\\
+        {\bf Outputs:} Live video feed to Live Stream Technician\\
+        {\bf BUCs:} BUC 1\\
+  \item {\bf Name:} Control Gimbal\\[2mm]
+        {\bf Actors:} Camera, Gimbal\\
+        {\bf Inputs:} Video feed from camera\\
+        {\bf Outputs:} Movement commands to gimbal\\
+        {\bf BUCs:} BUC 3\\
 \end{enumerate}
 
 \subsection{Individual Product Use Cases (PUC's)}
