@@ -417,36 +417,134 @@ and how it connects to the adjacent systems.
 
 \subsection{Work Partitioning}
 
-The list below shows all business events happening in the real world that
-affect the work of tracking rockets.
+The \hyperref[tab:work-part]{Table 1} identifies all business events happening
+in the real world that affect the work of tracking rockets.
 
-\begin{enumerate}[label=BUC \arabic*., wide=0pt, leftmargin=*]
-  \item {\bf Business Event:} Live stream equipment is ready\\[2mm]
-        {\bf Inputs:} Vocal confirmation from live stream technician\\
-        {\bf Outputs:} Start transmitting the video to the live stream\\
-        {\bf Summary of BUC:} Start transmitting the video to the live
-        stream once the live stream equipment is ready.\\
-  \item {\bf Business Event:} Launch countdown starts\\[2mm]
-        {\bf Inputs:} Vocal count down from Mission Control\\
-        {\bf Outputs:} Start recording the rocket flight\\
-        {\bf Summary of BUC:} Start tracking the rocket once the countdown begins.\\
-  \item {\bf Business Event:} Rocket takes flight\\[2mm]
-        {\bf Inputs:} Video captured from camera\\
-        {\bf Outputs:} Keeps pointing the camera to the rocket\\
-        {\bf Summary of BUC:} Keep tracking the rocket once it takes flight.\\
-  \item {\bf Business Event:} Rocket completes flight\\[2mm]
-        {\bf Inputs:} Video captured from camera\\
-        {\bf Outputs:} Stop tracking the rocket; save the video; update mission control on flight status\\
-        {\bf Summary of BUC:} Stop tracking the rocket once it completes flight.\\
-  \item {\bf Business Event:} Flight performance analyst wants to view the footage\\[2mm]
-        {\bf Inputs:} Request from Flight performance analyst\\
-        {\bf Outputs:} Exported video files and logs\\
-        {\bf Summary of BUC:} Provide the footage to the flight performance analyst.\\
-\end{enumerate}
+\begin{table}[H]
+  \centering
+  \setlength\extrarowheight{5mm}
+  \begin{tabularx}{\textwidth}{cp{1in}Xp{1.5in}}
+    \toprule \textbf{No.}   & \textbf{Event Name}                                  &
+    \textbf{Input / Output} &
+    \textbf{Requirements}                                                            \\
+    \midrule
+    BUC 1                   & Live stream equipment is ready                       &
+    (in) Vocal confirmation from live stream technician \newline
+    (out) Start transmitting the video to the live stream
+                            &
+    TBD                                                                              \\
+    BUC 2                   & Launch countdown starts                              &
+    (in) Vocal count down from Mission Control \newline
+    (out) Start recording the rocket flight
+                            &
+    TBD                                                                              \\
+    BUC 3                   & Rocket takes flight                                  &
+    (in) Video captured from camera \newline
+    (out) Keeps pointing the camera to the rocket
+                            &
+    TBD                                                                              \\
+    BUC 4                   & Rocket completes flight                              &
+    (in) Video captured from camera \newline
+    (out) Stop tracking the rocket \newline
+    (out) Save the video  \newline
+    (out) Update mission control on flight status
+                            &
+    TBD                                                                              \\
+    BUC 5                   & Flight performance analyst wants to view the footage &
+    (in) Request from Flight performance analyst \newline
+    (out) Exported video files and logs
+                            &
+    TBD                                                                              \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Work Partitioning of System}
+  \label{tab:work-part}
+\end{table}
 
 \subsection{Specifying a Business Use Case (BUC)}
 
-\textbf{BUC Scenario for BE 5}
+Each event listed in \hyperref[tab:work-part]{Table 1} is expanded into an
+individual business use case (BUC) which describes business logic in detail.
+
+~\\
+
+\textbf{BUC 1: Live stream equipment is ready.}
+
+\textbf{Trigger:} Live Stream Technician confirms the live stream equipment is ready to receive video.
+
+\textbf{Interested Stakeholders:} Model Rocketry Event Organizers
+
+\textbf{Preconditions:} Camera is powered on and video feed is available.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The live stream technician notifies the camera operator that the stream
+        equipment is ready to receive video.
+  \item The camera operator connect the camera to the live stream equipment and
+        configure the camera to output video.
+\end{enumerate}
+
+\textbf{Outcome:} The live stream receives a video feed from the camera.
+
+~\\
+
+\textbf{BUC 2: Launch countdown starts.}
+
+\textbf{Trigger:} Mission Control begins the countdown to launch.
+
+\textbf{Interested Stakeholders:} Model Rocketry Event Organizers.
+
+\textbf{Preconditions:} Camera is powered on and ready to record.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item Upon hearing the countdown, the camera operator points the camera to the rocket
+        and starts recording.
+\end{enumerate}
+
+\textbf{Outcome:} Recording of the rocket flight is started.
+
+~\\
+
+\textbf{BUC 3: Rocket takes flight.}
+
+\textbf{Trigger:} Rocket ignition and liftoff are observed.
+
+\textbf{Interested Stakeholders:} Model Rocketry Event Organizers, Aerospace Engineers and Researchers.
+
+\textbf{Preconditions:} Camera is pointing at the rocket and recording.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The camera operator keeps pointing the camera to the rocket.
+  \item If the rocket stages, the camera operator points the camera to the next stage.
+\end{enumerate}
+
+\textbf{Outcome:} The camera remains pointed at the rocket throughout the flight.
+
+~\\
+
+\textbf{BUC 4: Rocket completes flight.}
+
+\textbf{Trigger:} Rocket landing is observed.
+
+\textbf{Interested Stakeholders:} Model Rocketry Event Organizers, Model Rocketry Safety Officers.
+
+\textbf{Preconditions:} Camera is pointing at the rocket and recording.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The camera operator confirms end of flight based on callout or observation.
+  \item The camera operator ends the recording.
+  \item The camera operator stops pointing the camera to the rocket.
+  \item The camera operator communicates the flight status to Mission Control.
+\end{enumerate}
+
+\textbf{Outcome:} Video and logs are safely stored and the flight status is communicated to Mission Control.
+
+~\\
+
+\textbf{BUC 5: Flight performance analyst wants to view the footage.}
 
 \textbf{Trigger:} Flight performance analyst requests to view the footage.
 
@@ -577,6 +675,19 @@ Product Use Case: Detect and Track Rocket
   \item Gimbal pan/tilt/zoom values.
   \item Detection confidence scores.
 \end{itemize}
+
+\subsection{System State Diagram}
+
+The following is a state diagram of the system.
+
+\FloatBarrier
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../Images/state_diagram.png}
+  \caption{System State Diagram}
+  \label{img:state-diagram}
+\end{figure}
+\FloatBarrier
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
