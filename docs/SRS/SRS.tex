@@ -423,38 +423,32 @@ in the real world that affect the work of tracking rockets.
 \begin{table}[H]
   \centering
   \setlength\extrarowheight{5mm}
-  \begin{tabularx}{\textwidth}{cp{1in}Xp{1.5in}}
-    \toprule \textbf{No.}   & \textbf{Event Name}                                  &
-    \textbf{Input / Output} &
-    \textbf{Requirements}                                                            \\
+  \begin{tabularx}{\textwidth}{cp{1.5in}X}
+    \toprule \textbf{No.} & \textbf{Event Name}                                  &
+    \textbf{Input / Output}                                                        \\
     \midrule
-    BUC 1                   & Live stream equipment is ready                       &
+    BUC 1                 & Live stream equipment is ready                       &
     (in) Vocal confirmation from live stream technician \newline
     (out) Start transmitting the video to the live stream
-                            &
-    TBD                                                                              \\
-    BUC 2                   & Launch countdown starts                              &
+    \\
+    BUC 2                 & Launch countdown starts                              &
     (in) Vocal count down from Mission Control \newline
     (out) Start recording the rocket flight
-                            &
-    TBD                                                                              \\
-    BUC 3                   & Rocket takes flight                                  &
+    \\
+    BUC 3                 & Rocket takes flight                                  &
     (in) Video captured from camera \newline
     (out) Keeps pointing the camera to the rocket
-                            &
-    TBD                                                                              \\
-    BUC 4                   & Rocket completes flight                              &
+    \\
+    BUC 4                 & Rocket completes flight                              &
     (in) Video captured from camera \newline
     (out) Stop tracking the rocket \newline
     (out) Save the video  \newline
     (out) Update mission control on flight status
-                            &
-    TBD                                                                              \\
-    BUC 5                   & Flight performance analyst wants to view the footage &
+    \\
+    BUC 5                 & Flight performance analyst wants to view the footage &
     (in) Request from Flight performance analyst \newline
     (out) Exported video files and logs
-                            &
-    TBD                                                                              \\
+    \\
     \bottomrule
   \end{tabularx}
   \caption{Work Partitioning of System}
@@ -498,8 +492,8 @@ individual business use case (BUC) which describes business logic in detail.
 
 \textbf{Main Flow of Steps:}
 \begin{enumerate}
-  \item Upon hearing the countdown, the camera operator points the camera to the rocket
-        and starts recording.
+  \item The camera operator points the camera to the rocket
+  \item The camera operator starts recording.
 \end{enumerate}
 
 \textbf{Outcome:} Recording of the rocket flight is started.
@@ -602,25 +596,75 @@ that it came from.
 
 \subsection{Product Use Case Table}
 
-\begin{enumerate}[label=PUC \arabic*., wide=0pt, leftmargin=*]
-  \item {\bf Name:} Record Footage\\[2mm]
-        {\bf Actors:} Camera Operator, Camera\\
-        {\bf Inputs:} Start / stop commands from camera operator, video feed from camera\\
-        {\bf Outputs:} Recorded video footage and logs\\
-        {\bf BUCs:} BUC 2, BUC 4, BUC 5\\
-  \item {\bf Name:} Live Video Feed\\[2mm]
-        {\bf Actors:} Camera Operator, Camera, Live Stream Technician\\
-        {\bf Inputs:} Start / stop commands from camera operator, video feed from camera\\
-        {\bf Outputs:} Live video feed to Live Stream Technician\\
-        {\bf BUCs:} BUC 1\\
-  \item {\bf Name:} Control Gimbal\\[2mm]
-        {\bf Actors:} Camera, Gimbal\\
-        {\bf Inputs:} Video feed from camera\\
-        {\bf Outputs:} Movement commands to gimbal\\
-        {\bf BUCs:} BUC 3\\
-\end{enumerate}
+The following \hyperref[tab:product-use-case-table]{Table 2} summarizes the
+primary use cases of the system.
+
+\begin{table}[H]
+  \centering
+  \setlength\extrarowheight{5mm}
+  \begin{tabularx}{\textwidth}{p{0.4in}p{0.4in}p{1.25in}p{1in}X}
+    \toprule \textbf{BUC No.}       & \textbf{PUC No.}        & \textbf{PUC Name}              &
+    \textbf{Actors}                 & \textbf{Input / Output}                                    \\
+    \midrule
+    1                               & 1                       & Start / stop live video output &
+    Camera Operator, Camera, Live Stream Technician
+                                    &
+    (in) Start / stop live video output command \newline
+    (in) Video feed from camera \newline
+    (out) Live video output                                                                      \\
+    2                               & 2.1                     & Point camera to rocket         &
+    Camera Operator, Camera, Gimbal
+                                    &
+    (in) Manual gimbal adjustment commands from camera operator \newline
+    (out) Movement commands to the gimbal                                                        \\
+    2                               & 2.2                     & Start video recording          &
+    Camera Operator, Camera
+                                    &
+    (in) Start video recording command \newline
+    (out) Video recording started                                                                \\
+    3                               & 3                       & Automated rocket tracking      &
+    Camera, Gimbal                  &
+    (in) Video feed from camera \newline
+    (out) Movement commands to gimbal                                                            \\
+    4                               & 4.1                     & Stop video recording           &
+    Camera Operator, Camera         &
+    (in) Stop video recording command \newline
+    (out) Video recording stopped and saved                                                      \\
+    4                               & 4.2                     & Stop tracking rocket           &
+    Camera Operator, Camera, Gimbal &
+    (in) Stop tracking rocket command \newline
+    (out) Gimbal stops moving                                                                    \\
+    5                               & 5                       & View recorded footage and logs &
+    Camera Operator                 &
+    (in) request to download footage and logs \newline
+    (out) Footage and logs downloaded                                                            \\
+
+    \bottomrule
+  \end{tabularx}
+  \caption{Product Use Case Table}
+  \label{tab:product-use-case-table}
+\end{table}
 
 \subsection{Individual Product Use Cases (PUC's)}
+
+something something
+
+~\\
+
+\textbf{PUC 1: Record Footage.}
+
+\textbf{Actors:} Camera Operator, Camera.
+
+\textbf{Trigger:} Mission Control begins the countdown to launch.
+
+\textbf{Preconditions:} The system is in idle state.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item Upon hearing the countdown, the camera operator
+\end{enumerate}
+
+\textbf{Outcome:} Video and logs are safely stored and the flight status is communicated to Mission Control.
 
 Product Use Case: Detect and Track Rocket
 
