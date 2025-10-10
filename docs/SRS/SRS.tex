@@ -137,7 +137,7 @@ level of familiarity with live streaming software and hardware.
 
 The flight performance analyst is a member of the rocketry team that
 reconstructs flight profiles from sensor data and camera footage to understand
-how the rocket behaves during ascent and recovery. The flight performance
+how the rocket behaves during ascent and descent. The flight performance
 analyst is assumed to have a high level of familiarity with rocket flight
 dynamics and software used for analysis.
 
@@ -185,9 +185,9 @@ make her a trusted member of the launch operations crew.
 Brandon is in his final year of mechanical engineering at a Canadian university
 and serves as a flight performance analyst for his rocketry team. His specialty
 is reconstructing flight profiles from sensor data and camera footage to
-understand how the rocket behaves during ascent and recovery. He joined the
-team for the engineering challenge but stayed because he loves the mix of
-theory, experimentation, and teamwork.
+understand how the rocket behaves during ascent and descent. He joined the team
+for the engineering challenge but stayed because he loves the mix of theory,
+experimentation, and teamwork.
 
 Originally from Calgary, Brandon now lives in a small off-campus apartment
 filled with model rockets, whiteboards, and a curious cat named Fourier. He's
@@ -342,7 +342,7 @@ access.
   \item \textbf{Gimbal}: A gimbal is a motorized device that rotates based on the commands sent to it.
   \item \textbf{Rocket}: Refers to a model rocket.
   \item \textbf{Ascent}: The stage in a model rocket flight where the rocket is ascending.
-  \item \textbf{Recovery}: The stage in a model rocket flight where the rocket has reached its apogee and is descending.
+  \item \textbf{Descent}: The stage in a model rocket flight where the rocket has reached its apogee and is descending.
 \end{enumerate}
 
 \section{Relevant Facts And Assumptions}
@@ -569,7 +569,28 @@ the video footage and logs associated with the launch.
 \FloatBarrier
 
 \subsection{Data Dictionary}
-\lips
+
+\begin{table}[H]
+  \centering
+  \setlength\extrarowheight{5mm}
+  \begin{tabularx}{\textwidth}{lXp{1in}}
+    \toprule \textbf{Name} & \textbf{Content}               &
+    \textbf{Type}                                             \\
+    \midrule
+    Recording Session      & date + time                    &
+    Class
+    \\
+    Video Footage          & Recorded video from the camera &
+    Class
+    \\
+    Log                    & timestamp + gimbal angle       &
+    Class
+    \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Data Dictionary}
+  \label{tab:data-dictionary}
+\end{table}
 
 \section{The Scope of the Product}
 \subsection{Product Boundary}
