@@ -70,8 +70,8 @@ recorded footage for post-flight analysis and event operations.
 
 \textbf{Purpose:}
 
-Develop a software+hardware stack (the system) that is able to command a camera
-gimbal to track and record model rocket launches.
+Develop a software+hardware stack (the system) that is able to command a gimbal
+with a camera mounted on it to track and record model rocket launches.
 
 \textbf{Advantage:}
 
@@ -120,20 +120,20 @@ interested in using the project:
 
 Here are the users that will be interacting with the product directly.
 
-\textbf{Role}: Camera Operator
+\textbf{Role: Camera Operator}
 
-The camera operator controls the camera through the UI, starts/stops
-recordings, manages lock-on/target selection, and monitors preview. The camera
-operator is assumed to decent level of familiarity with technology, and have
-been trained on the use of the product.
+The camera operator controls the system through the UI, starts/stops
+recordings, manages tracking states, and monitors preview. The camera operator
+is assumed to have a decent level of familiarity with technology, and have been
+trained on the use of the product.
 
-\textbf{Role}: Live Stream Technician
+\textbf{Role: Live Stream Technician}
 
-The live stream technician manages the video feed from the camera to the live
+The live stream technician manages the video feed from the system to the live
 streaming equipments. The live stream technician is assumed to have a high
 level of familiarity with live streaming software and hardware.
 
-\textbf{Role}: Flight Performance Analyst
+\textbf{Role: Flight Performance Analyst}
 
 The flight performance analyst is a member of the rocketry team that
 reconstructs flight profiles from sensor data and camera footage to understand
@@ -141,7 +141,7 @@ how the rocket behaves during ascent and recovery. The flight performance
 analyst is assumed to have a high level of familiarity with rocket flight
 dynamics and software used for analysis.
 
-\textbf{Role}: Live Stream / Recordings Viewers
+\textbf{Role: Live Stream / Recordings Viewers}
 
 People who view the live stream or recorded videos. They can be anyone from the
 general public that are interested in the launch, or the team members
@@ -190,10 +190,10 @@ team for the engineering challenge but stayed because he loves the mix of
 theory, experimentation, and teamwork.
 
 Originally from Calgary, Brandon now lives in a small off-campus apartment
-filled with model rockets, whiteboards, and a curious cat named Fourier. He’s
+filled with model rockets, whiteboards, and a curious cat named Fourier. He's
 known for his patience and meticulous documentation — traits that make him the
-go-to person for post-launch analysis. When he’s not studying or coding MATLAB
-scripts, he’s cooking ramen, taking photos, or biking along Lake Ontario.
+go-to person for post-launch analysis. When he's not studying or coding MATLAB
+scripts, he's cooking ramen, taking photos, or biking along Lake Ontario.
 
 Brandon listens to ambient and post-rock while he works, loves strong coffee,
 and dislikes chaotic testing days where data logging gets overlooked. His
@@ -210,22 +210,22 @@ successful flight is a story written in numbers and motion.
 Christopher is a retired broadcast engineer who spent three decades working in
 television production for CBC Toronto. After retirement, he moved to Burlington
 and found a new passion in volunteer work, helping organize live streams and
-event logistics for student rocketry competitions. For him, it’s the perfect
+event logistics for student rocketry competitions. For him, it's the perfect
 blend of his lifelong love of broadcasting and his fascination with aerospace
 technology.
 
-He’s married with two grown children who live abroad, and he often jokes that
+He's married with two grown children who live abroad, and he often jokes that
 the rocketry community has become his “third family.” Christopher loves cooking
 Cantonese comfort food — especially steamed dumplings and congee — and enjoys
 jazz and classic rock in equal measure. He spends his spare time restoring old
 audio equipment, gardening, and taking long weekend drives along the Niagara
 Escarpment.
 
-Christopher’s approach to technology is deeply pragmatic: he respects
+Christopher's approach to technology is deeply pragmatic: he respects
 automation but insists that every system should have a manual override. He
-likes tidy wiring, clear documentation, and software that doesn’t crash
-midstream. He dislikes unnecessary complexity and “updates that fix what wasn’t
-broken.” To younger team members, he’s both a mentor and the steady hand who
+likes tidy wiring, clear documentation, and software that doesn't crash
+midstream. He dislikes unnecessary complexity and “updates that fix what wasn't
+broken.” To younger team members, he's both a mentor and the steady hand who
 keeps the broadcast running when chaos hits.
 \subsection{Priorities Assigned to Users}
 
@@ -261,10 +261,10 @@ currently no expected maintenance users.
 
   \item \emph{The system must be remote controllable.}\\[2mm]
         {\bf Rationale:} The system may need to be positioned inside hazardous zones (launch pad, ballistic landing areas) or at distant vantage points with no safe operator access during the countdown and flight.\\
-        {\bf Fit Criterion:} The system should be able to perform multiple full tracking sessions with no physical interaction at the camera site once deployed.
+        {\bf Fit Criterion:} The system should be able to perform all the product use cases with no physical interaction at the camera site once deployed.
 
   \item \emph{The system must output a live video stream via HDMI.}\\[2mm]
-        {\bf Rationale:} The customer's live streaming equipments accept HDMI as the integration standard; alternative connectors would require additional adapters.\\
+        {\bf Rationale:} The customer's live streaming equipments accept HDMI as the integration standard, alternative connectors would require additional adapters.\\
         {\bf Fit Criterion:} The system should be able to output a live video stream via HDMI, confirmed by connecting a monitor to the system.
 
   \item \emph{The system must provide a flexible interface for gimbal hardware.}\\[2mm]
@@ -274,16 +274,16 @@ currently no expected maintenance users.
 
 \subsection{Implementation Environment of the Current System}
 
-There are no constrains on the hardware platform the project need to use.
+There are no constrains on the hardware platform the system need to use.
 
 \subsection{Partner or Collaborative Applications}
 
-The system is expected to be used with a camera gimbal. The system will command
-the camera gimbal to track and record model rocket launches.
+The system is expected to be used with a gimbal with a camera mounted on it.
+The system will command the gimbal to track and record model rocket launches.
 
 \subsection{Off-the-Shelf Software}
 
-There are no constrains on the off-the-shelf software the project need to use.
+There are no constrains on the off-the-shelf software the system need to use.
 
 \subsection{Anticipated Workplace Environment}
 
@@ -338,12 +338,11 @@ access.
   involved in the Project}
 
 \begin{enumerate}
-  \item \textbf{Gimbal}: A gimbal is a motorized device that rotates a camera
-        based on the commands sent to it.
-  \item \textbf{PTZ Camera}: A PTZ camera is a camera that can be remotely
-        controlled to pan, tilt, and zoom.
-  \item \textbf{HDMI}: HDMI is a digital video interface that is used to
-        transmit video and audio signals.
+  \item \textbf{The System}: The software+hardware stack developed for this project that is able to command a gimbal with camera mounted on it to track and record a rocket flight. (the gimbal and the camera are not a part of the system)
+  \item \textbf{Gimbal}: A gimbal is a motorized device that rotates based on the commands sent to it.
+  \item \textbf{Rocket}: Refers to a model rocket.
+  \item \textbf{Ascent}: The stage in a model rocket flight where the rocket is ascending.
+  \item \textbf{Recovery}: The stage in a model rocket flight where the rocket has reached its apogee and is descending.
 \end{enumerate}
 
 \section{Relevant Facts And Assumptions}
@@ -791,8 +790,7 @@ something something
 \textbf{Main Flow of Steps:}
 \begin{enumerate}
   \item The camera operator opens the recordings page in the UI.
-  \item The camera operator filters or selects the desired tracking session by
-        date/time.
+  \item The camera operator filters or selects the desired files by date/time.
   \item The camera operator downloads the files to their device.
 \end{enumerate}
 
@@ -834,7 +832,7 @@ The following is a state diagram of the system.
         {\bf Fit Criterion:} Operator input is received and the chosen target is registered by the tracking system.\\
         {\bf Priority:} High
 
-  \item[FR-SYS-4] \emph{The system must continuously estimate the target’s position and
+  \item[FR-SYS-4] \emph{The system must continuously estimate the target's position and
           keep it centered in the image.}\\[2mm]
         {\bf Rationale:} Accurate target tracking is the core function of the system to maintain visual lock.\\
         {\bf Fit Criterion:} Target remains within 40 px of frame center at 1080p resolution under smooth motion.\\
