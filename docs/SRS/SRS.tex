@@ -427,20 +427,20 @@ in the real world that affect the work of tracking rockets.
     \toprule \textbf{No.} & \textbf{Event Name}                                  &
     \textbf{Input / Output}                                                        \\
     \midrule
-    BUC 1                 & Live stream equipment is ready                       &
-    (in) Vocal confirmation from live stream technician \newline
-    (out) Start transmitting the video to the live stream
+    BUC 1                 & Output live video                                    &
+    (in) Video feed from camera \newline
+    (out) Transmitting the video to the live stream
     \\
     BUC 2                 & Launch countdown starts                              &
     (in) Vocal count down from Mission Control \newline
     (out) Start recording the rocket flight
     \\
     BUC 3                 & Rocket takes flight                                  &
-    (in) Video captured from camera \newline
+    (in) Video feed from camera \newline
     (out) Keeps pointing the camera to the rocket
     \\
     BUC 4                 & Rocket completes flight                              &
-    (in) Video captured from camera \newline
+    (in) Video feed from camera \newline
     (out) Stop tracking the rocket \newline
     (out) Save the video  \newline
     (out) Update mission control on flight status
@@ -462,20 +462,17 @@ individual business use case (BUC) which describes business logic in detail.
 
 ~\\
 
-\textbf{BUC 1: Live stream equipment is ready.}
+\textbf{BUC 1: Output live video.}
 
-\textbf{Trigger:} Live Stream Technician confirms the live stream equipment is ready to receive video.
+\textbf{Trigger:} None, always active.
 
 \textbf{Interested Stakeholders:} Model Rocketry Event Organizers
 
-\textbf{Preconditions:} Camera is powered on and video feed is available.
+\textbf{Preconditions:} Camera is powered on.
 
 \textbf{Main Flow of Steps:}
 \begin{enumerate}
-  \item The live stream technician notifies the camera operator that the stream
-        equipment is ready to receive video.
-  \item The camera operator connect the camera to the live stream equipment and
-        configure the camera to output video.
+  \item The camera operator connect the camera to the live streaming equipments.
 \end{enumerate}
 
 \textbf{Outcome:} The live stream receives a video feed from the camera.
@@ -606,10 +603,9 @@ primary use cases of the system.
     \toprule \textbf{BUC No.}       & \textbf{PUC No.}        & \textbf{PUC Name}              &
     \textbf{Actors}                 & \textbf{Input / Output}                                    \\
     \midrule
-    1                               & 1                       & Start / stop live video output &
-    Camera Operator, Camera, Live Stream Technician
+    1                               & 1                       & Live video output              &
+    Camera, Live Stream Technician
                                     &
-    (in) Start / stop live video output command \newline
     (in) Video feed from camera \newline
     (out) Live video output                                                                      \\
     2                               & 2.1                     & Point camera to rocket         &
@@ -622,6 +618,12 @@ primary use cases of the system.
                                     &
     (in) Start video recording command \newline
     (out) Video recording started                                                                \\
+    2                               & 2.3                     & Start tracking rocket          &
+    Camera Operator, Camera, Gimbal
+                                    &
+    (in) Start tracking rocket command \newline
+    (out) System in armed state                                                                  \\
+
     3                               & 3                       & Automated rocket tracking      &
     Camera, Gimbal                  &
     (in) Video feed from camera \newline
@@ -633,7 +635,8 @@ primary use cases of the system.
     4                               & 4.2                     & Stop tracking rocket           &
     Camera Operator, Camera, Gimbal &
     (in) Stop tracking rocket command \newline
-    (out) Gimbal stops moving                                                                    \\
+    (out) Gimbal stops moving \newline
+    (out) System in idle state                                                                   \\
     5                               & 5                       & View recorded footage and logs &
     Camera Operator                 &
     (in) request to download footage and logs \newline
@@ -651,74 +654,149 @@ something something
 
 ~\\
 
-\textbf{PUC 1: Record Footage.}
+\textbf{PUC 1: Live video output.}
 
-\textbf{Actors:} Camera Operator, Camera.
+\textbf{Actors:} Camera, Live Stream Technician.
 
-\textbf{Trigger:} Mission Control begins the countdown to launch.
+\textbf{Preconditions:} The system is powered on and has finished initialization.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The camera operator connects the system to the live streaming equipments.
+\end{enumerate}
+
+\textbf{Outcome:} The live streaming equipments receive a video feed from the system.
+
+~\\
+
+\textbf{PUC 2.1: Point camera to rocket.}
+
+\textbf{Actors:} Camera Operator, Camera, Gimbal.
 
 \textbf{Preconditions:} The system is in idle state.
 
 \textbf{Main Flow of Steps:}
 \begin{enumerate}
-  \item Upon hearing the countdown, the camera operator
+  \item The camera operator monitors the camera preview on the UI.
+  \item The camera operator selects the direction to rotate the gimbal on the UI.
+  \item The system sends commands to the gimbal to rotate to the selected direction.
+  \item The camera operator confirms the gimbal is rotating to the selected direction
+        through the preview.
 \end{enumerate}
 
-\textbf{Outcome:} Video and logs are safely stored and the flight status is communicated to Mission Control.
+\textbf{Outcome:} The gimbal is rotated to the selected direction.
 
-Product Use Case: Detect and Track Rocket
+~\\
 
-\textbf{Primary Actor:} Tracking Camera System (automated).
-\textbf{Supporting Actor:} Rocket Launch Vehicle (provides visual target).
+\textbf{PUC 2.2: Start video recording.}
 
-\textbf{Preconditions:}
-\begin{itemize}
-  \item System has received launch cue and is in ``takeoff mode.''
-  \item Camera and gimbal are powered, calibrated, and aligned with launch pad
-        coordinates.
-  \item Recording session has been initialized.
-\end{itemize}
+\textbf{Actors:} Camera Operator, Camera.
+
+\textbf{Preconditions:} The system is powered on and has finished initialization; not currently recording.
 
 \textbf{Main Flow of Steps:}
 \begin{enumerate}
-  \item System continuously receives video frames from the camera sensor.
-  \item Detection algorithm processes frames to identify rocket plume or body.
-  \item If candidate target is detected, the system validates confidence score against
-        threshold.
-  \item A bounding box is assigned to the target and updated each frame.
-  \item Target position is mapped to screen coordinates relative to frame center.
-  \item Gimbal controller calculates required pan/tilt adjustments using PID (or
-        equivalent) to re-center target.
-  \item Pan/tilt commands are issued to the gimbal hardware.
-  \item Optional: zoom controller adjusts focal length to maintain target resolution
-        above minimum threshold.
-  \item Updated gimbal state is logged along with timestamp and detection confidence.
-  \item HDMI output and operator preview are refreshed with updated framing.
-  \item Loop repeats for each frame until end-of-flight signal is received.
+  \item The camera operator clicks the "Start Recording" button on the UI.
+  \item The system starts to record the camera feed and additional logs (e.g. angle of
+        the gimbal, temperature of the camera, etc.).
+  \item The UI displays a recording indicator and the elapsed recording time.
 \end{enumerate}
 
-\textbf{Alternative Flows:}
-\begin{itemize}
-  \item \emph{Detection Lost:} If no target is detected for $>$N consecutive frames, the system widens search area (zoom out or broaden ROI) and flags status as ``searching.''
-  \item \emph{False Detection:} If multiple objects match, system prioritizes trajectory consistent with launch path and highest confidence score.
-\end{itemize}
+\textbf{Outcome:} Video recording starts and logs are written to storage.
 
-\textbf{Postconditions:}
-\begin{itemize}
-  \item Rocket remains within a defined bounding region (e.g., $\pm$10\% frame center)
-        for at least 80\% of observable flight.
-  \item Continuous log of gimbal angles, bounding box coordinates, and confidence
-        values is maintained.
-  \item Recorded video contains centered rocket imagery for subsequent analysis.
-\end{itemize}
+~\\
 
-\textbf{Business Data Involved:}
-\begin{itemize}
-  \item Frame sequence and timestamps.
-  \item Bounding box coordinates.
-  \item Gimbal pan/tilt/zoom values.
-  \item Detection confidence scores.
-\end{itemize}
+\textbf{PUC 2.3: Start tracking rocket.}
+
+\textbf{Actors:} Camera Operator, Camera, Gimbal.
+
+\textbf{Preconditions:} System is in idle state.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The camera operator selects the "Arm" button on the UI.
+  \item The system enters the armed state.
+  \item The UI displays a "Armed" indicator.
+\end{enumerate}
+
+\textbf{Outcome:} The system enters the armed state and starts to look for rockets.
+
+~\\
+
+\textbf{PUC 3: Automated rocket tracking.}
+
+\textbf{Actors:} Camera, Gimbal.
+
+\textbf{Preconditions:} System is in armed state.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The system processes incoming frames to detect moving rockets.
+  \item (Event) The system detects a moving rocket.
+  \item The system enters the tracking state.
+  \item The UI displays a "Tracking" indicator.
+  \item The system sends movement commands to the gimbal to keep the rocket centered in
+        the frame.
+  \item If the rocket is lost, the system returns to idle state.
+\end{enumerate}
+
+\textbf{Outcome:} The gimbal follows the rocket and keeps it near the frame center until the rocket is lost.
+
+~\\
+
+\textbf{PUC 4.1: Stop video recording.}
+
+\textbf{Actors:} Camera Operator, Camera.
+
+\textbf{Preconditions:} The system is powered on and has finished initialization; currently recording.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The camera operator clicks the "Stop Recording" button on the UI.
+  \item The system stops recording the camera feed and additional logs (e.g. angle of
+        the gimbal, temperature of the camera, etc.).
+  \item The system saves the video and logs to storage.
+  \item The UI stops displaying the recording indicator.
+
+\end{enumerate}
+
+\textbf{Outcome:} Video recording stops.
+
+~\\
+
+\textbf{PUC 4.2: Stop tracking rocket.}
+
+\textbf{Actors:} Camera Operator, Camera, Gimbal.
+
+\textbf{Preconditions:} System is in armed or tracking state.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The camera operator clicks the "Stop Tracking" button on the UI.
+  \item The system returns to idle state.
+  \item The system stops sending movement commands to the gimbal.
+  \item The UI displays a "Idle" indicator.
+\end{enumerate}
+
+\textbf{Outcome:} The system returns to idle state.
+
+~\\
+
+\textbf{PUC 5: View recorded footage and logs.}
+
+\textbf{Actors:} Camera Operator.
+
+\textbf{Preconditions:} The system is in idle state.
+
+\textbf{Main Flow of Steps:}
+\begin{enumerate}
+  \item The camera operator opens the recordings page in the UI.
+  \item The camera operator filters or selects the desired tracking session by
+        date/time.
+  \item The camera operator downloads the files to their device.
+\end{enumerate}
+
+\textbf{Outcome:} The desired footage and logs are downloaded for offline viewing and analysis.
 
 \subsection{System State Diagram}
 
