@@ -259,7 +259,7 @@ currently no expected maintenance users.
         {\bf Rationale:} During live launches, human operators must prioritize range safety and situational awareness\\
         {\bf Fit Criterion:} Once ready, no manual inputs are necessary for the nominal operation of the system until a declared “landed/clear” signal from the mission control.
 
-  \item \emph{The system must be remote controllable.}\\[2mm]
+  \item \emph{The system must be remote operatable.}\\[2mm]
         {\bf Rationale:} The system may need to be positioned inside hazardous zones (launch pad, ballistic landing areas) or at distant vantage points with no safe operator access during the countdown and flight.\\
         {\bf Fit Criterion:} The system should be able to perform all the product use cases with no physical interaction at the camera site once deployed.
 
@@ -360,6 +360,7 @@ None.
   \item We assume the system will not be connected to the public internet. Thus no
         authentication is required.
   \item We assume the system will only be physically accessed by authorized personnel.
+  \item We assume only one rocket will be flying at a time.
   \item We assume the gimbal connected to the system has adequate performance to track
         the rocket. (For example, it can turn fast enough and has enough range of
         motion.)
@@ -835,97 +836,111 @@ The following is a state diagram of the system.
 
 \begin{itemize}
 
-  \item[FR-SYS-1] \emph{The system must acquire live images or video streams from an
-          onboard camera.}\\[2mm]
-        {\bf Rationale:} Image acquisition is the first step of the vision-guided pipeline and enables all downstream processing.\\
-        {\bf Fit Criterion:} The system successfully captures frames at a usable resolution and passes them to the CV pipeline.\\
+  \item[FR-1] \emph{The system must acquire live video stream from the connected
+          camera.}\\[2mm]
+        {\bf Rationale:} Video acquisition is the first step of the vision-guided pipeline and enables all downstream processing.\\
+        {\bf Fit Criterion:} The system successfully captures frames at at least 1080p 60fps and passes them to the CV pipeline.\\
+        {\bf Source PUC:} PUC 1, PUC 3 \\
         {\bf Priority:} High
 
-  \item[FR-SYS-2] \emph{The system must segment the scene and detect multiple moving
-          objects in real time.}\\[2mm]
-        {\bf Rationale:} Object detection enables the tracker to identify possible targets for selection and tracking.\\
-        {\bf Fit Criterion:} At least two moving objects can be detected simultaneously at $\geq$ 15 FPS on Jetson hardware.\\
+  \item[FR-2] \emph{The system must send real-time movement commands to the connected
+          gimbal.}\\[2mm]
+        {\bf Rationale:} Sending movement commands to gimbal is how the system controls the gimbal.\\
+        {\bf Fit Criterion:} Movement commands are sent to the gimbal at least once per video frame received.\\
+        {\bf Source PUC:} PUC2.1, PUC 3 \\
         {\bf Priority:} High
 
-  \item[FR-SYS-3] \emph{The system must allow the operator to select a stationary or
-          moving object as the target.}\\[2mm]
-        {\bf Rationale:} Manual target selection is essential for flexibility, ensuring the system can track user-specified objects.\\
-        {\bf Fit Criterion:} Operator input is received and the chosen target is registered by the tracking system.\\
+  \item[FR-3] \emph{The system must detect moving rocket from the video stream in real
+          time.}\\[2mm]
+        {\bf Rationale:} Real time rocket detection is the first step of the tracking process.\\
+        {\bf Fit Criterion:} The system can detect moving rockets from the video stream at 60fps.\\
+        {\bf Source PUC:} PUC 3 \\
         {\bf Priority:} High
 
-  \item[FR-SYS-4] \emph{The system must continuously estimate the target's position and
-          keep it centered in the image.}\\[2mm]
-        {\bf Rationale:} Accurate target tracking is the core function of the system to maintain visual lock.\\
-        {\bf Fit Criterion:} Target remains within 40 px of frame center at 1080p resolution under smooth motion.\\
+  \item[FR-4] \emph{If armed, the system must automatically enter the tracking state
+          when a moving rocket is detected.}\\[2mm]
+        {\bf Rationale:} Entering the tracking state means the system is commanding the gimbal to keep the rocket centered in the frame.\\
+        {\bf Fit Criterion:} The system enters the tracking state when a moving rocket is detected.\\
+        {\bf Source PUC:} PUC 2.3, PUC 3 \\
         {\bf Priority:} High
 
-  \item[FR-SYS-5] \emph{The system must send real-time pan/tilt commands to the STM32
-          microcontroller for gimbal control.}\\[2mm]
-        {\bf Rationale:} Gimbal control keeps the target centered physically, extending camera field of view.\\
-        {\bf Fit Criterion:} Latency between detected movement and gimbal adjustment is $\leq$ 120 ms.\\
+  \item[FR-5] \emph{If the system is in the tracking state and the rocket is lost, the
+          system must automatically return to the idle state.}\\[2mm]
+        {\bf Rationale:} Automatically reverting to idle prevents unnecessary gimbal movement and prepares the system for future launches or manual intervention.\\
+        {\bf Fit Criterion:} Upon loss of the rocket target, the system transitions from tracking to idle state without manual input.\\
+        {\bf Source PUC:} PUC 3 \\
         {\bf Priority:} High
 
-  \item[FR-SYS-6] \emph{The system must detect target occlusion or loss and attempt
-          automatic re-acquisition, with manual reselection available.}\\[2mm]
-        {\bf Rationale:} Targets may be temporarily obstructed; recovery ensures robustness of the tracking loop.\\
-        {\bf Fit Criterion:} The system reacquires a target within 1 second (p95) or allows operator reselection.\\
+  \item[FR-6] \emph{When in the idle state, the system must allow the user to manually
+          control the gimbal.}\\[2mm]
+        {\bf Rationale:} Manual gimbal control is necessary for arming the camera to the launch pad before the rocket is launched.\\
+        {\bf Fit Criterion:} In idle mode, the user can issue manual pan/tilt commands that are reflected in real-time by the gimbal hardware.\\
+        {\bf Source PUC:} PUC 2.1 \\
+        {\bf Priority:} High
+
+  \item[FR-7] \emph{When in the tracking state, and the rocket is not in view, the
+          system must autonomously attempt re-acquisition, before declaring the rocket is
+          lost.}\\[2mm]
+        {\bf Rationale:} Rocket may be temporarily obstructed; re-acquisition ensures robustness of the tracking process.\\
+        {\bf Fit Criterion:} The system waits for 2 seconds before declaring the rocket is lost.\\
+        {\bf Source PUC:} PUC 3 \\
         {\bf Priority:} Medium
 
-  \item[FR-SYS-7] \emph{The system must provide remote management capabilities for
-          operators.}\\[2mm]
-        {\bf Rationale:} Remote access supports field deployment and safety by allowing off-device control.\\
-        {\bf Fit Criterion:} Operators can access system controls via a web interface on a remote device.\\
-        {\bf Priority:} Medium
-
-  \item[FR-SYS-8] \emph{The system must display runtime information including system
-          state, FPS, and tracking status.}\\[2mm]
-        {\bf Rationale:} Visibility into runtime performance is critical for debugging and operator trust.\\
-        {\bf Fit Criterion:} The interface updates system status in real time with FPS $\pm$ 1 frame accuracy.\\
-        {\bf Priority:} Medium
-
-  \item[FR-SYS-9] \emph{The system must demonstrate the complete workflow: Acquire
-          $\rightarrow$ Detect $\rightarrow$ Select $\rightarrow$ Track $\rightarrow$
-          Control.}\\[2mm]
-        {\bf Rationale:} The proof-of-concept requires showing the integration of all subsystems working together.\\
-        {\bf Fit Criterion:} During demo, the system executes all five stages successfully without manual patching.\\
+  \item[FR-8] \emph{When in the tracking state, the system must autonomously keep the
+          rocket within the frame.}\\[2mm]
+        {\bf Rationale:} Accurate rocket tracking is the core function of the system.\\
+        {\bf Fit Criterion:} Rocket remains within visible in the frame.\\
+        {\bf Source PUC:} PUC 3 \\
         {\bf Priority:} High
 
-        % --- Web End Requirements ---
-  \item[FR-WEB-1] \emph{The web application must provide a browser-based interface for
-          remote management of the system.}\\[2mm]
-        {\bf Rationale:} Operators need remote access to safely configure and monitor the system during field testing.\\
-        {\bf Fit Criterion:} Operators can log in through a standard browser and access system controls without requiring local installation.\\
-        {\bf Priority:} Medium
-
-  \item[FR-WEB-2] \emph{The web application must display runtime status information
-          such as system state, frame rate, and tracking status.}\\[2mm]
-        {\bf Rationale:} Operators need real-time visibility into performance to make informed decisions and detect issues.\\
-        {\bf Fit Criterion:} The dashboard shows current state, FPS, and tracking status, updating within 1 second of backend changes.\\
-        {\bf Priority:} Medium
-
-  \item[FR-WEB-3] \emph{The web application must provide controls for manual target
-          reselection when automatic tracking fails.}\\[2mm]
-        {\bf Rationale:} Manual override enables recovery when auto-reacquisition is unsuccessful.\\
-        {\bf Fit Criterion:} When a target is lost, the operator can reselect a target via the web UI and the system resumes tracking within 1 second.\\
+  \item[FR-9] \emph{The system must begin outputting video through HDMI as soon as it
+          is initialized.}\\[2mm]
+        {\bf Rationale:} Immediate HDMI output ensures that event video is available to stakeholders from the earliest possible moment.\\
+        {\bf Fit Criterion:} Upon system initialization, an HDMI-connected display immediately receives a live video signal from the camera without requiring additional user action.\\
+        {\bf Source PUC:} PUC 1 \\
         {\bf Priority:} High
 
-  \item[FR-WEB-4] \emph{The web application must allow operators to view the live video
-          stream from the camera.}\\[2mm]
-        {\bf Rationale:} Visual confirmation of what the system is tracking is necessary for effective operation.\\
-        {\bf Fit Criterion:} The live camera feed is viewable in the web interface with end-to-end latency $\leq$ 500 ms relative to the source.\\
+  \item[FR-10] \emph{The HDMI video output must have a text overlay that displays the
+          current gimbal tilt and pan angle.}\\[2mm]
+        {\bf Rationale:} Overlaying the gimbal angles on the video stream provides immediate feedback to operators and analysts and aids in diagnostics and post-flight analysis.\\
+        {\bf Fit Criterion:} The HDMI output includes a text label showing current tilt and pan angles, updating once per video frame.\\
+        {\bf Source PUC:} PUC 1 \\
+        {\bf Priority:} Medium
+
+  \item[FR-11] \emph{The system must display runtime information including system state
+          and camera preview to the user.}\\[2mm]
+        {\bf Rationale:} Seeing the system status and camera preview is necessary for the user to control the system.\\
+        {\bf Fit Criterion:} The interface updates system status and preview in real time with at least 15fps.\\
+        {\bf Source PUC:} PUC 2.1 \\
         {\bf Priority:} High
 
-  \item[FR-WEB-5] \emph{The web application must allow operators to record video
-          sessions for later review.}\\[2mm]
+  \item[FR-12] \emph{The system must only enter armed mode when explicitly instructed
+          by the user.}\\[2mm]
+        {\bf Rationale:} Prevents accidental or unintended transitions to armed state, ensuring safe and predictable operation for all users.\\
+        {\bf Fit Criterion:} The system transitions from idle to armed mode only in response to a clear, user-initiated command, and never automatically or implicitly.\\
+        {\bf Source PUC:} PUC 2.3 \\
+        {\bf Priority:} High
+
+  \item[FR-13] \emph{The system must allow the user to manually exit armed or tracking
+          mode, transitioning the system to idle mode.}\\[2mm]
+        {\bf Rationale:} Manual override is necessary to ensure safety, provide user control in unexpected circumstances, and to prepare the system for the next operation.\\
+        {\bf Fit Criterion:} When the user issues an exit command during armed or tracking mode, the system transitions to idle mode within 0.5 second and ceases any automated gimbal movement.\\
+        {\bf Source PUC:} PUC 4.2 \\
+        {\bf Priority:} High
+
+  \item[FR-14] \emph{The system must allow users to record video and logs associated
+          with the video for later review.}\\[2mm]
         {\bf Rationale:} Recording supports debugging, validation, and demonstration.\\
-        {\bf Fit Criterion:} Operators can start and stop recording from the web UI and access the saved video files afterward.\\
-        {\bf Priority:} Medium
+        {\bf Fit Criterion:} Users can start and stop recording from the UI.\\
+        {\bf Source PUC:} PUC 2.2, PUC 4.1 \\
+        {\bf Priority:} High
 
-  \item[FR-WEB-6] \emph{The web application must provide playback and basic management
-          of recorded videos (list, delete, download).}\\[2mm]
+  \item[FR-15] \emph{The system must provide management functionalities for recorded
+          videos and logs (list, delete, download).}\\[2mm]
         {\bf Rationale:} Reviewing and managing captured sessions supports performance analysis and documentation.\\
-        {\bf Fit Criterion:} Operators can select a recording, play it in the web UI, and perform list/delete/download actions.\\
-        {\bf Priority:} Low
+        {\bf Fit Criterion:} Users can view the list of recorded videos and logs, and perform delete/download actions.\\
+        {\bf Source PUC:} PUC 5 \\
+        {\bf Priority:} High
 
 \end{itemize}
 \section{Look and Feel Requirements}
