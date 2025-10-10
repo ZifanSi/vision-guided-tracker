@@ -46,10 +46,10 @@
   \caption{Revision History} \label{TblRevisionHistory}
   \begin{tabularx}{\textwidth}{llX}
     \toprule
-    \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}        \\
+    \textbf{Date} & \textbf{Developer(s)} & \textbf{Change} \\
     \midrule
-    Date1         & Shike Chen              & Initial draft \\
-    Date2         & Shike Chen              & Detailed draft \\
+    Date1         & Shike Chen            & Initial draft   \\
+    Date2         & Shike Chen            & Detailed draft  \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -63,58 +63,59 @@
 \wss{You are free to modify this template.}
 
 \section{Introduction}
-Hazard is generally defined as a harm or potential harm or effect caused by a 
-system which may lead to personal injury, property damage, environmental damage 
-etc. As an integrated system with both hardware and software components, hazards 
-may arise due to improper design, malfunction of the system, unexpected user
-behavior, etc. Therefore, it is critical to identify potential hazards and 
-mitigate them in the early stage of the project. 
-In the case of the RoCam project, the potential hazards could cause physical 
-injury of the user or malfunction of a larger system.
+Hazard is generally defined as a harm or potential harm or effect caused by a
+system which may lead to personal injury, property damage, environmental damage
+etc. As an integrated system with both hardware and software components,
+hazards may arise due to improper design, malfunction of the system, unexpected
+user behavior, etc. Therefore, it is critical to identify potential hazards and
+mitigate them in the early stage of the project. In the case of the RoCam
+project, the potential hazards could cause physical injury of the user or
+malfunction of a larger system.
 
 \section{Scope and Purpose of Hazard Analysis}
 
-The hazard analysis will identify any direct or potential hazards caused by the 
-system which includes hazardous materials, design, user safety, etc. 
-The hazard analysis will also address the general hazardous effects of this system 
-which includes hazards effects in the events of malfunction, misuse or environmental
-damage. However, since the project is open source, any use case that is beyond the
-scope of this project will not be included in this hazard analysis.
+The hazard analysis will identify any direct or potential hazards caused by the
+system which includes hazardous materials, design, user safety, etc. The hazard
+analysis will also address the general hazardous effects of this system which
+includes hazards effects in the events of malfunction, misuse or environmental
+damage. However, since the project is open source, any use case that is beyond
+the scope of this project will not be included in this hazard analysis.
 
-Such hazard analysis will not only used to identify potential hazards caused by the 
-system, but also to minimize risks related in unforeseen cases. The purpose of this 
-hazard analysis is to properly address the potential harm and risks caused by the 
-product to the user and the external environment.
+Such hazard analysis will not only used to identify potential hazards caused by
+the system, but also to minimize risks related in unforeseen cases. The purpose
+of this hazard analysis is to properly address the potential harm and risks
+caused by the product to the user and the external environment.
 
 \section{System Boundaries and Components}
 
 \subsection{Hardware Components}
 \subsubsection{Motion control modules}
-The motion control module consists of a custom-designed PCB board utilizing an STM32 
-microcontroller. This module is responsible for controlling the movement of the camera
-gimbal. It receives commands from our Computer Vision module and translates them into
-precise motor movements in real time. 
+The motion control module consists of a custom-designed PCB board utilizing an
+STM32 microcontroller. This module is responsible for controlling the movement
+of the camera gimbal. It receives commands from our Computer Vision module and
+translates them into precise motor movements in real time.
 \subsubsection{Camera gimbal}
-The camera gimbal used in this project is a existing Camera Gimbal designed by the 
-McMaster Rocketry team. Since our team is not responsible for the design of the gimbal, 
-we can only estimate the potential hazards based on similar products in the market. 
+The camera gimbal used in this project is a existing Camera Gimbal designed by
+the McMaster Rocketry team. Since our team is not responsible for the design of
+the gimbal, we can only estimate the potential hazards based on similar
+products in the market.
 \subsubsection{Jetson Orin Nano}
-The Jetson Orin Nano is small, lightweight AI computer designed by NVIDIA. It will
-be used to deploy our computer vision moodule and communicate directly with the motion
-control module.
+The Jetson Orin Nano is small, lightweight AI computer designed by NVIDIA. It
+will be used to deploy our computer vision moodule and communicate directly
+with the motion control module.
 \subsubsection{Camera}
-The camera is a off the shelf camera that is compatible with the Jetson Orin Nano. It 
-is able to provide 4k video input in real time. 
+The camera is a off the shelf camera that is compatible with the Jetson Orin
+Nano. It is able to provide 4k video input in real time.
 
 \subsection{Software Components}
 \subsubsection{Computer Vision Module}
-Our computer vision module will be developed in Python. The base architecture will be 
-torch and pandas. It will be accerlerated with TensorRT in Jetson to achieve real time
-stable performance. 
+Our computer vision module will be developed in Python. The base architecture
+will be torch and pandas. It will be accerlerated with TensorRT in Jetson to
+achieve real time stable performance.
 \subsubsection{User Interface Module}
-The user interface module will be developed using React. It will provide a web-based
-interface for users to interact with the system, view camera feeds, and control the
-camera gimbal.
+The user interface module will be developed using React. It will provide a
+web-based interface for users to interact with the system, view camera feeds,
+and control the camera gimbal.
 
 \wss{Dividing the system into components will help you brainstorm the hazards.
   You shouldn't do a full design of the components, just get a feel for the major
@@ -125,16 +126,16 @@ camera gimbal.
 \section{Critical Assumptions}
 
 \subsection{Assumptions about the Operating Environment}
-The system will not operating in any extreme environment (e.g., extreme temperature, 
-acidic environments, etc.). The system will be operating within 10 to 25 degree Celsius.
-The system will operate with a stable power supply. 
+The system will not operating in any extreme environment (e.g., extreme
+temperature, acidic environments, etc.). The system will be operating within 10
+to 25 degree Celsius. The system will operate with a stable power supply.
 \subsection{Assumptions about the User}
-Anyone above 14 years old who uses electronic and exposed to software interface on a
-daily basis for over 2 years with good intent. 
+Anyone above 14 years old who uses electronic and exposed to software interface
+on a daily basis for over 2 years with good intent.
 \subsection{Assumptions about general of the shelf hardware components}
-All off-the-shelf hardware components will function as advertised and
-will be compatible with our system. This includes the camera, gimbal, Jetson Orin Nano
-etc. 
+All off-the-shelf hardware components will function as advertised and will be
+compatible with our system. This includes the camera, gimbal, Jetson Orin Nano
+etc.
 \subsection{Assumptions about the software libraries}
 All software libraries used will not have any unknown security vulnerabilities.
 
@@ -143,152 +144,147 @@ All software libraries used will not have any unknown security vulnerabilities.
   you could assume a part will never fail, but it is generally better to include
   this potential failure mode.}
 
-
 \newpage
 \section{Failure Mode and Effect Analysis}
 \begin{table}[htbp]
-    \caption{FMEA Table}\label{TblFMEALegend}
+  \caption{FMEA Table}\label{TblFMEALegend}
   \scalebox{0.6}{
-  \begin{tblr}{
-    colspec = {p{2cm} p{4cm} p{7cm} p{7cm} p{7cm}},
-    row{1} = {font=\bfseries},
-    hlines
-  }
-    Design Function & Failure Mode & Effect & Cause of Failure & Recommended Action\\
-    Gimbal turn as CV control & 
-    \begin{enumerate}
-      \item Gimbal does not move
-      \item Gimbal snaps
-      \item Gimbal does not turn properly
-    \end{enumerate} & 
-    \begin{enumerate}
-      \item \begin{enumerate}
-        \item Camera loses the rocket
-        \item user unable to debug the rocket launch
+    \begin{tblr}{
+        colspec = {p{2cm} p{4cm} p{7cm} p{7cm} p{7cm}},
+        row{1} = {font=\bfseries},
+        hlines
+      }
+      Design Function                         & Failure Mode & Effect & Cause of Failure & Recommended Action \\
+      Gimbal turn as CV control               &
+      \begin{enumerate}
+        \item Gimbal does not move
+        \item Gimbal snaps
+        \item Gimbal does not turn properly
+      \end{enumerate}     &
+      \begin{enumerate}
+        \item \begin{enumerate}
+                \item Camera loses the rocket
+                \item user unable to debug the rocket launch
+              \end{enumerate}
+        \item \begin{enumerate}
+                \item Camera loses the rocket
+                \item Camera injures user (minor cuts and bruises)
+                \item Camera and gimbal damages other property
+                \item Camera, gimbal, motion control module, Jetson Orin Nano damages
+              \end{enumerate}
+        \item \begin{enumerate}
+                \item Camera overshoots or loses the rocket
+                \item Camera unable to track the rocket smoothly with high quality image
+              \end{enumerate}
       \end{enumerate}
-      \item \begin{enumerate}
-        \item Camera loses the rocket
-        \item Camera injures user (minor cuts and bruises)
-        \item Camera and gimbal damages other property
-        \item Camera, gimbal, motion control module, Jetson Orin Nano damages
+                                              &
+      \begin{enumerate}
+        \item \begin{enumerate}
+                \item failed in communication between the motion control module and the gimbal
+                \item failed in communication then CV module and the motion control module
+                \item firmware bug in the motion control module or compatibility issue
+                \item fried electric components in the motion control module or gimbal
+              \end{enumerate}
+        \item \begin{enumerate}
+                \item improper instruction from the motion control module
+                \item rocket angular velocity to the gimbal excesses the design limit
+              \end{enumerate}
+        \item \begin{enumerate}
+                \item improper instruction from the motion control module
+                \item CV module fails to provide proper instruction to the motion control module
+                \item CV module lost the rocket
+                \item damaged components in the motion control module or gimbal
+              \end{enumerate}
       \end{enumerate}
-      \item \begin{enumerate}
-        \item Camera overshoots or loses the rocket
-        \item Camera unable to track the rocket smoothly with high quality image
-        \end{enumerate}
-    \end{enumerate}
-    & 
-    \begin{enumerate}
+                                              &
+      \begin{enumerate}
         \item \begin{enumerate}
-            \item failed in communication between the motion control module and the gimbal
-            \item failed in communication then CV module and the motion control module
-            \item firmware bug in the motion control module or compatibility issue
-            \item fried electric components in the motion control module or gimbal
-        \end{enumerate}
+                \item careful handling in transportation and assembly to avoid damage to the
+                      components
+                \item Integration test before launch to ensure proper communication between all
+                      modules
+              \end{enumerate}
         \item \begin{enumerate}
-            \item improper instruction from the motion control module
-            \item rocket angular velocity to the gimbal excesses the design limit
-        \end{enumerate}
+                \item Set threshold of the maximum angular velocity to avoid gimbal snapping
+                \item Set threshold of the maximum angle to avoid gimbal snapping
+                \item Calculate the expected angular velocity of the camera system and the (SR1)
+                      target to ensure they are within the design limit of the system
+                \item safety goggles should be worn when operating the system (SR2)
+              \end{enumerate}
         \item \begin{enumerate}
-            \item improper instruction from the motion control module
-            \item CV module fails to provide proper instruction to the motion control module
-            \item CV module lost the rocket
-            \item damaged components in the motion control module or gimbal
-        \end{enumerate}
-    \end{enumerate}
-    &
-    \begin{enumerate}
-        \item \begin{enumerate}
-            \item careful handling in transportation and assembly to avoid damage to the 
-            components 
-            \item Integration test before launch to ensure proper communication between 
-            all modules
-        \end{enumerate}
-        \item \begin{enumerate}
-            \item Set threshold of the maximum angular velocity to avoid gimbal snapping 
-            \item Set threshold of the maximum angle to avoid gimbal snapping
-            \item Calculate the expected angular velocity of the camera system and the (SR1)
-            target to ensure
-            they are within the design limit of the system
-            \item safety goggles should be worn when operating the system (SR2)
-        \end{enumerate}
-        \item \begin{enumerate}
-            \item design CV module to be robust in different environment 
-            \item design motion control module and CV module speed to have self-correcting (SR3)
-            mechanism
-            \item design multiple tracking algorithms to avoid losing of the rocket
+                \item design CV module to be robust in different environment
+                \item design motion control module and CV module speed to have self-correcting (SR3)
+                      mechanism
+                \item design multiple tracking algorithms to avoid losing of the rocket
 
-        \end{enumerate}
-    \end{enumerate}
-    \\
-    User Interface control monitor tracking &
-    \begin{enumerate}
-      \item UI does not load
-      \item UI loads but does not display camera feed
-      \item User unable to understand and operate the UI
-    \end{enumerate}
-    &
-    \begin{enumerate}
-        \item \begin{enumerate}
-            \item User unable to control the gimbal and camera
-            \item Failed to monitor the rocket launch
-            \item Failed to track the rocket launch
-            \item User frustration
-        \end{enumerate}
-        \item \begin{enumerate}
-                \item User unable to monitor rocket launch in real time
-                \item User unable to track the rocket launch in real time
-                \item User unable to select desired tracking mode and target
-        \end{enumerate}
+              \end{enumerate}
+      \end{enumerate}
+      \\
+      User Interface control monitor tracking &
+      \begin{enumerate}
+        \item UI does not load
+        \item UI loads but does not display camera feed
+        \item User unable to understand and operate the UI
+      \end{enumerate}
+                                              &
+      \begin{enumerate}
         \item \begin{enumerate}
                 \item User unable to control the gimbal and camera
                 \item Failed to monitor the rocket launch
                 \item Failed to track the rocket launch
                 \item User frustration
-            \end{enumerate}
-    \end{enumerate}
-    &
-    \begin{enumerate}
+              \end{enumerate}
         \item \begin{enumerate}
-            \item Bug in the UI software
-            \item Issue in CD pipeline
-            \item Browser compatibility issue
-            \item OS environment issue
-        \end{enumerate}
+                \item User unable to monitor rocket launch in real time
+                \item User unable to track the rocket launch in real time
+                \item User unable to select desired tracking mode and target
+              \end{enumerate}
+        \item \begin{enumerate}
+                \item User unable to control the gimbal and camera
+                \item Failed to monitor the rocket launch
+                \item Failed to track the rocket launch
+                \item User frustration
+              \end{enumerate}
+      \end{enumerate}
+                                              &
+      \begin{enumerate}
+        \item \begin{enumerate}
+                \item Bug in the UI software
+                \item Issue in CD pipeline
+                \item Browser compatibility issue
+                \item OS environment issue
+              \end{enumerate}
         \item \begin{enumerate}
                 \item Issue in API between UI and CV module
                 \item Camera or Jetson Orin Nano hardware issue
-        \end{enumerate}
+              \end{enumerate}
         \item \begin{enumerate}
                 \item Poorly designed UI
                 \item Lack of user manual and documentation
-        \end{enumerate}
-    \end{enumerate}
-    &
-    \begin{enumerate}
+              \end{enumerate}
+      \end{enumerate}
+                                              &
+      \begin{enumerate}
         \item \begin{enumerate}
-            \item Thorough testing in different browsers and OS environment
-            \item Proper CI/CD pipeline to ensure smooth deployment
-            \item Provide user manual and documentation for installation and 
-            troubleshooting
-        \end{enumerate}
+                \item Thorough testing in different browsers and OS environment
+                \item Proper CI/CD pipeline to ensure smooth deployment
+                \item Provide user manual and documentation for installation and troubleshooting
+              \end{enumerate}
         \item \begin{enumerate}
                 \item Thorough testing of the API between UI and CV module
-                \item Provide user manual and documentation for installation and 
-                troubleshooting
-                \item Careful handling in transportation and assembly to avoid 
-                damage to the components
-            \end{enumerate}
+                \item Provide user manual and documentation for installation and troubleshooting
+                \item Careful handling in transportation and assembly to avoid damage to the
+                      components
+              \end{enumerate}
         \item \begin{enumerate}
                 \item User testing and feedback to improve UI design
-                \item Provide user manual and documentation for installation and 
-                troubleshooting
-                \item Provide user with access to an AI Agent that read the user 
-                manual and documentation
-            \end{enumerate}
-    \end{enumerate}
-    
-  \end{tblr}
+                \item Provide user manual and documentation for installation and troubleshooting
+                \item Provide user with access to an AI Agent that read the user manual and
+                      documentation
+              \end{enumerate}
+      \end{enumerate}
+
+    \end{tblr}
   }
 \end{table}
 
@@ -305,72 +301,72 @@ All software libraries used will not have any unknown security vulnerabilities.
 \section{Safety and Security Requirements}
 
 \begin{enumerate}
-    \item SR1: The system will be placed in a distance which the expected angular velocity 
-    will not exceed the design limit of the gimbal.
-    \item SR2: all operators must wear safety goggles when operating the system.
-    \item SR3: The system will have a self-correcting mechanism to ensure the camera can 
-    track the rocket smoothly in real time.
+  \item SR1: The system will be placed in a distance which the expected angular
+        velocity will not exceed the design limit of the gimbal.
+  \item SR2: all operators must wear safety goggles when operating the system.
+  \item SR3: The system will have a self-correcting mechanism to ensure the camera can
+        track the rocket smoothly in real time.
 \end{enumerate}
 
 \section{Roadmap}
 
 \subsection{Capstone Implementation Plan (Sprints \& Milestones)}
 \begin{table}[H]
-\caption{Capstone Roadmap (8 sprints)}\label{tab:capstone-roadmap}
-\renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{C{1.2cm} L{4.2cm} Y Y Y}
-\toprule
-\textbf{Sprint} & \textbf{Primary Goals} & \textbf{Deliverables} & \textbf{Safety Focus (Traceability)} & \textbf{Verification / Evidence} \\
-\midrule
-1 &
-System bring-up: Jetson Orin Nano, camera, repo CI. Define interfaces (UI \(\leftrightarrow\) CV \(\leftrightarrow\) Motion). &
-Env setup scripts; interface spec; smoke tests. &
-Baseline hazard review; confirm assumptions (power, temp). &
-Checklist, boot logs, interface mock tests. \\
-\midrule
-2 &
-Motion control MVP: gimbal command path; encoder/limits readout. &
-Motor driver config; limit-switch handling; teleop tool. &
-SR1 (angular velocity/angle limits) draft. &
-Bench test: limit cut-offs; plotted step responses. \\
-\midrule
-3 &
-CV tracking MVP on sample footage (offline \(\rightarrow\) near-real-time). &
-Tracker module; target reacquisition logic. &
-SR3 draft (self-correction, loss recovery). &
-Replay tests; failure-injection (occlusion) logs. \\
-\midrule
-4 &
-UI prototype: live feed, mode select, status \& alarms. &
-Web UI with HUD; error banners; safe-state button. &
-FMEA controls for “UI not loading/displaying”. &
-Cross-browser tests; watchdog for API health. \\
-\midrule
-5 &
-Closed-loop integration: CV \(\rightarrow\) Motion with rate limiting. &
-End-to-end demo; rate limiter \& soft stops. &
-SR1 formalized (hard/soft limits); map FMEA “gimbal snap”. &
-Angular-rate sweep; saturation tests; limit breach proofs. \\
-\midrule
-6 &
-Robustness: fallback trackers, loss detection, auto-recenter. &
-Multi-strategy tracker; loss timers; homing routine. &
-SR3 formalized (self-correction). &
-Scenario matrix (lighting/occlusion); recovery time stats. \\
-\midrule
-7 &
-Safety hardening: interlocks, E-stop, checklists, SOP. &
-E-stop wiring/command; pre-launch checklist; SOP v1. &
-SR2 (PPE), SR1 (interlocks), UI hazard cues. &
-Dry-run with operators; checklist sign-offs; video evidence. \\
-\midrule
-8 &
-Verification \& docs: finalize FMEA, traceability, test report. &
-FMEA v2; SRS trace matrix; safety test report; demo video. &
-All SRs: SR1–SR3 complete and traced. &
-Pass/fail summary; residual-risk log; release tag. \\
-\bottomrule
-\end{tabularx}
+  \caption{Capstone Roadmap (8 sprints)}\label{tab:capstone-roadmap}
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabularx}{\textwidth}{C{1.2cm} L{4.2cm} Y Y Y}
+    \toprule
+    \textbf{Sprint}                                                                                                               & \textbf{Primary Goals} & \textbf{Deliverables} & \textbf{Safety Focus (Traceability)} & \textbf{Verification / Evidence} \\
+    \midrule
+    1                                                                                                                             &
+    System bring-up: Jetson Orin Nano, camera, repo CI. Define interfaces (UI \(\leftrightarrow\) CV \(\leftrightarrow\) Motion). &
+    Env setup scripts; interface spec; smoke tests.                                                                               &
+    Baseline hazard review; confirm assumptions (power, temp).                                                                    &
+    Checklist, boot logs, interface mock tests.                                                                                                                                                                                                              \\
+    \midrule
+    2                                                                                                                             &
+    Motion control MVP: gimbal command path; encoder/limits readout.                                                              &
+    Motor driver config; limit-switch handling; teleop tool.                                                                      &
+    SR1 (angular velocity/angle limits) draft.                                                                                    &
+    Bench test: limit cut-offs; plotted step responses.                                                                                                                                                                                                      \\
+    \midrule
+    3                                                                                                                             &
+    CV tracking MVP on sample footage (offline \(\rightarrow\) near-real-time).                                                   &
+    Tracker module; target reacquisition logic.                                                                                   &
+    SR3 draft (self-correction, loss recovery).                                                                                   &
+    Replay tests; failure-injection (occlusion) logs.                                                                                                                                                                                                        \\
+    \midrule
+    4                                                                                                                             &
+    UI prototype: live feed, mode select, status \& alarms.                                                                       &
+    Web UI with HUD; error banners; safe-state button.                                                                            &
+    FMEA controls for “UI not loading/displaying”.                                                                                &
+    Cross-browser tests; watchdog for API health.                                                                                                                                                                                                            \\
+    \midrule
+    5                                                                                                                             &
+    Closed-loop integration: CV \(\rightarrow\) Motion with rate limiting.                                                        &
+    End-to-end demo; rate limiter \& soft stops.                                                                                  &
+    SR1 formalized (hard/soft limits); map FMEA “gimbal snap”.                                                                    &
+    Angular-rate sweep; saturation tests; limit breach proofs.                                                                                                                                                                                               \\
+    \midrule
+    6                                                                                                                             &
+    Robustness: fallback trackers, loss detection, auto-recenter.                                                                 &
+    Multi-strategy tracker; loss timers; homing routine.                                                                          &
+    SR3 formalized (self-correction).                                                                                             &
+    Scenario matrix (lighting/occlusion); recovery time stats.                                                                                                                                                                                               \\
+    \midrule
+    7                                                                                                                             &
+    Safety hardening: interlocks, E-stop, checklists, SOP.                                                                        &
+    E-stop wiring/command; pre-launch checklist; SOP v1.                                                                          &
+    SR2 (PPE), SR1 (interlocks), UI hazard cues.                                                                                  &
+    Dry-run with operators; checklist sign-offs; video evidence.                                                                                                                                                                                             \\
+    \midrule
+    8                                                                                                                             &
+    Verification \& docs: finalize FMEA, traceability, test report.                                                               &
+    FMEA v2; SRS trace matrix; safety test report; demo video.                                                                    &
+    All SRs: SR1–SR3 complete and traced.                                                                                         &
+    Pass/fail summary; residual-risk log; release tag.                                                                                                                                                                                                       \\
+    \bottomrule
+  \end{tabularx}
 \end{table}
 
 \subsection{Milestones}
@@ -383,8 +379,11 @@ Pass/fail summary; residual-risk log; release tag. \\
 
 \subsection{Traceability Plan}
 \begin{itemize}
-  \item FMEA \(\rightarrow\) SR mapping: “Gimbal snaps/overshoots” \(\rightarrow\) SR1; “Tracking lost” \(\rightarrow\) SR3; “UI unavailable/unclear” \(\rightarrow\) UI alarms, SOP, tests.
-  \item Each sprint closes with: (a) updated FMEA row(s), (b) test artifacts linked to SR IDs, (c) residual risk review.
+  \item FMEA \(\rightarrow\) SR mapping: “Gimbal snaps/overshoots” \(\rightarrow\) SR1;
+        “Tracking lost” \(\rightarrow\) SR3; “UI unavailable/unclear” \(\rightarrow\)
+        UI alarms, SOP, tests.
+  \item Each sprint closes with: (a) updated FMEA row(s), (b) test artifacts linked to
+        SR IDs, (c) residual risk review.
 \end{itemize}
 
 \subsection{Acceptance Criteria}
