@@ -946,77 +946,91 @@ The following is a state diagram of the system.
 \section{Look and Feel Requirements}
 \subsection{Appearance Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[LFR-AP-1] \emph{The dashboard shall use a light background with high-contrast
-          status colors (green = Ready, amber = Armed/Waiting to Activate, red =
-          Fault/Lost).}\\ \textbf{Rationale:} Improves readability under bright outdoor
-        lighting and noisy environments.\\ \textbf{Fit Criterion:} In a 300-lux outdoor
-        setting, users can correctly identify the current status within 2 seconds.
+  \item[AR-1] \emph{The user interface shall be designed for higher readability in
+          outdoor environments}\\[2mm]
+        \textbf{Rationale:} The system is going to be used in outdoor environments\\
+        \textbf{Fit Criterion:} Test users report no issues with readability in outdoor environments
 
-  \item[LFR-AP-2] \emph{Key readouts (FPS, end-to-end latency estimate, tracking
-          confidence) shall be visible in the main view without scrolling on a 1080p
-          display.}\\ \textbf{Rationale:} Operators need immediate awareness of system
-        health and tracking quality.\\ \textbf{Fit Criterion:} On a 1920×1080 monitor,
-        all three readouts are simultaneously visible in the primary screen.
+  \item[AR-2] \emph{All UI elements required for tracking operation shall be visible in
+          one page without scrolling on a 1080p display.}\\[2mm]
+        \textbf{Rationale:} Operators need immediate awareness of system
+        status under high-pressure launch operations.\\
+        \textbf{Fit Criterion:} On a 1920x1080 monitor, all UI elements required for tracking operation are visible without scrolling
 \end{itemize}
 
 \subsection{Style Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[LFR-ST-1] \emph{Units and terminology shall be consistent: speed (°/s),
-          resolution (px), frame rate (FPS), distance (km), temperature (°C).}\\
-        \textbf{Rationale:} Consistency reduces operator error during high-pressure
-        launch operations.\\ \textbf{Fit Criterion:} A style audit of UI readouts finds
-        no unit inconsistencies.
+  \item[SR-1] \emph{The user interface shall appear professional and reliable}\\[2mm]
+        \textbf{Rationale:} The system is controlling a physical gimbal and it is important to gain the trust of the users.\\
+        \textbf{Fit Criterion:} More than 80\% of Test users report the system appears professional and reliable
 \end{itemize}
 
 \section{Usability and Humanity Requirements}
 \subsection{Ease of Use Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-EZ-1] \emph{Cold start to ``Ready'' shall require no more than five
-          operator steps; reset time between launches shall be $\leq$ 2 minutes.}\\
-        \textbf{Rationale:} Field workflow demands rapid setup/turnaround and minimal
-        touches near the pad.\\ \textbf{Fit Criterion:} Operators independently achieve
-        average reset time $\leq$ 120 s and $\leq$ 5 steps from cold start to
-        ``Ready''.
+  \item[EZ-1] \emph{Units in the user interface shall be consistent}\\[2mm]
+        \textbf{Rationale:} Consistency reduces operator error during high-pressure launch operations.\\
+        \textbf{Fit Criterion:} A style audit of UI readouts finds no unit inconsistencies.
 
-  \item[USR-EZ-2] \emph{The full operational flow (power on, self-check, arm/identify,
-          record, shutdown) shall be executable remotely without visiting the camera
-          site.}\\ \textbf{Rationale:} Reduces exposure to hazardous zones.\\ \textbf{Fit
-          Criterion:} A complete session is performed via the web-accessible interface
-        with zero physical interaction at the camera.
+  \item[EZ-2] \emph{All user interface interactions shall provide immediate feedback to
+          the user.}\\[2mm]
+        \textbf{Rationale:} Immediate feedback reassures users that the system has registered their actions and helps prevent confusion or repeated actions during critical operations.\\
+        \textbf{Fit Criterion:} For all UI actions, a visible confirmation appears within 0.2 seconds of user input in usability tests.
+
+  \item[EZ-3] \emph{The system shall rely on visual indicators for system status and
+          alerts.}\\[2mm]
+        \textbf{Rationale:} The work environment may be noisy or require hearing protection, so visual cues ensure users do not miss important updates or warnings.\\
+        \textbf{Fit Criterion:} All status and alerts are presented visually in the UI.
+  \item[EZ-4] \emph{The product shall help the user to avoid making mistakes.}\\[2mm]
+        \textbf{Rationale:} Because the system is connected to a physical gimbal, a user error might cause significant damage.\\
+        \textbf{Fit Criterion:} Every potentially dangerous command presents a confirmation prompt that must be acknowledged before proceeding.
 \end{itemize}
 
 \subsection{Personalization and Internationalization Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-PI-1] \emph{The user interface shall support English and French, switchable
-          at runtime.}\\ \textbf{Rationale:} Matches the Canadian event context and
-        bilingual stakeholders.\\ \textbf{Fit Criterion:} All primary UI elements are
-        localized for EN/FR; language can be switched without restart.
+  \item[PI-1] \emph{The user interface shall support both metric and imperial units}\\[2mm]
+        \textbf{Rationale:} Allowing the user to pick the unit system with which they are most familiar helps reduce user mistakes. \\
+        \textbf{Fit Criterion:} Unit preferences can be selected and applied to the UI.
+  \item[PI-2] \emph{The user interface shall support both English and French
+          languages}\\[2mm]
+        \textbf{Rationale:} Bilingual support meets accessibility and inclusiveness standards for Canadian stakeholders and allows operation by users from different linguistic backgrounds.\\
+        \textbf{Fit Criterion:} Users can select either English or French, and all UI text is presented in the chosen language.
 \end{itemize}
 
 \subsection{Learning Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-LR-1] \emph{A first-time operator shall be able to complete one end-to-end
-          run with a toy-rocket scenario within 30 minutes.}\\ \textbf{Rationale:}
-        Simulation/training reduces field risk.\\ \textbf{Fit Criterion:} Novice
-        operators complete the simulated end-to-end run in $\leq$ 30 minutes.
+  \item[LR-1] \emph{The system shall be easy to learn for users with a reasonable level
+          of technological familiarity, provided they have access to the instruction
+          manual.}\\[2mm]
+        \textbf{Rationale:} Reducing the learning curve for technically literate users allows for faster and safer adoption, especially in time-pressured launch scenarios.\\
+        \textbf{Fit Criterion:} In usability tests, new users who have read the manual are able to successfully perform all product use cases within 20 minutes without external assistance.
+
 \end{itemize}
 
 \subsection{Understandability and Politeness Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-UP-1] \emph{Alerts shall include both the cause and an actionable
-          suggestion (e.g., ``Tracking lost: try manual reselect'').}\\
-        \textbf{Rationale:} Reduces cognitive load and speeds recovery.\\ \textbf{Fit
-          Criterion:} Novice operators can complete recovery flows without assistance in
-        usability tests.
+  \item[UPR-1] \emph{The system shall use symbols and words that are naturally
+          understandable by the user community.}\\[2mm]
+        \textbf{Rationale:} Using familiar terminology and icons reduces cognitive load and misinterpretation, especially during high-pressure tasks.\\
+        \textbf{Fit Criterion:} User testing confirms that 90\% of surveyed users recognize and correctly interpret all UI symbols and labels without additional explanation.
+
+  \item[UPR-2] \emph{The system should only display information required for normal use
+          cases on the main page (i.e., hide debug information).}\\[2mm]
+        \textbf{Rationale:} Restricting the main interface to essential information keeps the UI clear and reduces distraction or confusion for non-technical users.\\
+        \textbf{Fit Criterion:} Reviews confirm that only operational and safety-relevant details are visible to end users during normal workflows; diagnostic/debug fields require an explicit action to reveal.
+
+  \item[UPR-3] \emph{All confirmation dialogs should explain why an action could
+          potentially be dangerous.}\\[2mm]
+        \textbf{Rationale:} Providing context in confirmation dialogs educates users, prevents accidental execution of risky commands, and reinforces safe operational habits when interacting with hardware.\\
+        \textbf{Fit Criterion:} All confirmation dialogs for safety-critical actions include a clear, specific explanation of risk, as verified by interface inspection.
 \end{itemize}
 
 \subsection{Accessibility Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[USR-AC-1] \emph{Minimum text size shall be 12\,pt; critical readouts shall be
-          $\geq$ 16\,pt; status indicators shall remain distinguishable under common
-          color-vision deficiencies.}\\ \textbf{Rationale:} Ensures legibility for
-        diverse users and conditions.\\ \textbf{Fit Criterion:} UI passes color-vision
-        simulations and font-size checks in a design audit.
+  \item[AR-1] \emph{Status indicators shall remain distinguishable under common
+          color-vision deficiencies.}\\[2mm]
+        \textbf{Rationale:} Ensures legibility for diverse users and conditions.\\
+        \textbf{Fit Criterion:} UI passes color-vision simulations.
 \end{itemize}
 
 \section{Performance Requirements}
