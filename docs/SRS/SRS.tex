@@ -296,8 +296,8 @@ access.
           deadlines for key milestones such as Proof of Concept (November 2025) and the
           final demonstration (March 2026).}\\[2mm]
         \textbf{Rationale:} These deadlines are based on the academic timeline and the expectations of the capstone course.\\
-        \textbf{Fit Criterion:} All project components must be completed and fully functional by the final demonstration in March 2026.
-        \textbf{Source PUC:} all
+        \textbf{Fit Criterion:} All project components must be completed and fully functional by the final demonstration in March 2026.\\
+        \textbf{Source PUC:} all\\
         \textbf{Priority:} High
 \end{itemize}
 
@@ -306,8 +306,8 @@ access.
 \begin{itemize}[leftmargin=*]
   \item[BC-1] \emph{The project shall not exceed the budget of 500CAD.}\\[2mm]
         \textbf{Rationale:} Limited by the capstone project requirement.\\
-        \textbf{Fit Criterion:} The sum of the costs of the hardware components required for the project must be less than 500CAD.
-        \textbf{Source PUC:} all
+        \textbf{Fit Criterion:} The sum of the costs of the hardware components required for the project must be less than 500CAD.\\
+        \textbf{Source PUC:} all\\
         \textbf{Priority:} High
 \end{itemize}
 
@@ -317,8 +317,8 @@ access.
   \item[EC-1] \emph{The product shall be built to comply with the standards of McMaster
           University's capstone project requirements and academic integrity policies.}\\[2mm]
         \textbf{Rationale:} The project is part of the university's curriculum and must adhere to its standards.\\
-        \textbf{Fit Criterion:} The product must meet the requirements specified by the course syllabus and project advisor.
-        \textbf{Source PUC:} all
+        \textbf{Fit Criterion:} The product must meet the requirements specified by the course syllabus and project advisor.\\
+        \textbf{Source PUC:} all\\
         \textbf{Priority:} High
 \end{itemize}
 
@@ -1325,5 +1325,93 @@ not applicable?
 \input{../Reflection.tex}
 
 \input{../SRS_Reflection.tex}
+
+\begin{enumerate}
+  \item What went well while writing this deliverable?\\ The scope of the work and the
+        scope of the product are well defined, thanks to the detailed explaination from
+        the author of the template. (There is a 80 page pdf explaination can be found
+        on line) In addition, one of the team member have experience being in a
+        rocketry competition, so we are able to understand the work and the working
+        environment.
+  \item What pain points did you experience during this deliverable, and how did you
+        resolve them? \\ The fit criterion is challenging to write, especially for
+        non-functional requirements. For example, there is not a clear way to test if
+        the user interface appears professional and reliable. We resolved this by
+        deferring to the client's judgement. Another pain point is it is hard to divide
+        up the work between the team members. Because all the sections are related to
+        each other, after the team members each finish their own sections, we often
+        need to make large changes to different sections so they are consistent.
+  \item How many of your requirements were inspired by speaking to your client(s) or
+        their proxies (e.g. your peers, stakeholders, potential users)? \\ Because one
+        of the team member already have experience being in a rocketry competition, we
+        are able to come up with most of the requirements by ourselves. Additionally,
+        we have talked to one of the camera operator, but that did not result in any
+        additional requirements.
+  \item Which of the courses you have taken, or are currently taking, will help your
+        team to be successful with your capstone project.
+        \begin{itemize}
+          \item SFWRENG 3XB3: Software Engineering Practice and Experience
+          \item SFWRENG 3RA3: Software Requirements and Security Considerations
+        \end{itemize}
+  \item What knowledge and skills will the team collectively need to acquire to
+        successfully complete this capstone project? Examples of possible knowledge to
+        acquire include domain specific knowledge from the domain of your application,
+        or software engineering knowledge, mechatronics knowledge or computer science
+        knowledge. Skills may be related to technology, or writing, or presentation, or
+        team management, etc. You should look to identify at least one item for each
+        team member.
+        \begin{itemize}
+          \item Mike Chen: I will need to learn about how to interface with the camera and the
+                gimbal.
+          \item Xiaotian Lou: I will need to learn about setting up the hardware and software
+                for accelerated computer vision pipeline.
+          \item Jianqing Liu: I will need to learn about computer vision algorithms and how to
+                implement them.
+          \item Zifan Si: I will need to learn about UI frameworks and communication between
+                the frontend and the backend.
+        \end{itemize}
+  \item For each of the knowledge areas and skills identified in the previous question,
+        what are at least two approaches to acquiring the knowledge or mastering the
+        skill? Of the identified approaches, which will each team member pursue, and
+        why did they make this choice?
+        \begin{itemize}
+          \item Mike Chen — Interface with camera and gimbal:
+                \begin{itemize}
+                  \item Approach 1: Study vendor SDKs/datasheets (camera and gimbal) and build a
+                        minimal control app using official APIs and sample code.
+                  \item Approach 2: Perform protocol analysis with a logic analyzer/serial sniffer and
+                        leverage open-source libraries to replicate commands.
+                \end{itemize}
+                Chosen: Approach 1, because official SDKs minimize integration risk and speed up proof-of-concept delivery under the capstone timeline.
+
+          \item Xiaotian Lou — Accelerated computer vision pipeline setup:
+                \begin{itemize}
+                  \item Approach 1: Use OpenCV with CUDA/TensorRT on supported hardware, following
+                        reference guides and optimizing I/O/memory transfers end-to-end.
+                  \item Approach 2: Start with a CPU-only baseline, profile, then incrementally offload
+                        hotspots using OpenCL/Vulkan compute where practical.
+                \end{itemize}
+                Chosen: Approach 1, due to mature tooling, strong documentation, and the best chance of reaching 1080p60 performance.
+
+          \item Jianqing Liu — Computer vision algorithms and implementation:
+                \begin{itemize}
+                  \item Approach 1: Classical pipeline (temporal differencing/background subtraction,
+                        blob detection/tracking, Kalman filter, and dynamics-aware heuristics for
+                        rockets).
+                  \item Approach 2: Lightweight neural detector (e.g., YOLO-tiny/nano) trained on
+                        synthetic/augmented rocket datasets for detection and tracking.
+                \end{itemize}
+                Chosen: Approach 1 first, for small-data robustness and deterministic real-time behavior; Approach 2 will be prototyped as a stretch goal.
+
+          \item Zifan Si — UI framework and backend communication:
+                \begin{itemize}
+                  \item Approach 1: Web UI (React + TypeScript) with REST for control and WebSocket for
+                        telemetry/preview overlays.
+                  \item Approach 2: Native UI (Qt/QML) with direct GStreamer integration and local IPC
+                        for control/telemetry.
+                \end{itemize}
+                Chosen: Approach 1, leveraging team familiarity and enabling easy remote operation via a browser while maintaining HDMI output support.
+        \end{itemize}
+\end{enumerate}
 
 \end{document}
