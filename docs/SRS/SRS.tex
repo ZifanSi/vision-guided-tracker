@@ -20,6 +20,15 @@
     filecolor=magenta,      % color of file links
     urlcolor=cyan           % color of external links
 }
+\usepackage{float}
+\usepackage{makecell}
+\usepackage[table]{xcolor}
+\usepackage{array} % for \newcolumntype
+
+% Example custom columns (centered/left X variants)
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\newcolumntype{Z}{>{\raggedright\arraybackslash}X}
+
 
 \newcommand{\lips}{\textit{Insert your content here.}}
 
@@ -1195,71 +1204,656 @@ internet, and only physically accessible by authorized personnel.
 
 None.
 
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 18 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \section{Open Issues}
+\label{sec:open-issues}
 
-- is it possible to reliably track a small rocket fast enough given the current technology?
+This section lists open questions that could affect RoCam’s design, operation, and deployment. Each issue states why it matters, how we will close it with a test, who owns it, a due date aligned to the POC window (Nov. 17–28, 2025), and trace notes for bi-directional traceability. Acronyms are defined on first use: frames per second (FPS); field of view (FOV).
+
+\subsection*{OI-01 — End-to-end rocket tracking feasibility}
+\textbf{Summary:} Can we reliably lock, keep centered, and reacquire a small, fast rocket?\\
+\textbf{Why it matters:} This is RoCam’s core value.\\
+\textbf{Closure test:} Field tests show a median center error at most 20 pixels and reacquisition in at most 1.0 seconds across at least 5 launches.\\
+\textbf{Owner:} CV Lead; Motion Control Lead \quad \textbf{Due:} 2025-11-20\\
+\textbf{Trace:} FR-Tracking-Loop, FR-Reacquire; POC Steps 2–4; V\&V Plan.
+
+\subsection*{OI-02 — Jetson pipeline performance (capture to inference to control)}
+\textbf{Summary:} Validate FPS and latency on target hardware.\\
+\textbf{Why it matters:} Low latency enables smooth gimbal motion.\\
+\textbf{Closure test:} End-to-end latency at most 120 ms while sustaining at least 30 FPS; report median and 95th percentile.\\
+\textbf{Owner:} CV Lead \quad \textbf{Due:} 2025-11-10\\
+\textbf{Trace:} NFR-Performance; FR-Tracking-Loop; Expected Technology (CV).
+
+\subsection*{OI-03 — Gimbal slew and STM32 control stability}
+\textbf{Summary:} Check max pan/tilt speeds and controller stability under rocket rates.\\
+\textbf{Why it matters:} Hardware must keep up without oscillation.\\
+\textbf{Closure test:} Step and ramp tests show no instability; max slew at least 180 deg/s; overshoot at most 5 percent.\\
+\textbf{Owner:} Motion Control Lead \quad \textbf{Due:} 2025-11-10\\
+\textbf{Trace:} FR-Gimbal-Control; NFR-Safety; POC Step 4.
+
+\subsection*{OI-04 — Occlusion, smoke, glare and backlight handling}
+\textbf{Summary:} Robust tracking in difficult visuals; automatic reacquire.\\
+\textbf{Why it matters:} Launches include plume/smoke and changing light.\\
+\textbf{Closure test:} Scripted tests with occluders and backlight achieve at least 90 percent successful reacquisition within 1.0 seconds.\\
+\textbf{Owner:} CV Lead; QA \quad \textbf{Due:} 2025-11-15\\
+\textbf{Trace:} FR-Reacquire, FR-Tracking-Loop; V\&V scenarios.
+
+\subsection*{OI-05 — Web preview latency and control responsiveness}
+\textbf{Summary:} Measure browser preview delay and UI command round-trip on field network.\\
+\textbf{Why it matters:} Operator needs near real-time feedback.\\
+\textbf{Closure test:} Preview 95th percentile latency at most 300 ms; command round-trip at most 150 ms on site Wi-Fi or hotspot.\\
+\textbf{Owner:} Web Lead \quad \textbf{Due:} 2025-11-15\\
+\textbf{Trace:} FR-Web-Preview, FR-Remote-Control; NFR-Usability.
+
+\subsection*{OI-06 — Target size versus lens, FOV, and stand-off distance}
+\textbf{Summary:} Ensure rocket has enough pixels for detection and tracking.\\
+\textbf{Why it matters:} Too small a target breaks detection.\\
+\textbf{Closure test:} Optics sizing shows at least 30 pixels of target height at the minimum distance; confirmed in ground tests.\\
+\textbf{Owner:} CV Lead; HW Lead \quad \textbf{Due:} 2025-11-05\\
+\textbf{Trace:} FR-Image-Acquisition, FR-Detect-Motion; POC Step 1.
+
+\subsection*{OI-07 — Recording and archival (format, bitrate, storage, retrieval)}
+\textbf{Summary:} Decide how to record video and make it available.\\
+\textbf{Why it matters:} Needed for demos, analysis, and V\&V evidence.\\
+\textbf{Closure test:} Recording at 1920x1080 and 30 FPS with storage rotation; operator can download footage via the web UI.\\
+\textbf{Owner:} Web Lead; CV Lead \quad \textbf{Due:} 2025-11-18\\
+\textbf{Trace:} FR-Recording, FR-Web-Download; NFR-Storage.
+
+\subsection*{OI-08 — Site networking and power plan}
+\textbf{Summary:} Confirm bandwidth and stable power at launch site(s).\\
+\textbf{Why it matters:} Unreliable links or power will break the demo.\\
+\textbf{Closure test:} Site checklist complete; backup link tested; UPS or batteries sized for at least 30 minutes of runtime.\\
+\textbf{Owner:} Field Ops; HW Lead \quad \textbf{Due:} 2025-11-12\\
+\textbf{Trace:} NFR-Reliability; Ops-Readiness; POC logistics.
+
+\subsection*{OI-09 — Safety and abort in the web UI}
+\textbf{Summary:} Define operator authority, safe states, and emergency stop flow.\\
+\textbf{Why it matters:} Must halt motion safely on faults or command.\\
+\textbf{Closure test:} From any state, emergency stop reaches a safe state within at most 200 ms; procedure documented and tested.\\
+\textbf{Owner:} Motion Control Lead; Web Lead; QA \quad \textbf{Due:} 2025-11-16\\
+\textbf{Trace:} NFR-Safety; FR-Gimbal-Control; Hazard Analysis.
+
+\subsection*{OI-10 — Integration interfaces (CV, STM32, Web)}
+\textbf{Summary:} Freeze message schemas and timing expectations.\\
+\textbf{Why it matters:} Reduces late integration risk.\\
+\textbf{Closure test:} Versioned API documents published; bench integration test passes three consecutive runs without timeouts.\\
+\textbf{Owner:} Subproject Leads; QA facilitator \quad \textbf{Due:} 2025-11-08\\
+\textbf{Trace:} Cross-cutting FRs; POC risk “Integration”.
+
+\subsection*{OI-11 — Environmental readiness (wind, lighting, Jetson thermals)}
+\textbf{Summary:} Validate operation under expected weather and heat.\\
+\textbf{Why it matters:} Outdoor launches vary.\\
+\textbf{Closure test:} Test matrix executed; Jetson temperatures at or below 80 C with no throttling during a 30 minute run.\\
+\textbf{Owner:} Platform Eng.; Field Ops \quad \textbf{Due:} 2025-11-14\\
+\textbf{Trace:} NFR-Performance; NFR-Reliability; Ops-Readiness.
+
+\subsection*{OI-12 — Operator workflow and usability}
+\textbf{Summary:} Make target pick, mode switch, and errors simple and clear.\\
+\textbf{Why it matters:} Reduces operator mistakes during demos.\\
+\textbf{Closure test:} Five-user hallway test: at least four of five complete tasks unaided; System Usability Scale score at least 75.\\
+\textbf{Owner:} Web Lead; QA \quad \textbf{Due:} 2025-11-18\\
+\textbf{Trace:} NFR-Usability; FR-Target-Selection; Web App.
+
+\subsection*{OI-13 — Install and update (Jetson/STM32) and rollback}
+\textbf{Summary:} Define install steps, versioning, and rollback.\\
+\textbf{Why it matters:} The rubric requires installability; reliable updates reduce field risk.\\
+\textbf{Closure test:} Cold install in at most 10 minutes; one-command update and rollback verified on a clean device.\\
+\textbf{Owner:} Platform Eng. \quad \textbf{Due:} 2025-11-12\\
+\textbf{Trace:} NFR-Installability; CI/CD; Expected Technology.
+
+\subsection*{OI-14 — Data retention and privacy}
+\textbf{Summary:} Set retention period and access rules for footage and logs.\\
+\textbf{Why it matters:} Manages storage and sharing expectations.\\
+\textbf{Closure test:} Policy documented; maximum retention of 30 days enforced automatically; access control tested.\\
+\textbf{Owner:} PM; Web Lead \quad \textbf{Due:} 2025-11-18\\
+\textbf{Trace:} NFR-Security and Privacy; FR-Recording and Logs.
+
+
 
 \section{Off-the-Shelf Solutions}
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 19.1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \subsection{Ready-Made Products}
+\label{sec:ready-made-products}
 
-- there are no off-the-shelf solutions that is capable of tracking a small and fast moving rocket.
+\textbf{Conclusion:} No off-the-shelf product reliably tracks a small, fast rocket end-to-end.
 
+\textbf{Surveyed:} consumer/prosumer camera trackers; sports/wildlife auto-tracking; industrial/defense PTZ trackers.
+
+\textbf{Criteria:} acquire/re-acquire small target; keep centered at high speed; low latency; operator control/safety; integration (camera, gimbal, web); logging.
+
+\textbf{Findings (Gaps):}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item Target too small / motion too fast.
+  \item Weak occlusion/smoke re-acquire.
+  \item Latency not specified or too high.
+  \item Closed stacks; poor API/integration.
+  \item Limited safety controls and logs.
+\end{itemize}
+
+\textbf{Decision:} Build custom solution (meets performance, safety, integration needs).
+
+\textbf{Revisit:} Reassess if a vendor demonstrates low-latency, small-target tracking with open APIs.
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 19.2 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \subsection{Reusable Components}
+\label{sec:reusable-components}
 
-- computer vision algorithms
+Below are the key open-source components RoCam will reuse. For each, we explain what it does, where it comes from, and why it is a good fit. Each choice is simple to verify with clear measurements and has low integration risk.
+
+\paragraph{OpenCV (Python).}
+OpenCV will handle camera capture, reading and writing frames, basic image operations, and drawing overlays for the live preview. It is open source under a BSD license and is widely used on NVIDIA Jetson devices. We can verify it easily by measuring frames per second and end-to-end latency during live capture and by checking that overlays appear correctly on the preview.
+
+\paragraph{Ultralytics YOLO.}
+Ultralytics YOLO will provide object detection to find the rocket and keep the track initialized. It is open source and has models that balance accuracy and speed on edge hardware. We will test it on sample launch videos and measure precision, recall, and inference time to confirm it meets our target speed and detection quality.
+
+\paragraph{PyTorch and TorchVision.}
+PyTorch and TorchVision will run the detection models, perform preprocessing, and support simple experiments such as quantization. They are open source with a permissive license and work well with CUDA on the Jetson platform. We will verify them by timing the full pipeline on our device and confirming that model outputs are correct on a small labeled clip set.
+
+\paragraph{Optical Flow (OpenCV).}
+We will use OpenCV’s optical flow to add motion cues that help with small or fast targets and to support re-acquisition if the detector misses a frame. This component is open source and lightweight. We will compare re-acquisition time and tracking continuity with and without optical flow on the same sequences to confirm the benefit.
+
+\paragraph{NVIDIA JetPack SDK.}
+JetPack provides CUDA, cuDNN, multimedia libraries, and device drivers required for the Jetson. It is a free vendor SDK. Using JetPack reduces custom integration work and enables hardware acceleration. We will verify correct setup by running a small GPU self-test, confirming camera capture works, and measuring that model inference uses the GPU.
+
+\paragraph{STM32 with \texttt{embassy-rs} (Rust).}
+The STM32 microcontroller and the \texttt{embassy-rs} async runtime will run the real-time gimbal control loop, including timers, GPIO, and serial links. These crates are open source and build on \texttt{embedded-hal}. We will verify control quality using simple step and ramp tests, checking for stable response, acceptable overshoot, and maximum slew rate.
+
+\paragraph{Flask (Backend).}
+Flask will serve a small HTTP and WebSocket API for control, status, and video preview endpoints. It is open source under a BSD license, easy to containerize, and simple to read and test. We will verify the API with unit tests for each route and with a basic integration test that starts, arms, begins tracking, and stops through the web interface.
+
+\paragraph{React (Frontend).}
+React will power the operator web interface for connect, arm, start and stop tracking, target selection, and status. It is open source under an MIT license and has a strong ecosystem. We will verify usability with short hallway tests, looking at task completion, time to perform key actions, and a simple usability score.
+
+\paragraph{GStreamer or FFmpeg.}
+We will use GStreamer or FFmpeg for video encoding, streaming, and recording. Both are open source and proven on Jetson. We will verify preview and recording by measuring median and tail preview latency, checking for dropped frames, and confirming that recorded files play back at the expected resolution and frame rate.
+
+\paragraph{Docker.}
+Docker will be used to containerize the computer vision and backend services to ensure repeatable builds and installs. It is open source (Moby/Apache 2.0). We will verify installability by performing a clean install on a fresh device, running one command to start services, and testing a simple rollback of a container image.
+
+\paragraph{GitHub Actions.}
+GitHub Actions will provide continuous integration for builds, unit tests, style checks, and container images. It has a free tier for public use. We will verify it by enforcing that each pull request runs linting and tests, produces a build artifact, and fails if coverage or style gates are not met.
+
+\medskip
+\noindent\textbf{Verification approach for all components.}
+For every component above we will record the version and license, define one or more clear checks (for example frames per second, latency, precision and recall, controller step response, and web task success), and store the results with links back to the requirement they support. This keeps our reuse choices measurable and traceable.
+
+
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 \subsection{Products That Can Be Copied}
+\label{sec:products-that-can-be-copied}
 
-- UI can take inspiration from other tracking systems (surveillance cameras, drones)
+RoCam can adopt proven interface and workflow patterns from adjacent products to reduce risk and speed delivery. The most relevant sources are:
+\textit{surveillance PTZ camera consoles} (clear live preview, crosshair, presets),
+\textit{drone ground control stations} (arm/disarm, mode switching, prominent safety actions),
+\textit{IP/action camera apps} (record/stop, timers, storage indicators, simple download),
+and \textit{low-latency web viewers} (connection status, latency badges, reconnect prompts).
+These systems solve problems similar to ours: showing live video with minimal delay, keeping critical controls obvious, and helping operators recover from errors quickly.
+
+\textbf{Adaptation potential.}
+For RoCam, we will copy the following ideas:
+(1) a single primary live view with a fixed crosshair and status banner;
+(2) large, consistent controls for \emph{Start Tracking}, \emph{Stop}, \emph{Arm}, and \emph{Abort};
+(3) quick target selection directly on the preview;
+(4) a visible latency/FPS indicator and connection health pill;
+(5) simple recording controls with a clip timer and remaining storage;
+(6) a basic “Downloads” page for recorded clips and logs.
+
+\textbf{Why copy:}
+These patterns are familiar to operators, lower training time, and reduce mistakes under pressure. Reuse also helps us meet usability and safety requirements with less custom design.
+
+\textbf{What not to copy:}
+We will avoid vendor-specific jargon, buried expert menus for critical actions, and multi-step wizards for emergency functions. Abort/Stop must remain always visible and one-click.
+
+\textbf{Verification:}
+Each adopted pattern will have a small, testable check in the V\&V plan (for example: \emph{max two clicks to start tracking}, \emph{$\leq$ 1 second to stop gimbal motion}, \emph{$\geq$ 80\% of users complete target selection unaided}, \emph{operator SUS score meets the usability threshold}). Results will be recorded and traced to the corresponding usability and safety requirements.
+
+\textbf{Considerations:}
+Ensure accessibility (clear labels, contrast, keyboard navigation), align terminology with the project glossary, and keep links to the related requirements for traceability. Only copy ideas and layouts—do not copy proprietary code or branding. Check licenses for any third-party assets before use.
+
+\textbf{Documentation for each copied idea:}
+For every pattern we adopt, we will record: name and source, purpose in RoCam, the requirement(s) it supports, a brief integration note, any licensing notes, and its verification method and status.
+
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 \section{New Problems}
 \subsection{Effects on the Current Environment}
 
-- the system shouldn't have any negative effects on the current environment
+RoCam is designed to operate without negative effects on the current environment. It will run on university-owned hardware in the lab and at outdoor test sites. Our goal is to integrate safely with existing systems and to conduct field tests without disrupting other users or activities.
 
+In the campus and lab setting, the main risks are extra load on shared compute resources, additional storage for video and logs, and higher network traffic from live preview and uploads. To avoid problems, we will set conservative defaults for frame rate and bitrate, monitor resource use during early runs, and respect storage and bandwidth quotas agreed with the infrastructure team.
+
+At field sites, the concerns are physical safety, power and heat, privacy, and local wireless interference. We will secure the gimbal and tripod, provide an emergency stop that puts the system in a safe state, manage cables to prevent trip hazards, and size batteries so that power is stable. We will avoid recording people or property by accident by announcing tests and positioning the camera away from bystanders. If wireless links are used, we will choose channels that do not interfere with local networks.
+
+We will verify that there is no negative impact by measuring CPU/GPU, storage, and network usage on a campus dry run and confirming they stay within agreed limits. In the field, we will use a short checklist to confirm emergency stop behavior, cable safety, and battery capacity before each session. For privacy, we will review a sample recording to ensure no unintended personal data is captured and confirm that access to downloads requires authentication. Evidence of these checks (resource screenshots, checklist sign-offs, and retention settings) will be included in the V\&V package.
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \subsection{Effects on the Installed Systems}
 
-- The system interfaces with the existing live stream equipment using HDMI. No negative effects are expected because HDMI is an industry standard interface.
+RoCam connects to the existing live stream setup through an HDMI cable from the Jetson video output to the venue’s switcher or capture device. HDMI is an industry standard, so no negative effects on the installed systems are expected. The system will operate as a passive video source: it does not send control signals to other devices, does not modify mixer settings, and does not require driver installs on the production hardware.
+
+To align with the rubric’s focus on clarity and constraints, we document the following assumptions and limits. The receiving device accepts the agreed video format (for example, 1080p at 30 frames per second) and standard color range. The HDMI cable length and quality meet vendor guidance, and the venue power is stable. RoCam will not draw power or control from the downstream equipment; it uses its own power supply. These constraints reduce integration risk and keep responsibilities clear.
+
+Potential risks and mitigations are simple and testable. If the receiver does not support the default resolution, we will switch to a compatible mode from a short, preapproved list (for example, 720p at 60 frames per second). If signal integrity issues appear (dropouts or flicker), we will replace the cable, add an inline repeater, or reduce resolution to increase margin. If the venue prefers SDI, we will use an HDMI-to-SDI converter that is powered and rated for the selected format. None of these mitigations require changes to the venue’s equipment configuration.
+
+Verification is straightforward and recorded. Before events, we will run a five-minute signal check: confirm stable video on the mixer’s multiview, verify audio is either muted or at the expected level, and note the detected input format on the mixer UI. We will capture a photo or screenshot of the mixer status, note the cable used and resolution, and store this evidence with the test log. Passing these checks confirms that RoCam does not adversely affect the installed systems and meets the nonfunctional requirement for compatibility.
+
+Traceability is maintained by linking this subsection to the nonfunctional compatibility requirement (NFR-Compatibility), the field readiness checklist, and the proof-of-concept demo plan. Any change to the output format or cabling will be reflected in the checklist and the interface specification so that documentation stays consistent and easy to navigate.
+
+
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 \subsection{Potential User Problems}
 
-- If the system lost the rocket, the live stream technician will not be happy
+Potential user challenges for \textbf{RoCam} include operator onboarding, learning the tracking workflow, and confusion about UI states (IDLE, TRACKING, SEARCH, LOST), manual override, and recording/preview behavior. Live stream technicians may also struggle to judge when the feed is stable enough to go on-air, especially after a target loss or during high motion.
+
+\textbf{Motivation:} Ensure field operators and live stream technicians can adopt RoCam quickly, run safe and smooth sessions, and correctly interpret status, controls, and video outputs without frustration or missteps.
+
+\textbf{Considerations:}
+\begin{itemize}
+  \item Provide a role-based quick start: \emph{Operator} (connect, arm, select target, recover from loss) and \emph{Technician} (preview latency guidance, when to cut/return to live, recording checks).
+  \item Add a short setup wizard: camera connect, lens/FOV check, gimbal zero, network test, and health checks (FPS, latency).
+  \item Include an in-UI legend and tooltips for all states and controls (IDLE, TRACKING, SEARCH, LOST; Arm, Start/Stop, E-stop, Manual Mode).
+  \item Keep recovery simple: one-click \emph{Reselect Target}, clear \emph{Lost} banner, and a brief inline “What to do now” hint.
+  \item Offer a \emph{Practice Mode} using recorded clips so users can rehearse target selection, loss, and reacquire without hardware.
+  \item Provide a one-page \emph{Field Cheat Sheet} (pre-flight checklist, common issues, recovery steps, contact).
+  \item Ensure safety affordances: visible E-stop, confirmation for risky actions, and persistent indication when Manual Mode is active.
+  \item Make the preview easier to interpret: show measured FPS and latency; warn when latency exceeds a threshold.
+  \item Support accessibility (high-contrast theme, larger fonts) for outdoor glare and small screens.
+  \item Establish a support path: issue template for logs/screen captures, contact channel, and a known-good configuration to roll back to.
+\end{itemize}
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 \subsection{Follow-Up Problems}
-\lips
+
+Potential long-term issues for \textbf{RoCam} include sustaining the system after the capstone, keeping models and firmware current, and maintaining reliable field operations as hardware and environments change.
+
+\textbf{Motivation:} Ensure RoCam remains safe, usable, and effective beyond the project timeline, with clear ownership and a simple path to updates and repairs.
+
+\textbf{Considerations:}
+\begin{itemize}
+  \item \textbf{Ownership \& Maintenance:} Define who owns the Jetson, STM32 gimbal controller, and web service after handover; name a maintainer for bug triage and releases.
+  \item \textbf{Updates:} Plan for JetPack (CUDA/cuDNN), OS security patches, Flask/React dependencies, and STM32 firmware updates; keep a versioned changelog.
+  \item \textbf{Model \& Tuning Drift:} Re-test detector/tracker performance when models or thresholds change; keep a small benchmark clip set and publish FPS/latency/accuracy results.
+  \item \textbf{Calibration \& Wear:} Schedule lens focus/FOV checks, gimbal zeroing, and mechanical inspection (slop/backlash); store a simple calibration checklist.
+  \item \textbf{Spare Parts \& Repairs:} Keep spare cables, power supplies, SD cards, and a backup camera; document swap procedures.
+  \item \textbf{Data \& Storage:} Manage recording retention and log rotation; verify backup/restore of configs and calibration files.
+  \item \textbf{Docs \& Training:} Maintain a one-page field cheat sheet, a quick-start guide, and short training clips; refresh operator training each term.
+  \item \textbf{Safety \& Compliance:} Preserve E-stop tests, safe-state procedures, and hazard checks; review site permissions and flight-day rules yearly.
+  \item \textbf{Support Path:} Provide a contact channel, an issue template (with logs/versions), and a known-good image to roll back to.
+  \item \textbf{CI/CD \& Release Hygiene:} Keep CI for lint/tests/builds; tag releases, publish binaries/containers, and attach V\&V summaries for traceability.
+\end{itemize}
+
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 \section{Tasks}
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \subsection{Project Planning}
-\lips
 
+RoCam will be delivered in short Agile iterations that fit within the capstone milestones. Each iteration includes planning, build, code review, and a testable demo slice (camera capture → tracking → gimbal control → web preview). We use GitHub for issues, pull requests, and CI, VS Code/PyCharm for development, and LaTeX for documents. Work happens on the edge (NVIDIA Jetson with an STM32 controller) with a browser-based operator UI. Non-functional items (safety, installability, usability, field readiness) are planned alongside features and tracked as requirements.
+
+\paragraph{Initiation (Problem, Scope, Risks, Success).}
+We confirm the problem and scope, list stakeholders (operator, field ops, supervisor), identify key risks, and define success criteria. We outline the proof-of-concept steps and agree on a hardware-in-the-loop approach. \emph{Deliverables:} Problem Statement, POC Plan, Development Plan.
+
+\paragraph{Requirements (What, not How).}
+We capture functional requirements (camera input, detection, tracking, gimbal control, web preview, recording) and non-functional requirements (performance, safety, usability, installability, reliability). We write the SRS and Hazard Analysis and define measurable KPIs such as FPS, end-to-end latency, center error, and reacquire time. \emph{Deliverables:} SRS, Hazard Analysis.
+
+\paragraph{Design (Architecture and Interfaces).}
+We define the system architecture, data flows, and interface contracts between Jetson, STM32, and the Web App. We specify message schemas, UI flows (connect, arm, start/stop, select target), and the streaming/recording path. We choose optics and placements based on field of view and minimum target size. \emph{Deliverables:} Design Document (initial, then revision 0).
+
+\paragraph{Implementation (Build and Integrate).}
+We implement camera capture, motion/detection and tracking, gimbal control on STM32, the operator UI, and video preview/recording. We add CI checks (lint, unit tests, build), and containerize the CV/backend on Jetson. The goal is a working end-to-end slice that can be demonstrated safely. \emph{Deliverable:} Proof-of-Concept demo.
+
+\paragraph{Validation and Verification (Measure and Prove).}
+We write tests for modules and for integrated flows. On the bench, we measure controller step response and maximum slew. In the field, we test occlusion, glare, and reacquire behavior. We run basic usability checks (task success and simple surveys). All tests trace back to requirements and KPIs. \emph{Deliverables:} V\&V Plan and V\&V Report.
+
+\paragraph{Deployment and Field Operations (Package and Demonstrate).}
+We prepare install, update, and rollback scripts; write an operations runbook and safety procedures; and complete a site checklist for network and power. We conduct the final demo and hand over documentation and instructions for ongoing use. \emph{Deliverables:} Final Demo, Final Documentation, Operations Guide.
+
+\paragraph{Iteration Cadence and Tools.}
+We plan two short iterations per milestone with a review at the end of each. GitHub Projects tracks issues and priorities; GitHub Actions runs CI; Docker images pin runtime dependencies; simple checklists guard field tests. Every change is linked to a requirement to keep traceability clear and to support fast onboarding of new contributors.
+
+
+
+
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \subsection{Planning of the Development Phases}
 \lips
+\subsection{Planning of the Development Phases}
 
-\section{Migration to the New Product}
-\subsection{Requirements for Migration to the New Product}
+RoCam will be delivered in short iterations that align with the capstone milestones. Each phase below states the benefit to users, the main components exercised (Jetson CV pipeline, STM32 motion control, Web App), and the key functional (FR) and non-functional (NFR) requirements addressed. Feedback from the supervisor and field operators is gathered at the end of every iteration and feeds the next one.
 
-- no migration is needed
+\paragraph{Requirements \& Analysis (to 2025-10-06).}
+\emph{Benefit:} Clear and testable “what, not how.”  
+\emph{Components:} GitHub Issues/Projects, LaTeX docs.  
+\emph{Focus:} Define FRs for camera input, detection/tracking, gimbal control, web preview/controls, recording; define NFRs for performance (FPS, latency), safety (abort/estop), installability, and usability. Output: SRS (Rev 0) and Hazard Analysis.
 
-\subsection{Data That Has to be Modified or Translated for the New System}
+\paragraph{Architecture \& Design (2025-10-07 to 2025-11-10, then Rev 0 by 2026-01-19).}
+\emph{Benefit:} Stable interfaces reduce integration risk.  
+\emph{Components:} Jetson–STM32–Web API contracts, stream/record path, optics choices.  
+\emph{Focus:} Message schemas, timing budgets, UI flows (connect/arm/start/stop/target pick), FOV/target-size envelope. Output: Design doc (draft by 2025-11-10, Revision 0 by 2026-01-19).
 
-- no migration is needed
+\paragraph{Implementation (POC build 2025-09 to 2025-11; continued through 2026-02).}
+\emph{Benefit:} Usable slices early (see-track-move).  
+\emph{Components:} Camera capture, YOLO/flow tracking, STM32 control loops (\texttt{embassy-rs}), Flask backend, React operator UI, GStreamer/FFmpeg for preview/recording, Docker, GitHub Actions.  
+\emph{Focus:} Deliver end-to-end path (image $\rightarrow$ track $\rightarrow$ control $\rightarrow$ preview). Output: Proof-of-Concept Demo (2025-11-17 to 2025-11-28).
 
+\paragraph{Validation \& Verification (plan 2025-10-27; execute through 2026-03).}
+\emph{Benefit:} Measured confidence against KPIs.  
+\emph{Components:} Bench rigs, recorded clips, field tests, CI test suites.  
+\emph{Focus:} Verify latency/FPS, center error, reacquire time, max slew and stability, occlusion/glare handling, UI task success and command round-trip. Outputs: V\&V Plan (2025-10-27), Revision 0 Demo (2026-02-02 to 2026-02-13), V\&V Report (2026-03-09).
+
+\paragraph{Deployment \& Field Operations (2026-03).}
+\emph{Benefit:} Safe, repeatable operation in the field.  
+\emph{Components:} Install/update/rollback scripts, runbook, site checklist (network/power), safety procedures.  
+\emph{Focus:} Cold-install time, update/rollback, thermal checks, go/no-go criteria, operator training. Outputs: Final Demonstration (2026-03-23 to 2026-03-29).
+
+\paragraph{Handover \& Documentation (by 2026-04-06).}
+\emph{Benefit:} Maintainable system after the course ends.  
+\emph{Components:} Operations guide, API references, interface versioning, known-issues list.  
+\emph{Focus:} Traceability from requirements to tests, onboarding guide for new team members, maintenance plan and ownership. Output: Final Documentation (Revision 1, 2026-04-06).
+
+\paragraph{Traceability and Feedback Loops.}
+Each feature and test references a unique requirement ID in GitHub Issues and the SRS. Phase gates occur at the milestone dates above; review notes and measurements are logged and linked to the affected FRs/NFRs to keep bi-directional traceability and ensure continuous alignment with stakeholder expectations.
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+%\section{Migration to the New Product}
+%\subsection{Requirements for Migration to the New Product}
+%\lips
+%\subsection{Data That Has to be Modified or Translated for the New System}
+%\lips
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \section{Costs}
-\lips
+\label{sec:costs}
+
+To meet a hard cap of \textbf{\$250 CAD} for RoCam, we will \textbf{reuse existing lab/Personal equipment} wherever possible and purchase only small, critical items. Labour cost is \$0 (capstone). All software is open source.
+
+\subsection*{Assumptions (In–Kind / Existing)}
+\begin{itemize}
+  \item \textbf{Compute:} NVIDIA Jetson dev kit (lab) — \$0.
+  \item \textbf{Camera \& storage:} USB/CSI camera (1080p) and microSD/SSD (lab) — \$0.
+  \item \textbf{Mounting/power/network:} Tripod, PSU, basic cabling, campus Wi-Fi (lab) — \$0.
+  \item \textbf{Gimbal:} Use an existing pan–tilt unit if available; otherwise see fallback below.
+  \item \textbf{Tooling:} University GitHub, documentation tools, and 3D printer access — \$0.
+\end{itemize}
+
+\subsection*{Planned One-Time Purchases (Prototype)}
+\begin{itemize}
+  \item STM32 dev board (e.g., Nucleo/“Blue Pill”) \dotfill \textbf{\$25}
+  \item Servo driver (PCA9685) \& level shifter \dotfill \textbf{\$18}
+  \item Wiring/connectors (Dupont kit, headers, heat-shrink) \dotfill \textbf{\$15}
+  \item Mounting plate \& fasteners (camera/gimbal to tripod) \dotfill \textbf{\$20}
+  \item Small protective enclosure for controller \dotfill \textbf{\$20}
+  \item E-stop mushroom switch (inline power cut) \dotfill \textbf{\$15}
+  \item Adhesives/ties/misc. consumables \dotfill \textbf{\$12}
+\end{itemize}
+
+\noindent\textit{Subtotal (base case, gimbal reused):} \textbf{\$125} \\
+\textit{Contingency (15\%):} \textbf{\$19} \\
+\textbf{Estimated total (base case): \$144}
+
+\subsection*{Fallback if No Lab Gimbal}
+\begin{itemize}
+  \item Budget pan–tilt kit or two metal-gear servos \dotfill \textbf{\$35}
+  \item (Optional) 3D-print filament for brackets if needed \dotfill \textbf{\$10}
+\end{itemize}
+
+\noindent\textit{Subtotal with fallback added:} \textbf{\$170} \\
+\textit{Contingency (15\% on full spend):} \textbf{\$26} \\
+\textbf{Estimated total (with fallback): \$196} \quad(\textit{still $\leq\$250$})
+
+\subsection*{Operational (Per Demo Day)}
+\begin{itemize}
+  \item Field hotspot day pass (only if site Wi-Fi is unavailable) \dotfill \textbf{\$5--\$10}
+  \item Transport/consumables \dotfill \textbf{\$0--\$10} (minimize via campus locations)
+\end{itemize}
+
+\subsection*{Rubric Alignment Notes}
+\begin{itemize}
+  \item \textbf{Clarity \& traceability:} Each cost is tied to a system function (control, safety, mounting).
+  \item \textbf{Verifiable:} All line items are commodity parts with public pricing; contingency is explicit.
+  \item \textbf{Phase-in:} Base case meets POC under \$250; optional gimbal fallback also stays under cap.
+\end{itemize}
+
+
+
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
 \section{User Documentation and Training}
+\label{sec:user-docs-training}
+
+This section defines what must be documented for \textbf{RoCam} and how operators will be trained. All items include clear ownership and measurable acceptance criteria to align with the rubric’s verifiability and traceability goals.
+
 \subsection{User Documentation Requirements}
-\lips
+\label{subsec:user-docs-reqs}
+
+\subsubsection{User Manual (Operator Guide)}
+\textbf{Scope:} Install, setup, normal operation, and recovery.
+\begin{itemize}
+  \item \textbf{Content:} hardware setup (camera, gimbal, power), wiring checks, software start/stop, web app usage (connect, arm, start/stop tracking, select target), indicators and states, common errors and recovery steps, safety and abort procedures.
+  \item \textbf{Format:} PDF in \texttt{docs/} and a browsable \texttt{README} section in the repo \href{https://github.com/ZifanSi/vision-guided-tracker}{vision-guided-tracker}.
+  \item \textbf{Owner:} Development team; QA is responsible for review.
+  \item \textbf{Update policy:} Update with every release that changes UI, workflow, or safety procedure.
+  \item \textbf{Acceptance:} A new user can complete a standard session (power on, connect, track, stop, power down) following the manual only; task success rate $\geq$ 4/5 users in a hallway test.
+\end{itemize}
+
+\subsubsection{Quick Start Card (1–2 pages)}
+\textbf{Scope:} Field checklist for time-critical steps.
+\begin{itemize}
+  \item \textbf{Content:} pre-flight checklist, start sequence, target selection, abort sequence, shutdown.
+  \item \textbf{Placement:} \texttt{docs/quickstart.pdf} and printed sheet with the kit.
+  \item \textbf{Acceptance:} An operator can set up and begin tracking in $\leq$ 5 minutes using only the card.
+\end{itemize}
+
+\subsubsection{Operator Safety Checklist}
+\textbf{Scope:} Mandatory safety steps and go/no-go criteria.
+\begin{itemize}
+  \item \textbf{Content:} site and weather checks, people and equipment safe distances, e-stop verification, network fallback, thermal check on Jetson.
+  \item \textbf{Acceptance:} Checklist completed and signed for every field session; incident-free operation in dry runs.
+\end{itemize}
+
+\subsubsection{API and Interface Reference}
+\textbf{Scope:} Web API endpoints and STM32 control messages.
+\begin{itemize}
+  \item \textbf{Content:} versioned message schemas, timing expectations, error codes, sample requests.
+  \item \textbf{Acceptance:} Integration test passes using only this reference; schemas are versioned and linked from the Design and V\&V docs.
+\end{itemize}
+
+\subsubsection{Maintenance and Troubleshooting Guide}
+\textbf{Scope:} Logs, common faults, part replacement, calibration.
+\begin{itemize}
+  \item \textbf{Content:} how to collect logs, reset procedures, gimbal calibration steps, spare parts list.
+  \item \textbf{Acceptance:} A non-developer can recover from the top 5 known faults using this guide in $\leq$ 10 minutes per fault.
+\end{itemize}
+
+\subsubsection{Release Manual}
+\textbf{Scope:} Build, package, deploy, rollback.
+\begin{itemize}
+  \item \textbf{Content:} CI steps (GitHub Actions), image build, versioning scheme, Jetson install script, STM32 flashing steps, rollback procedure, release notes template.
+  \item \textbf{Owner:} Development team; Platform engineer approves.
+  \item \textbf{Acceptance:} A clean device can be installed from scratch in $\leq$ 30 minutes; rollback completes in $\leq$ 5 minutes.
+\end{itemize}
+
 \subsection{Training Requirements}
-\lips
+\label{subsec:training-reqs}
 
+\paragraph{Audience and format.}
+Primary users are the camera operator and live stream technician. Training consists of a 30–45 minute hands-on session plus the Quick Start Card for field use.
+
+\paragraph{Learning objectives (measurable).}
+\begin{itemize}
+  \item \textbf{LO-1: Basic operation.} After training, users can power up, connect, arm, start tracking, select a target, and stop tracking without help. \emph{Criterion:} $\geq$ 90\% task success across 5 users.
+  \item \textbf{LO-2: Status understanding.} Users can interpret tracking states and FPS and respond to “lost” by reselecting a target. \emph{Criterion:} $\geq$ 4/5 correct responses in scenario questions.
+  \item \textbf{LO-3: Safety and abort.} Users can trigger e-stop and recover to a safe state. \emph{Criterion:} Complete e-stop drill in $\leq$ 10 seconds, two consecutive trials.
+  \item \textbf{LO-4: Basic troubleshooting.} Users can follow the guide to resolve a connection or preview issue. \emph{Criterion:} Resolve a seeded issue in $\leq$ 10 minutes using the guide only.
+\end{itemize}
+
+\paragraph{Materials and upkeep.}
+\begin{itemize}
+  \item \textbf{Materials:} User Manual, Quick Start Card, Safety Checklist, short tutorial video (optional), practice dataset (recorded clip).
+  \item \textbf{Upkeep:} Documents updated at every release; tutorial video re-recorded only when UI or safety flow changes.
+  \item \textbf{Ownership:} Development team maintains content; supervisor coordinates training sessions for new users.
+\end{itemize}
+
+\paragraph{Evaluation and sign-off.}
+\begin{itemize}
+  \item Short post-training checklist and a 5-question quiz on states and safety.
+  \item System Usability Scale (SUS) quick survey; \emph{target:} score $\geq$ 70.
+  \item Training completion is recorded; operators are cleared for field sessions upon passing LO-1 to LO-4 criteria.
+\end{itemize}
+
+
+
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \section{Waiting Room}
+\label{sec:waiting-room}
 
-not applicable?
+This section lists potential features for \textbf{RoCam} that are not required for the initial Proof-of-Concept (POC) or Revision 0, but may be added later. Each item includes a brief rationale, a measurable fit criterion, and a priority to support planning and rubric alignment.
 
+\begin{enumerate}[label=WTRM \arabic*., wide=0pt, leftmargin=*]
+
+  \item \emph{Auto-zoom during tracking.}\\[2mm]
+  \textbf{Rationale:} Keep the rocket at a consistent screen size to aid visibility.\\
+  \textbf{Fit Criterion:} With auto-zoom on, the rocket’s height remains within $\pm$15\% of a target pixel height for at least 80\% of frames during a test clip.\\
+  \textbf{Priority:} Medium
+
+  \item \emph{Multi-target detection with operator target swap.}\\[2mm]
+  \textbf{Rationale:} Handle multiple moving objects (e.g., chaff, birds) and let the operator switch targets.\\
+  \textbf{Fit Criterion:} System renders unique IDs for $\geq$3 simultaneous detections and switches lock to a selected ID within $\leq$ 1 s.\\
+  \textbf{Priority:} Low
+
+  \item \emph{Predictive guidance using simple trajectory estimation.}\\[2mm]
+  \textbf{Rationale:} Reduce control lag when the rocket accelerates quickly.\\
+  \textbf{Fit Criterion:} With prediction on, mean center error (pixels) is reduced by $\geq$ 15\% on benchmark clips versus baseline.\\
+  \textbf{Priority:} Medium
+
+  \item \emph{IMU/compass fusion for gimbal stabilization.}\\[2mm]
+  \textbf{Rationale:} Improve stability in wind or operator bump.\\
+  \textbf{Fit Criterion:} With fusion enabled, peak pointing deviation under a 5° step disturbance is reduced by $\geq$ 20\% compared to vision-only.\\
+  \textbf{Priority:} Low
+
+  \item \emph{Multi-camera handoff (fixed wide + tracking narrow).}\\[2mm]
+  \textbf{Rationale:} Use a wide FOV to reacquire when the narrow FOV loses the rocket.\\
+  \textbf{Fit Criterion:} When the narrow view loses the target, the system reacquires from the wide view in $\leq$ 2 s in 4/5 test runs.\\
+  \textbf{Priority:} Low
+
+  \item \emph{Night / low-light mode (IR or high-gain pipeline).}\\[2mm]
+  \textbf{Rationale:} Extend operating hours and lighting conditions.\\
+  \textbf{Fit Criterion:} Tracking remains stable at 10 lux scenes with FPS $\geq$ target\_fps$-5$ and no more than 10\% drop in precision on test clips.\\
+  \textbf{Priority:} Low
+
+  \item \emph{On-device recording with bookmark/annotation in UI.}\\[2mm]
+  \textbf{Rationale:} Easier review of key flight moments.\\
+  \textbf{Fit Criterion:} Operator can set at least 5 bookmarks per session; exported MP4 contains embedded timecodes; bookmarks listed in a CSV.\\
+  \textbf{Priority:} Medium
+
+  \item \emph{Health monitoring dashboard (thermal, FPS, packet loss).}\\[2mm]
+  \textbf{Rationale:} Detect performance issues early in the field.\\
+  \textbf{Fit Criterion:} UI shows live Jetson temperature, tracking FPS, and preview latency; generates a warning when any exceeds set thresholds for $>$10 s.\\
+  \textbf{Priority:} Medium
+
+  \item \emph{Operator profiles and saved presets (FOV, gains, limits).}\\[2mm]
+  \textbf{Rationale:} Reduce setup time and errors across sessions.\\
+  \textbf{Fit Criterion:} Operator can save and load named presets; loading applies within $\leq$ 1 s; presets persisted across reboots.\\
+  \textbf{Priority:} Low
+
+  \item \emph{Weather and site checklist integration in the web UI.}\\[2mm]
+  \textbf{Rationale:} Improve safety and go/no-go decisions.\\
+  \textbf{Fit Criterion:} Pre-flight checklist must be acknowledged before “Arm”; checklist stored with session logs and can be exported as PDF.\\
+  \textbf{Priority:} Medium
+
+  \item \emph{Remote viewer role (read-only web preview share).}\\[2mm]
+  \textbf{Rationale:} Let stakeholders watch without control privileges.\\
+  \textbf{Fit Criterion:} A read-only session link streams preview at $\geq$ 720p and p95 latency $\leq$ 400 ms on test network; no control endpoints exposed.\\
+  \textbf{Priority:} Low
+
+  \item \emph{Automatic calibration helper (center, limits, dead-zone).}\\[2mm]
+  \textbf{Rationale:} Faster field setup and consistent control feel.\\
+  \textbf{Fit Criterion:} Wizard completes in $\leq$ 3 minutes and stores updated limits; post-calibration step response meets current acceptance thresholds.\\
+  \textbf{Priority:} Low
+
+\end{enumerate}
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \section{Ideas for Solution}
+\label{sec:ideas-for-solution}
 
-- webpage for UI
+This section lists simple, high-level ideas we can explore for \textbf{RoCam}. These are not final designs. They help us pick practical options during the proof of concept and later phases.
 
+\begin{itemize}
+  \item \textbf{Detect then track.}
+  Start with a fast object detector to find the rocket, then use a light tracker to follow it between detections.
+  \emph{How we check it:} measure frames per second and how close the target stays to the center.
+
+  \item \textbf{Use motion cues.}
+  Add basic motion detection to highlight moving objects and help the detector when the rocket is small.
+  \emph{How we check it:} compare miss rate with and without motion cues on the same video.
+
+  \item \textbf{Plan for lost target.}
+  If lock is lost, search near the last known spot and allow the operator to reselect the target quickly.
+  \emph{How we check it:} time to reacquire and percent of successful reacquisitions.
+
+  \item \textbf{Simple, stable control.}
+  Run a basic controller for pan and tilt on the microcontroller, with limits on speed and acceleration.
+  \emph{How we check it:} bench tests for step and ramp moves, looking for no oscillation.
+
+  \item \textbf{Small, clear messages.}
+  Send compact messages between the Jetson and the microcontroller with a checksum and a counter.
+  \emph{How we check it:} log packet loss and late packets during a long run.
+
+  \item \textbf{Straightforward video path.}
+  Start with an easy preview method first (for example, MJPEG) and record video locally; only move to lower-latency streaming if needed.
+  \emph{How we check it:} measure preview delay and dropped frames; confirm recorded files play back.
+
+  \item \textbf{Simple web UI.}
+  Give the operator a clean page with connect, arm, start, stop, target pick, state display, and an emergency stop.
+  \emph{How we check it:} quick user tests for task completion and command round-trip time.
+
+  \item \textbf{Fast setup and calibration.}
+  Provide a short routine to find center offset, limits, and pixel to degree scale; save and reuse settings.
+  \emph{How we check it:} after calibration, the system reaches targets without large error or overshoot.
+
+  \item \textbf{Pick the right lens.}
+  Estimate how many pixels tall the rocket will be at expected distances to guide lens and camera choice.
+  \emph{How we check it:} compare predicted and measured pixel sizes on test targets.
+
+  \item \textbf{Protect performance and thermals.}
+  Watch device temperature and reduce non-essential work if limits are near; show warnings in the UI.
+  \emph{How we check it:} run for 30 minutes without throttling; alarms fire at set limits.
+
+  \item \textbf{One place for settings.}
+  Keep important thresholds in a single constants file and allow safe changes through the UI.
+  \emph{How we check it:} no hidden magic numbers; CI warns if constants are bypassed.
+
+  \item \textbf{Record and replay.}
+  Allow replaying recorded video through the pipeline to tune settings without going to the field.
+  \emph{How we check it:} reproduce a field issue offline and show a tuned improvement.
+
+  \item \textbf{Log everything important.}
+  Save timestamps, detections, control outputs, states, and operator actions; bundle logs with the video.
+  \emph{How we check it:} every key requirement maps to at least one metric from the logs.
+\end{itemize}
+
+
+% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \newpage{}
 \section*{Appendix --- Reflection}
 
