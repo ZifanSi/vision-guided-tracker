@@ -51,11 +51,10 @@
 
 \section*{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-  \toprule {\textbf{Date}} & {\textbf{Version}} & {\textbf{Notes}} \\
+\begin{tabularx}{\textwidth}{llX}
+  \toprule {\textbf{Date}} & {\textbf{Developer(s)}} & {\textbf{Change}} \\
   \midrule
-  Date 1                   & 1.0                & Notes            \\
-  Date 2                   & 1.1                & Notes            \\
+  Oct. 10, 2025            & All team members        & Initial release   \\
   \bottomrule
 \end{tabularx}
 
@@ -306,7 +305,9 @@ access.
           deadlines for key milestones such as Proof of Concept (November 2025) and the
           final demonstration (March 2026).}\\[2mm]
         \textbf{Rationale:} These deadlines are based on the academic timeline and the expectations of the capstone course.\\
-        \textbf{Fit Criterion:} All project components must be completed and fully functional by the final demonstration in March 2026.
+        \textbf{Fit Criterion:} All project components must be completed and fully functional by the final demonstration in March 2026.\\
+        \textbf{Source PUC:} all\\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Budget Constraints}
@@ -314,7 +315,9 @@ access.
 \begin{itemize}[leftmargin=*]
   \item[BC-1] \emph{The project shall not exceed the budget of 500CAD.}\\[2mm]
         \textbf{Rationale:} Limited by the capstone project requirement.\\
-        \textbf{Fit Criterion:} The sum of the costs of the hardware components required for the project must be less than 500CAD.
+        \textbf{Fit Criterion:} The sum of the costs of the hardware components required for the project must be less than 500CAD.\\
+        \textbf{Source PUC:} all\\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Enterprise Constraints}
@@ -323,7 +326,9 @@ access.
   \item[EC-1] \emph{The product shall be built to comply with the standards of McMaster
           University's capstone project requirements and academic integrity policies.}\\[2mm]
         \textbf{Rationale:} The project is part of the university's curriculum and must adhere to its standards.\\
-        \textbf{Fit Criterion:} The product must meet the requirements specified by the course syllabus and project advisor.
+        \textbf{Fit Criterion:} The product must meet the requirements specified by the course syllabus and project advisor.\\
+        \textbf{Source PUC:} all\\
+        \textbf{Priority:} High
 \end{itemize}
 
 \section{Naming Conventions and Terminology}
@@ -591,14 +596,12 @@ In \hyperref[img:product-boundary]{Figure 3}, The product use cases (PUCs) are
 the ellipses inside the boundary. Each PUC is labeled with one or more BUCs
 that it came from.
 
-\FloatBarrier
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../Images/product_boundary.png}
   \caption{Product Boundary}
   \label{img:product-boundary}
 \end{figure}
-\FloatBarrier
 
 \subsection{Product Use Case Table}
 
@@ -658,8 +661,6 @@ primary use cases of the system.
 \end{table}
 
 \subsection{Individual Product Use Cases (PUC's)}
-
-something something
 
 ~\\
 
@@ -810,14 +811,12 @@ something something
 
 The following is a state diagram of the system.
 
-\FloatBarrier
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../Images/state_diagram.png}
   \caption{System State Diagram}
   \label{img:state-diagram}
 \end{figure}
-\FloatBarrier
 
 \section{Functional Requirements}
 \subsection{Functional Requirements}
@@ -826,101 +825,86 @@ The following is a state diagram of the system.
 
   \item[FR-1] \emph{The system must acquire live video stream from the connected
           camera.}\\[2mm]
-        \textbf{Rationale:} Video acquisition is the first step of the vision-guided pipeline and enables all downstream processing.\\
-        \textbf{Fit Criterion:} The system successfully captures frames at at least 1080p 60fps and passes them to the CV pipeline.\\
-        \textbf{Source PUC:} PUC 1, PUC 3 \\
+        \textbf{Rationale:} Video acquisition enables all downstream processing and recording.\\
+        \textbf{Fit Criterion:} The system successfully captures frames from the camera.\\
+        \textbf{Source PUC:} 1, 3 \\
         \textbf{Priority:} High
 
   \item[FR-2] \emph{The system must send real-time movement commands to the connected
           gimbal.}\\[2mm]
         \textbf{Rationale:} Sending movement commands to gimbal is how the system controls the gimbal.\\
-        \textbf{Fit Criterion:} Movement commands are sent to the gimbal at least once per video frame received.\\
-        \textbf{Source PUC:} PUC2.1, PUC 3 \\
+        \textbf{Fit Criterion:} Movement commands are sent to the gimbal once per video frame received.\\
+        \textbf{Source PUC:} 2.1, 3 \\
         \textbf{Priority:} High
 
   \item[FR-3] \emph{The system must detect moving rocket from the video stream in real
           time.}\\[2mm]
         \textbf{Rationale:} Real time rocket detection is the first step of the tracking process.\\
-        \textbf{Fit Criterion:} The system can detect moving rockets from the video stream at 60fps.\\
-        \textbf{Source PUC:} PUC 3 \\
+        \textbf{Fit Criterion:} The system can detect moving rockets from the video stream in real time.\\
+        \textbf{Source PUC:} 3 \\
         \textbf{Priority:} High
 
-  \item[FR-4] \emph{If armed, the system must automatically enter the tracking state
-          when a moving rocket is detected.}\\[2mm]
+  \item[FR-4] \emph{If the system is in the armed state, the system must automatically
+          enter the tracking state when a moving rocket is detected.}\\[2mm]
         \textbf{Rationale:} Entering the tracking state means the system is commanding the gimbal to keep the rocket centered in the frame.\\
         \textbf{Fit Criterion:} The system enters the tracking state when a moving rocket is detected.\\
-        \textbf{Source PUC:} PUC 2.3, PUC 3 \\
+        \textbf{Source PUC:} 2.3, 3 \\
         \textbf{Priority:} High
 
   \item[FR-5] \emph{If the system is in the tracking state and the rocket is lost, the
           system must automatically return to the idle state.}\\[2mm]
         \textbf{Rationale:} Automatically reverting to idle prevents unnecessary gimbal movement and prepares the system for future launches or manual intervention.\\
         \textbf{Fit Criterion:} Upon loss of the rocket target, the system transitions from tracking to idle state without manual input.\\
-        \textbf{Source PUC:} PUC 3 \\
+        \textbf{Source PUC:} 3 \\
         \textbf{Priority:} High
 
   \item[FR-6] \emph{When in the idle state, the system must allow the user to manually
           control the gimbal.}\\[2mm]
         \textbf{Rationale:} Manual gimbal control is necessary for arming the camera to the launch pad before the rocket is launched.\\
         \textbf{Fit Criterion:} In idle mode, the user can issue manual pan/tilt commands that are reflected in real-time by the gimbal hardware.\\
-        \textbf{Source PUC:} PUC 2.1 \\
+        \textbf{Source PUC:} 2.1 \\
         \textbf{Priority:} High
 
-  \item[FR-7] \emph{When in the tracking state, and the rocket is not in view, the
-          system must autonomously attempt re-acquisition, before declaring the rocket is
-          lost.}\\[2mm]
-        \textbf{Rationale:} Rocket may be temporarily obstructed; re-acquisition ensures robustness of the tracking process.\\
-        \textbf{Fit Criterion:} The system waits for 2 seconds before declaring the rocket is lost.\\
-        \textbf{Source PUC:} PUC 3 \\
-        \textbf{Priority:} Medium
-
-  \item[FR-8] \emph{When in the tracking state, the system must autonomously keep the
+  \item[FR-7] \emph{When in the tracking state, the system must autonomously keep the
           rocket within the frame.}\\[2mm]
-        \textbf{Rationale:} Accurate rocket tracking is the core function of the system.\\
+        \textbf{Rationale:} Automatic rocket tracking is the core function of the system.\\
         \textbf{Fit Criterion:} Rocket remains within visible in the frame.\\
-        \textbf{Source PUC:} PUC 3 \\
+        \textbf{Source PUC:} 3 \\
         \textbf{Priority:} High
 
-  \item[FR-9] \emph{The system must begin outputting video through HDMI as soon as it
+  \item[FR-8] \emph{The system must begin outputting video through HDMI as soon as it
           is initialized.}\\[2mm]
         \textbf{Rationale:} Immediate HDMI output ensures that event video is available to stakeholders from the earliest possible moment.\\
         \textbf{Fit Criterion:} Upon system initialization, an HDMI-connected display immediately receives a live video signal from the camera without requiring additional user action.\\
-        \textbf{Source PUC:} PUC 1 \\
+        \textbf{Source PUC:} 1 \\
         \textbf{Priority:} High
 
-  \item[FR-10] \emph{The HDMI video output must have a text overlay that displays the
+  \item[FR-9] \emph{The HDMI video output must have a text overlay that displays the
           current gimbal tilt and pan angle.}\\[2mm]
         \textbf{Rationale:} Overlaying the gimbal angles on the video stream provides immediate feedback to operators and analysts and aids in diagnostics and post-flight analysis.\\
         \textbf{Fit Criterion:} The HDMI output includes a text label showing current tilt and pan angles, updating once per video frame.\\
-        \textbf{Source PUC:} PUC 1 \\
+        \textbf{Source PUC:} 1 \\
         \textbf{Priority:} Medium
 
-  \item[FR-11] \emph{The system must display runtime information including system state
+  \item[FR-10] \emph{The system must display runtime information including system state
           and camera preview to the user.}\\[2mm]
         \textbf{Rationale:} Seeing the system status and camera preview is necessary for the user to control the system.\\
         \textbf{Fit Criterion:} The interface updates system status and preview in real time with at least 15fps.\\
-        \textbf{Source PUC:} PUC 2.1 \\
+        \textbf{Source PUC:} 2.1 \\
         \textbf{Priority:} High
 
-  \item[FR-12] \emph{The system must only enter armed mode when explicitly instructed
-          by the user.}\\[2mm]
-        \textbf{Rationale:} Prevents accidental or unintended transitions to armed state, ensuring safe and predictable operation for all users.\\
-        \textbf{Fit Criterion:} The system transitions from idle to armed mode only in response to a clear, user-initiated command, and never automatically or implicitly.\\
-        \textbf{Source PUC:} PUC 2.3 \\
-        \textbf{Priority:} High
-
-  \item[FR-13] \emph{The system must allow users to record video and logs associated
+  \item[FR-11] \emph{The system must allow users to record video and logs associated
           with the video for later review.}\\[2mm]
         \textbf{Rationale:} Recording supports debugging, validation, and demonstration.\\
         \textbf{Fit Criterion:} Users can start and stop recording from the UI.\\
-        \textbf{Source PUC:} PUC 2.2, PUC 4.1 \\
+        \textbf{Source PUC:} 2.2, 4.1 \\
         \textbf{Priority:} High
 
-  \item[FR-14] \emph{The system must provide management functionalities for recorded
+  \item[FR-12] \emph{The system must provide management functionalities for recorded
           videos and logs (list, delete, download).}\\[2mm]
         \textbf{Rationale:} Reviewing and managing captured sessions supports performance analysis and documentation.\\
         \textbf{Fit Criterion:} Users can view the list of recorded videos and logs, and perform delete/download actions.\\
-        \textbf{Source PUC:} PUC 5 \\
+        \textbf{Source PUC:} 5 \\
         \textbf{Priority:} High
 
 \end{itemize}
@@ -930,61 +914,78 @@ The following is a state diagram of the system.
   \item[AR-1] \emph{The user interface shall be designed for higher readability in
           outdoor environments}\\[2mm]
         \textbf{Rationale:} The system is going to be used in outdoor environments\\
-        \textbf{Fit Criterion:} Test users report no issues with readability in outdoor environments
+        \textbf{Fit Criterion:} Field tests report no issues with readability in outdoor environments\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} High
 
   \item[AR-2] \emph{All UI elements required for tracking operation shall be visible in
-          one page without scrolling on a 1080p display.}\\[2mm]
+          one page without scrolling.}\\[2mm]
         \textbf{Rationale:} Operators need immediate awareness of system
-        status under high-pressure launch operations.\\
-        \textbf{Fit Criterion:} On a 1920x1080 monitor, all UI elements required for tracking operation are visible without scrolling
+        status during high-pressure launch operations.\\
+        \textbf{Fit Criterion:} On a 1920x1080 monitor, all UI elements required for tracking operation are visible without scrolling\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Style Requirements}
 \begin{itemize}[leftmargin=*]
   \item[SR-1] \emph{The user interface shall appear professional and reliable}\\[2mm]
         \textbf{Rationale:} The system is controlling a physical gimbal and it is important to gain the trust of the users.\\
-        \textbf{Fit Criterion:} More than 80\% of Test users report the system appears professional and reliable
+        \textbf{Fit Criterion:} The client thinks the system appears professional and reliable\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} Medium
 \end{itemize}
 
 \section{Usability and Humanity Requirements}
 \subsection{Ease of Use Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[EZ-1] \emph{Units in the user interface shall be consistent}\\[2mm]
-        \textbf{Rationale:} Consistency reduces operator error during high-pressure launch operations.\\
-        \textbf{Fit Criterion:} A style audit of UI readouts finds no unit inconsistencies.
+  \item[EZ-1] \emph{Units in the user interface shall be consistent.}\\[2mm]
+        \textbf{Rationale:} Consistency reduces user error during high-pressure launch operations.\\
+        \textbf{Fit Criterion:} A style audit of UI readouts finds no unit inconsistencies.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} High
 
   \item[EZ-2] \emph{All user interface interactions shall provide immediate feedback to
           the user.}\\[2mm]
         \textbf{Rationale:} Immediate feedback reassures users that the system has registered their actions and helps prevent confusion or repeated actions during critical operations.\\
-        \textbf{Fit Criterion:} For all UI actions, a visible confirmation appears within 0.2 seconds of user input in usability tests.
+        \textbf{Fit Criterion:} For all UI actions, a visible confirmation appears within 0.2 seconds of user input in usability tests.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} High
 
-  \item[EZ-3] \emph{The system shall rely on visual indicators for system status and
-          alerts.}\\[2mm]
+  \item[EZ-3] \emph{The system shall rely on visual indicators for status and alerts.}\\[2mm]
         \textbf{Rationale:} The work environment may be noisy or require hearing protection, so visual cues ensure users do not miss important updates or warnings.\\
-        \textbf{Fit Criterion:} All status and alerts are presented visually in the UI.
+        \textbf{Fit Criterion:} All status and alerts are presented visually in the UI.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} High
   \item[EZ-4] \emph{The product shall help the user to avoid making mistakes.}\\[2mm]
         \textbf{Rationale:} Because the system is connected to a physical gimbal, a user error might cause significant damage.\\
-        \textbf{Fit Criterion:} Every potentially dangerous command presents a confirmation prompt that must be acknowledged before proceeding.
+        \textbf{Fit Criterion:} Every potentially dangerous command presents a confirmation prompt that must be acknowledged before proceeding.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Personalization and Internationalization Requirements}
 \begin{itemize}[leftmargin=*]
   \item[PI-1] \emph{The user interface shall support both metric and imperial units}\\[2mm]
         \textbf{Rationale:} Allowing the user to pick the unit system with which they are most familiar helps reduce user mistakes. \\
-        \textbf{Fit Criterion:} Unit preferences can be selected and applied to the UI.
+        \textbf{Fit Criterion:} Unit preferences can be selected and applied to the UI.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} Medium
   \item[PI-2] \emph{The user interface shall support both English and French
           languages}\\[2mm]
         \textbf{Rationale:} Bilingual support meets accessibility and inclusiveness standards for Canadian stakeholders and allows operation by users from different linguistic backgrounds.\\
-        \textbf{Fit Criterion:} Users can select either English or French, and all UI text is presented in the chosen language.
+        \textbf{Fit Criterion:} Users can select either English or French, and all UI text is presented in the chosen language.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} Medium
 \end{itemize}
 
 \subsection{Learning Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[LR-1] \emph{The system shall be easy to learn for users with a reasonable level
-          of technological familiarity, provided they have access to the instruction
-          manual.}\\[2mm]
+  \item[LR-1] \emph{The system shall be easy to learn for new users.}\\[2mm]
         \textbf{Rationale:} Reducing the learning curve for technically literate users allows for faster and safer adoption, especially in time-pressured launch scenarios.\\
-        \textbf{Fit Criterion:} In usability tests, new users who have read the manual are able to successfully perform all product use cases within 20 minutes without external assistance.
+        \textbf{Fit Criterion:} New users with a reasonable levelof technological familiarity who have read the manual are able to successfully perform all product use cases within 20 minutes without external assistance.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} High
 
 \end{itemize}
 
@@ -993,17 +994,22 @@ The following is a state diagram of the system.
   \item[UPR-1] \emph{The system shall use symbols and words that are naturally
           understandable by the user community.}\\[2mm]
         \textbf{Rationale:} Using familiar terminology and icons reduces cognitive load and misinterpretation, especially during high-pressure tasks.\\
-        \textbf{Fit Criterion:} User testing confirms that 90\% of surveyed users recognize and correctly interpret all UI symbols and labels without additional explanation.
-
+        \textbf{Fit Criterion:} Client confirms that all UI symbols and labels can be understood without additional explanation.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} High
   \item[UPR-2] \emph{The system should only display information required for normal use
           cases on the main page (i.e., hide debug information).}\\[2mm]
-        \textbf{Rationale:} Restricting the main interface to essential information keeps the UI clear and reduces distraction or confusion for non-technical users.\\
-        \textbf{Fit Criterion:} Reviews confirm that only operational and safety-relevant details are visible to end users during normal workflows; diagnostic/debug fields require an explicit action to reveal.
+        \textbf{Rationale:} Restricting the main interface to essential information keeps the UI clear and reduces distraction or confusion for users.\\
+        \textbf{Fit Criterion:} Reviews confirm that only operational and safety-relevant details are visible to users during normal workflows; diagnostic/debug fields require an explicit action to reveal.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} Medium
 
   \item[UPR-3] \emph{All confirmation dialogs should explain why an action could
           potentially be dangerous.}\\[2mm]
         \textbf{Rationale:} Providing context in confirmation dialogs educates users, prevents accidental execution of risky commands, and reinforces safe operational habits when interacting with hardware.\\
-        \textbf{Fit Criterion:} All confirmation dialogs for safety-critical actions include a clear, specific explanation of risk, as verified by interface inspection.
+        \textbf{Fit Criterion:} All confirmation dialogs for safety-critical actions include a clear, specific explanation of risk, as verified by interface inspection.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} Medium
 \end{itemize}
 
 \subsection{Accessibility Requirements}
@@ -1011,7 +1017,9 @@ The following is a state diagram of the system.
   \item[AR-1] \emph{Status indicators shall remain distinguishable under common
           color-vision deficiencies.}\\[2mm]
         \textbf{Rationale:} Ensures legibility for diverse users and conditions.\\
-        \textbf{Fit Criterion:} UI passes color-vision simulations.
+        \textbf{Fit Criterion:} UI passes color-vision simulations.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} Low
 \end{itemize}
 
 \section{Performance Requirements}
@@ -1019,54 +1027,106 @@ The following is a state diagram of the system.
 \begin{itemize}[leftmargin=*]
   \item[SLR-1] \emph{camera-to-gimbal latency shall be low enough to enable continuous
           rocket tracking.}\\[2mm]
-        \textbf{Rationale:} If the latency is too high, the gimbal will not ba able to keep up with the rocket\\
-        \textbf{Fit Criterion:} Field tests confirm the latency is low enough to enable continuous rocket tracking.
+        \textbf{Rationale:} If the latency is too high, the gimbal will not be able to keep up with the rocket\\
+        \textbf{Fit Criterion:} Field tests confirm the latency is low enough to enable continuous rocket tracking.\\
+        \textbf{Source PUC:} 3 \\
+        \textbf{Priority:} High
 
   \item[SLR-2] \emph{The system shall be able to handle 1080p 60fps camera feed}\\[2mm]
         \textbf{Rationale:} The camera feed is the input to the system\\
-        \textbf{Fit Criterion:} The system is able to handle 1080p 60fps camera feed.
+        \textbf{Fit Criterion:} The system is able to handle 1080p 60fps camera feed.\\
+        \textbf{Source PUC:} 1, 3 \\
+        \textbf{Priority:} High
 
   \item[SLR-3] \emph{The system shall be able to output 1080p 60fps video via HDMI}\\[2mm]
         \textbf{Rationale:} The HDMI output is the output of the system\\
-        \textbf{Fit Criterion:} The system is able to output 1080p 60fps video via HDMI.
+        \textbf{Fit Criterion:} The system is able to output 1080p 60fps video via HDMI.\\
+        \textbf{Source PUC:} 1 \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Safety-Critical Requirements}
 \begin{itemize}[leftmargin=*]
   \item[SCR-1] \emph{The system must allow the user to manually exit armed or tracking
           mode, transitioning the system to idle mode.}\\[2mm]
-        \textbf{Rationale:} Manual override is necessary to ensure safety, provide user control in unexpected circumstances, and to prepare the system for the next operation.\\
+        \textbf{Rationale:} Manual override is necessary to ensure safety, provide user control in unexpected circumstances.\\
         \textbf{Fit Criterion:} When the user issues an exit command during armed or tracking mode, the system transitions to idle mode within 0.5 second and ceases any automated gimbal movement.\\
-        \textbf{Source PUC:} PUC 4.2 \\
+        \textbf{Source PUC:} 4.2 \\
+        \textbf{Priority:} High
+
+  \item[SCR-2] \emph{The system must be hands-off (autonomous) from rocket ignition
+          through landing.}\\[2mm]
+        \textbf{Rationale:} During live launches, human operators must prioritize range safety and situational awareness.\\
+        \textbf{Fit Criterion:} Once ready, no manual inputs are necessary for the nominal operation of the system until a declared "landed/clear" signal from mission control.\\
+        \textbf{Source PUC:} 3 \\
+        \textbf{Priority:} High
+
+  \item[SCR-3] \emph{The system must be remote operatable.}\\[2mm]
+        \textbf{Rationale:} The system may need to be positioned inside hazardous zones (launch pad, ballistic landing areas) or at distant vantage points with no safe operator access during the countdown and flight.\\
+        \textbf{Fit Criterion:} The system should be able to perform all the product use cases with no physical interaction at the camera site once deployed.\\
+        \textbf{Source PUC:} all \\
+        \textbf{Priority:} High
+
+  \item[SCR-4] \emph{The system must only enter armed mode when explicitly instructed
+          by the user.}\\[2mm]
+        \textbf{Rationale:} Prevents accidental or unintended transitions to armed state, ensuring safe and predictable operation for all users.\\
+        \textbf{Fit Criterion:} The system transitions from idle to armed mode only in response to a clear, user-initiated command, and never automatically or implicitly.\\
+        \textbf{Source PUC:} 2.3 \\
         \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Precision or Accuracy Requirements}
 \begin{itemize}[leftmargin=*]
   \item[PAR-1] \emph{In the recorded footage and the live stream, the rocket shall be
-          centered in the frame}\\[2mm]
+          centered in the frame.}\\[2mm]
         \textbf{Rationale:} Stable footage is important for the analysis of the flight\\
-        \textbf{Fit Criterion:} The user is satisfied with the stability of the footage.
+        \textbf{Fit Criterion:} The client is satisfied with the stability of the footage.\\
+        \textbf{Source PUC:} 1, 3 \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Robustness or Fault-Tolerance Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[RFR-1] \emph{The system shall report all errors to the user interface for
-          timely notification and resolution.}\\[2mm]
+  \item[RFR-1] \emph{The system shall report all errors to the user.}\\[2mm]
         \textbf{Rationale:} Immediate visibility of errors ensures users can respond quickly, improving system safety and reliability.\\
-        \textbf{Fit Criterion:} Any error condition, including hardware faults, communication losses, and software exceptions, generates a visible and descriptive message on the user interface as verified during failure injection testing.
+        \textbf{Fit Criterion:} Any error condition, including hardware faults, communication losses, and software exceptions, generates a visible and descriptive message on the user interface.\\
+        \textbf{Source PUC:} all \\
+        \textbf{Priority:} High
   \item[RFR-2] \emph{The system shall immediately stop all automated operations and
           enter a safe state if any unrecoverable error occurs.}\\[2mm]
         \textbf{Rationale:} Rapid cessation of activity prevents damage to equipment and ensures user safety when continued operation is unsafe.\\
-        \textbf{Fit Criterion:} Simulated unrecoverable errors (such as critical hardware failures or fatal software exceptions) cause the system to halt actuation and notify the user interface within 1 second.
+        \textbf{Fit Criterion:} Simulated unrecoverable errors cause the system to halt actuation.\\
+        \textbf{Source PUC:} all \\
+        \textbf{Priority:} High
+  \item[RFR-3] \emph{The system must operate normally without access to the public
+          internet.}\\[2mm]
+        \textbf{Rationale:} Launch sites are often located in remote areas without reliable internet connectivity.\\
+        \textbf{Fit Criterion:} All product use cases are fully functional when the system is operated in an environment with no access to the public internet.\\
+        \textbf{Source PUC:} all \\
+        \textbf{Priority:} High
+  \item[RFR-4] \emph{When the system is in the tracking state, and the rocket is not in
+          view, the system must autonomously attempt re-acquisition, before declaring the
+          rocket is lost.}\\[2mm]
+        \textbf{Rationale:} Rocket may be temporarily obstructed, re-acquisition improves the robustness of the tracking process.\\
+        \textbf{Fit Criterion:} The system waits for 2 seconds before declaring the rocket is lost.\\
+        \textbf{Source PUC:} 3 \\
+        \textbf{Priority:} Medium
+  \item[RFR-5] \emph{The system should have a high success rate of tracking the entire
+          rocket flight.}\\[2mm]
+        \textbf{Rationale:} Consistent and reliable tracking throughout the flight is critical for both footage quality and post-flight analysis.\\
+        \textbf{Fit Criterion:} The client is satisfied by the success rate during field testing.\\
+        \textbf{Source PUC:} 3 \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Capacity Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[CR-1] \emph{The system must provide sufficient storage capacity to record at
-          least 100 launches.}\\[2mm]
-        \textbf{Rationale:} Ensures adequate capacity for a full series of events without requiring immediate offloading, supporting typical event schedules and operational continuity.\\
-        \textbf{Fit Criterion:} System verifies available storage prior to use; test runs confirm that at least 100 launches are recorded and preserved without storage exhaustion.
+  \item[CR-1] \emph{The system must provide sufficient storage capacity to record all
+          launches in one day.}\\[2mm]
+        \textbf{Rationale:} The user may need to keep the video footage until the end of the day.\\
+        \textbf{Fit Criterion:} Field tests confirm that the system is able to record and store 100 launches (a reasonable upper bound).\\
+        \textbf{Source PUC:} 2.2, 4.1, 5 \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Scalability or Extensibility Requirements}
@@ -1079,15 +1139,13 @@ None.
 
 \section{Operational and Environmental Requirements}
 \subsection{Expected Physical Environment}
-- noisy
-- bright
-- wide temperature range
 \begin{itemize}[leftmargin=*]
-  \item[EPE-1] \emph{The system shall operate normally—without overheating, system
-          instability, or degraded performance—within the expected deployment
-          environments.}\\[2mm]
+  \item[EPE-1] \emph{The system shall operate normally in the expected temperature
+          range of the deployment environment}\\[2mm]
         \textbf{Rationale:} Outdoor launch sites can present challenging ambient conditions; hardware and software must tolerate these environments reliably.\\
-        \textbf{Fit Criterion:} During field trials at representative sites, the system remains stable and fully functional through a typical launch day, with no evidence of thermal shutdown or operating errors due to the environment.
+        \textbf{Fit Criterion:} Test system at 0C to 45C environment temperature and ensure it operates normally.\\
+        \textbf{Source PUC:} all \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Wider Environment Requirements}
@@ -1096,15 +1154,19 @@ None.
 
 \subsection{Requirements for Interfacing with Adjacent Systems}
 
-- must use HDMI
-- must provide a flexible interface for gimbal hardware
-
 \begin{itemize}[leftmargin=*]
-  \item[OER-INT-1] \emph{Provide an HDMI program feed and an IP stream compatible with
-          common switchers/encoders; remote control range shall be $\geq$ 100\,m.}\\
-        \textbf{Rationale:} Integrates with broadcast rigs and supports distant safe
-        operation.\\ \textbf{Fit Criterion:} Verified ingest into OBS/capture cards;
-        stable remote control over a measured 100\,m link.
+  \item[INT-1] \emph{The system must output a live video stream via HDMI.}\\[2mm]
+        \textbf{Rationale:} The customer's live streaming equipments accept HDMI as the integration standard, alternative connectors would require additional adapters.\\
+        \textbf{Fit Criterion:} The system should be able to output a live video stream via HDMI, confirmed by connecting a monitor to the system.\\
+        \textbf{Source PUC:} 1 \\
+        \textbf{Priority:} High
+
+  \item[INT-2] \emph{The system must provide a flexible interface for gimbal
+          hardware.}\\[2mm]
+        \textbf{Rationale:} Different deployment contexts require different hardware: lighter gimbal for algorithm development and small scale launches, or full-scale gimbal for large scale launches with telescoping lens.\\
+        \textbf{Fit Criterion:} A documented gimbal interface for both hardware and software.\\
+        \textbf{Source PUC:} 2.1, 3, 4.2 \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Productization Requirements}
@@ -1112,13 +1174,12 @@ None.
 None.
 
 \subsection{Release Requirements}
-
-- one release will be made by the end of the project
 \begin{itemize}[leftmargin=*]
-  \item[OER-REL-1] \emph{Each public release shall include a parameter sheet and links
-          to system, network, and support documentation.}\\ \textbf{Rationale:} Speeds
-        onboarding of new crew and stakeholders.\\ \textbf{Fit Criterion:} Release
-        bundle contains the parameter sheet and referenced chapters.
+  \item[RR-1] \emph{One release will be made by the end of the project.}\\[2mm]
+        \textbf{Rationale:} The release schedule is governed by the capstone project timeline.\\
+        \textbf{Fit Criterion:} The system is packaged and delivered in a single release at project completion.\\
+        \textbf{Source PUC:} all \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \section{Maintainability and Support Requirements}
@@ -1138,17 +1199,17 @@ Not applicable, we are free to pick any hardware platform.
 \subsection{Access Requirements}
 
 Not applicable, we assume that the system will not be connected to the public
-internet, and only physically accessible by authorized personnel.
+internet, and only physically accessible by authorized personnel. (AS-1 and
+AS-2)
 
 \subsection{Integrity Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-IT-1] \emph{The system shall validate all user inputs to prevent invalid
-          commands from being sent to the gimbal.}\\ \textbf{Rationale:} Prevents
-        accidental or malicious input errors that could result in unsafe or unintended
-        gimbal motion.\\ \textbf{Fit Criterion:} All gimbal control inputs from the
-        user interface are checked for validity and range prior to execution; test
-        cases confirm that malformed or out-of-range commands are rejected and not
-        transmitted to the gimbal.
+  \item[IR-1] \emph{The system shall validate all user inputs to prevent invalid
+          commands from being sent to the gimbal.}\\[2mm]
+        \textbf{Rationale:} Prevents accidental or malicious input errors that could result in unsafe or unintended gimbal motion.\\
+        \textbf{Fit Criterion:} All gimbal control inputs from the user interface are checked for validity and range prior to execution.\\
+        \textbf{Source PUC:} 2.1, 4.2 \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Privacy Requirements}
@@ -1157,14 +1218,12 @@ None.
 
 \subsection{Audit Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-AU-1] \emph{The system shall log all operations performed by the user,
-          recording each action with a timestamp.}\\ \textbf{Rationale:} Comprehensive
-        logging increases traceability, supports troubleshooting, and ensures
-        accountability by maintaining an accurate record of user activity.\\
-        \textbf{Fit Criterion:} For every operation executed via the user interface,
-        the system appends an entry to the log including the nature of the operation,
-        the user (if applicable), and an accurate timestamp; audit tests confirm no
-        user action proceeds unlogged.
+  \item[AR-1] \emph{The system shall log all operations performed by the user,
+          recording each action with a timestamp.}\\[2mm]
+        \textbf{Rationale:} Comprehensive logging increases traceability, supports troubleshooting, and ensures accountability by maintaining an accurate record of user activity.\\
+        \textbf{Fit Criterion:} The system logs all operations performed by the user with timestamps.\\
+        \textbf{Source PUC:} all \\
+        \textbf{Priority:} Medium
 \end{itemize}
 
 \subsection{Immunity Requirements}
@@ -1174,30 +1233,30 @@ internet, and only physically accessible by authorized personnel.
 
 \section{Cultural Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[CUL-1] \emph{The system must avoid using colours or symbols that could be
-          culturally sensitive or offensive.}\\ \textbf{Rationale:} Ensuring cultural
-        sensitivity in design helps avoid alienating or offending users from diverse
-        backgrounds, which is critical for global acceptance and usability.\\
-        \textbf{Fit Criterion:} Conduct a cultural review to ensure that all icons and
-        colours used in the tool are neutral and universally acceptable.
-  \item[CUL-2] \emph{The system must not include content that could be considered
-          culturally insensitive.}\\ \textbf{Rationale:} Avoiding culturally insensitive
-        content ensures that the tool is respectful and inclusive, fostering a positive
-        user experience across different cultures.\\ \textbf{Fit Criterion:} A cultural
-        sensitivity review is conducted to ensure all content is appropriate for a
-        global audience.
+  \item[CR-1] \emph{The system must avoid using colours or symbols that could be
+          culturally sensitive or offensive.}\\[2mm]
+        \textbf{Rationale:} Ensuring cultural sensitivity in design helps avoid alienating or offending users from diverse backgrounds, which is critical for global acceptance and usability.\\
+        \textbf{Fit Criterion:} Conduct a cultural review to ensure that all icons and colours used in the tool are neutral and universally acceptable.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} Medium
+
+  \item[CR-2] \emph{The system must not include content that could be considered
+          culturally insensitive.}\\[2mm]
+        \textbf{Rationale:} Avoiding culturally insensitive content ensures that the tool is respectful and inclusive, fostering a positive user experience across different cultures.\\
+        \textbf{Fit Criterion:} Conduct a cultural review to ensure all content is appropriate for a global audience.\\
+        \textbf{Source PUC:} 2.1, 2.2, 2.3, 4.1, 4.2, 5 \\
+        \textbf{Priority:} Medium
 \end{itemize}
 
 \section{Compliance Requirements}
 \subsection{Legal Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[CMP-LG-1] \emph{The system must respect user privacy by avoiding the collection
-          of any personal or identifiable data.}\\ \textbf{Rationale:} Ensuring privacy
-        builds user trust and minimizes risks associated with handling sensitive
-        information, even when specific privacy laws are not targeted.\\ \textbf{Fit
-          Criterion:} The system avoids collecting or storing personal user data,
-        including information about user activities and profiles, and operates entirely
-        within the user's local environment.
+  \item[LR-1] \emph{The system must respect user privacy by avoiding the collection of
+          any personal or identifiable data.}\\[2mm]
+        \textbf{Rationale:} Ensuring privacy builds user trust and minimizes risks associated with handling sensitive information, even when specific privacy laws are not targeted.\\
+        \textbf{Fit Criterion:} The system avoids collecting or storing personal user data, including information about user activities and profiles, and operates entirely within the user's local environment.\\
+        \textbf{Source PUC:} all \\
+        \textbf{Priority:} High
 \end{itemize}
 
 \subsection{Standards Compliance Requirements}
@@ -1860,5 +1919,93 @@ This section lists simple, high-level ideas we can explore for \textbf{RoCam}. T
 \input{../Reflection.tex}
 
 \input{../SRS_Reflection.tex}
+
+\begin{enumerate}
+  \item What went well while writing this deliverable?\\ The scope of the work and the
+        scope of the product are well defined, thanks to the detailed explaination from
+        the author of the template. (There is a 80 page pdf explaination can be found
+        on line) In addition, one of the team member have experience being in a
+        rocketry competition, so we are able to understand the work and the working
+        environment.
+  \item What pain points did you experience during this deliverable, and how did you
+        resolve them? \\ The fit criterion is challenging to write, especially for
+        non-functional requirements. For example, there is not a clear way to test if
+        the user interface appears professional and reliable. We resolved this by
+        deferring to the client's judgement. Another pain point is it is hard to divide
+        up the work between the team members. Because all the sections are related to
+        each other, after the team members each finish their own sections, we often
+        need to make large changes to different sections so they are consistent.
+  \item How many of your requirements were inspired by speaking to your client(s) or
+        their proxies (e.g. your peers, stakeholders, potential users)? \\ Because one
+        of the team member already have experience being in a rocketry competition, we
+        are able to come up with most of the requirements by ourselves. Additionally,
+        we have talked to one of the camera operator, but that did not result in any
+        additional requirements.
+  \item Which of the courses you have taken, or are currently taking, will help your
+        team to be successful with your capstone project.
+        \begin{itemize}
+          \item SFWRENG 3XB3: Software Engineering Practice and Experience
+          \item SFWRENG 3RA3: Software Requirements and Security Considerations
+        \end{itemize}
+  \item What knowledge and skills will the team collectively need to acquire to
+        successfully complete this capstone project? Examples of possible knowledge to
+        acquire include domain specific knowledge from the domain of your application,
+        or software engineering knowledge, mechatronics knowledge or computer science
+        knowledge. Skills may be related to technology, or writing, or presentation, or
+        team management, etc. You should look to identify at least one item for each
+        team member.
+        \begin{itemize}
+          \item Mike Chen: I will need to learn about how to interface with the camera and the
+                gimbal.
+          \item Xiaotian Lou: I will need to learn about setting up the hardware and software
+                for accelerated computer vision pipeline.
+          \item Jianqing Liu: I will need to learn about computer vision algorithms and how to
+                implement them.
+          \item Zifan Si: I will need to learn about UI frameworks and communication between
+                the frontend and the backend.
+        \end{itemize}
+  \item For each of the knowledge areas and skills identified in the previous question,
+        what are at least two approaches to acquiring the knowledge or mastering the
+        skill? Of the identified approaches, which will each team member pursue, and
+        why did they make this choice?
+        \begin{itemize}
+          \item Mike Chen — Interface with camera and gimbal:
+                \begin{itemize}
+                  \item Approach 1: Study vendor SDKs/datasheets (camera and gimbal) and build a
+                        minimal control app using official APIs and sample code.
+                  \item Approach 2: Perform protocol analysis with a logic analyzer/serial sniffer and
+                        leverage open-source libraries to replicate commands.
+                \end{itemize}
+                Chosen: Approach 1, because official SDKs minimize integration risk and speed up proof-of-concept delivery under the capstone timeline.
+
+          \item Xiaotian Lou — Accelerated computer vision pipeline setup:
+                \begin{itemize}
+                  \item Approach 1: Use OpenCV with CUDA/TensorRT on supported hardware, following
+                        reference guides and optimizing I/O/memory transfers end-to-end.
+                  \item Approach 2: Start with a CPU-only baseline, profile, then incrementally offload
+                        hotspots using OpenCL/Vulkan compute where practical.
+                \end{itemize}
+                Chosen: Approach 1, due to mature tooling, strong documentation, and the best chance of reaching 1080p60 performance.
+
+          \item Jianqing Liu — Computer vision algorithms and implementation:
+                \begin{itemize}
+                  \item Approach 1: Classical pipeline (temporal differencing/background subtraction,
+                        blob detection/tracking, Kalman filter, and dynamics-aware heuristics for
+                        rockets).
+                  \item Approach 2: Lightweight neural detector (e.g., YOLO-tiny/nano) trained on
+                        synthetic/augmented rocket datasets for detection and tracking.
+                \end{itemize}
+                Chosen: Approach 1 first, for small-data robustness and deterministic real-time behavior; Approach 2 will be prototyped as a stretch goal.
+
+          \item Zifan Si — UI framework and backend communication:
+                \begin{itemize}
+                  \item Approach 1: Web UI (React + TypeScript) with REST for control and WebSocket for
+                        telemetry/preview overlays.
+                  \item Approach 2: Native UI (Qt/QML) with direct GStreamer integration and local IPC
+                        for control/telemetry.
+                \end{itemize}
+                Chosen: Approach 1, leveraging team familiarity and enabling easy remote operation via a browser while maintaining HDMI output support.
+        \end{itemize}
+\end{enumerate}
 
 \end{document}
