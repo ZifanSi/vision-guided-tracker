@@ -2054,23 +2054,18 @@ proof of concept and later phases.
         \emph{How we check it:} every key requirement maps to at least one metric from the logs.
 \end{itemize}
 
-% xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \newpage{}
 \section*{Appendix --- Reflection}
 
-\input{../Reflection.tex}
-
-\input{../SRS_Reflection.tex}
-
 \begin{enumerate}
-  \item What went well while writing this deliverable?\\ The scope of the work and the
+  \item What went well while writing this deliverable?\\[2mm] The scope of the work and the
         scope of the product are well defined, thanks to the detailed explaination from
         the author of the template. (There is a 80 page pdf explaination can be found
         on line) In addition, one of the team member have experience being in a
         rocketry competition, so we are able to understand the work and the working
         environment.
   \item What pain points did you experience during this deliverable, and how did you
-        resolve them? \\ The fit criterion is challenging to write, especially for
+        resolve them? \\[2mm] The fit criterion is challenging to write, especially for
         non-functional requirements. For example, there is not a clear way to test if
         the user interface appears professional and reliable. We resolved this by
         deferring to the client's judgement. Another pain point is it is hard to divide
@@ -2078,7 +2073,7 @@ proof of concept and later phases.
         each other, after the team members each finish their own sections, we often
         need to make large changes to different sections so they are consistent.
   \item How many of your requirements were inspired by speaking to your client(s) or
-        their proxies (e.g. your peers, stakeholders, potential users)? \\ Because one
+        their proxies (e.g. your peers, stakeholders, potential users)? \\[2mm] Because one
         of the team member already have experience being in a rocketry competition, we
         are able to come up with most of the requirements by ourselves. Additionally,
         we have talked to one of the camera operator, but that did not result in any
@@ -2095,59 +2090,22 @@ proof of concept and later phases.
         or software engineering knowledge, mechatronics knowledge or computer science
         knowledge. Skills may be related to technology, or writing, or presentation, or
         team management, etc. You should look to identify at least one item for each
-        team member.
-        \begin{itemize}
-          \item Mike Chen: I will need to learn about how to interface with the camera and the
-                gimbal.
-          \item Xiaotian Lou: I will need to learn about setting up the hardware and software
-                for accelerated computer vision pipeline.
-          \item Jianqing Liu: I will need to learn about computer vision algorithms and how to
-                implement them.
-          \item Zifan Si: I will need to learn about UI frameworks and communication between
-                the frontend and the backend.
-        \end{itemize}
+        team member.\\[2mm] We specifically picked this project because it aligns with our
+        existing skills and domain knowledge. So there is not much new technical
+        knowledge to acquire. For all the domain knowledge required for this project,
+        at least one team member already has the required knowledge. Mike Chen and
+        Xiaotian Lou: domain knowledge of computer vision algorithms. Jianqing Liu:
+        domain knowledge of gimbal and cameras. Zifan Si: domain knowledge of UI
+        frameworks and communication between the frontend and the backend.\\
+        One skill the team collectively need to look into is project and team management
+        skills. Currently we are having trouble with dividing up the work and staying on
+        track with the timeline.
   \item For each of the knowledge areas and skills identified in the previous question,
         what are at least two approaches to acquiring the knowledge or mastering the
         skill? Of the identified approaches, which will each team member pursue, and
-        why did they make this choice?
-        \begin{itemize}
-          \item Mike Chen — Interface with camera and gimbal:
-                \begin{itemize}
-                  \item Approach 1: Study vendor SDKs/datasheets (camera and gimbal) and build a
-                        minimal control app using official APIs and sample code.
-                  \item Approach 2: Perform protocol analysis with a logic analyzer/serial sniffer and
-                        leverage open-source libraries to replicate commands.
-                \end{itemize}
-                Chosen: Approach 1, because official SDKs minimize integration risk and speed up proof-of-concept delivery under the capstone timeline.
-
-          \item Xiaotian Lou — Accelerated computer vision pipeline setup:
-                \begin{itemize}
-                  \item Approach 1: Use OpenCV with CUDA/TensorRT on supported hardware, following
-                        reference guides and optimizing I/O/memory transfers end-to-end.
-                  \item Approach 2: Start with a CPU-only baseline, profile, then incrementally offload
-                        hotspots using OpenCL/Vulkan compute where practical.
-                \end{itemize}
-                Chosen: Approach 1, due to mature tooling, strong documentation, and the best chance of reaching 1080p60 performance.
-
-          \item Jianqing Liu — Computer vision algorithms and implementation:
-                \begin{itemize}
-                  \item Approach 1: Classical pipeline (temporal differencing/background subtraction,
-                        blob detection/tracking, Kalman filter, and dynamics-aware heuristics for
-                        rockets).
-                  \item Approach 2: Lightweight neural detector (e.g., YOLO-tiny/nano) trained on
-                        synthetic/augmented rocket datasets for detection and tracking.
-                \end{itemize}
-                Chosen: Approach 1 first, for small-data robustness and deterministic real-time behavior; Approach 2 will be prototyped as a stretch goal.
-
-          \item Zifan Si — UI framework and backend communication:
-                \begin{itemize}
-                  \item Approach 1: Web UI (React + TypeScript) with REST for control and WebSocket for
-                        telemetry/preview overlays.
-                  \item Approach 2: Native UI (Qt/QML) with direct GStreamer integration and local IPC
-                        for control/telemetry.
-                \end{itemize}
-                Chosen: Approach 1, leveraging team familiarity and enabling easy remote operation via a browser while maintaining HDMI output support.
-        \end{itemize}
+        why did they make this choice?\\[2mm]
+        We don't miss any technical knowledge so I'll talk about how we want to improve our project management in this question.
+        As a team, we need to actually stick to the meeting schedule and better hold ourselves accountable. We need to split tasks into smaller chunks and assign each a short-term deadline, instead of a big task with a deadline that is far in the future.
 \end{enumerate}
 
 \end{document}
