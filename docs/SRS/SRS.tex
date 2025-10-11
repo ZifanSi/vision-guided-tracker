@@ -270,6 +270,9 @@ currently no expected maintenance users.
   \item \emph{The system must provide a flexible interface for gimbal hardware.}\\[2mm]
         {\bf Rationale:} Different deployment contexts require different hardware: lighter gimbal for algorithm development and small scale launches, or full-scale gimbal for large scale launches with telescoping lens.\\
         {\bf Fit Criterion:} A documented gimbal interface for both hardware and software.
+  \item \emph{The system must operate normally without access to the public internet.}\\[2mm]
+        {\bf Rationale:} Launch sites are often located in remote areas without reliable internet connectivity.\\
+        {\bf Fit Criterion:} All product use cases are fully functional when the system is operated in an offline environment with no access to the public internet.
 \end{enumerate}
 
 \subsection{Implementation Environment of the Current System}
@@ -921,21 +924,14 @@ The following is a state diagram of the system.
         {\bf Source PUC:} PUC 2.3 \\
         {\bf Priority:} High
 
-  \item[FR-13] \emph{The system must allow the user to manually exit armed or tracking
-          mode, transitioning the system to idle mode.}\\[2mm]
-        {\bf Rationale:} Manual override is necessary to ensure safety, provide user control in unexpected circumstances, and to prepare the system for the next operation.\\
-        {\bf Fit Criterion:} When the user issues an exit command during armed or tracking mode, the system transitions to idle mode within 0.5 second and ceases any automated gimbal movement.\\
-        {\bf Source PUC:} PUC 4.2 \\
-        {\bf Priority:} High
-
-  \item[FR-14] \emph{The system must allow users to record video and logs associated
+  \item[FR-13] \emph{The system must allow users to record video and logs associated
           with the video for later review.}\\[2mm]
         {\bf Rationale:} Recording supports debugging, validation, and demonstration.\\
         {\bf Fit Criterion:} Users can start and stop recording from the UI.\\
         {\bf Source PUC:} PUC 2.2, PUC 4.1 \\
         {\bf Priority:} High
 
-  \item[FR-15] \emph{The system must provide management functionalities for recorded
+  \item[FR-14] \emph{The system must provide management functionalities for recorded
           videos and logs (list, delete, download).}\\[2mm]
         {\bf Rationale:} Reviewing and managing captured sessions supports performance analysis and documentation.\\
         {\bf Fit Criterion:} Users can view the list of recorded videos and logs, and perform delete/download actions.\\
@@ -1036,86 +1032,88 @@ The following is a state diagram of the system.
 \section{Performance Requirements}
 \subsection{Speed and Latency Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-SPD-1] \emph{End-to-End live video latency shall be $\leq$ 100\,ms (p95),
-          sufficient to enable continuous rocket tracking.}\\ \textbf{Rationale:}
-        Assuming hardware performance is adequate, latency budget is dominated by video
-        transport and inference.\\ \textbf{Fit Criterion:} Time-synchronized probes
-        confirm p95 $\leq$ 100\,ms.
+  \item[SLR-1] \emph{camera-to-gimbal latency shall be low enough to enable continuous
+          rocket tracking.}\\[2mm]
+        \textbf{Rationale:} If the latency is too high, the gimbal will not ba able to keep up with the rocket\\
+        \textbf{Fit Criterion:} Field tests confirm the latency is low enough to enable continuous rocket tracking.
 
-  \item[PR-SPD-2] \emph{AI inference latency per frame shall be $\leq$ 20\,ms (p95) at
-          the target resolution on Jetson hardware.}\\ \textbf{Rationale:} Keeps the
-        detect–control loop within the motion budget.\\ \textbf{Fit Criterion:}
-        Profiling on the target Jetson shows p95 $\leq$ 20\,ms per frame.
+  \item[SLR-2] \emph{The system shall be able to handle 1080p 60fps camera feed}\\[2mm]
+        \textbf{Rationale:} The camera feed is the input to the system\\
+        \textbf{Fit Criterion:} The system is able to handle 1080p 60fps camera feed.
+
+  \item[SLR-3] \emph{The system shall be able to output 1080p 60fps video via HDMI}\\[2mm]
+        \textbf{Rationale:} The HDMI output is the output of the system\\
+        \textbf{Fit Criterion:} The system is able to output 1080p 60fps video via HDMI.
 \end{itemize}
 
 \subsection{Safety-Critical Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-SF-1] \emph{Manual override shall preempt automated control at any time.}\\
-        \textbf{Rationale:} Ensures a safe fallback in ambiguous or degraded
-        conditions.\\ \textbf{Fit Criterion:} In three injected-fault scenarios (loss,
-        misdetection, link jitter), override takes effect within 200\,ms.
+  \item[SCR-1] \emph{The system must allow the user to manually exit armed or tracking
+          mode, transitioning the system to idle mode.}\\[2mm]
+        {\bf Rationale:} Manual override is necessary to ensure safety, provide user control in unexpected circumstances, and to prepare the system for the next operation.\\
+        {\bf Fit Criterion:} When the user issues an exit command during armed or tracking mode, the system transitions to idle mode within 0.5 second and ceases any automated gimbal movement.\\
+        {\bf Source PUC:} PUC 4.2 \\
+        {\bf Priority:} High
 \end{itemize}
 
 \subsection{Precision or Accuracy Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-ACU-1] \emph{During flight, the system shall maintain target tracking with
-          confidence $\geq 0.5$.}\\ \textbf{Rationale:} Guarantees usable imagery and
-        telemetry for analysis.\\ \textbf{Fit Criterion:} Throughout the observable
-        flight, tracking is not lost and confidence remains $\geq 0.5$.
+  \item[PAR-1] \emph{In the recorded footage and the live stream, the rocket shall be
+          centered in the frame}\\[2mm]
+        \textbf{Rationale:} Stable footage is important for the analysis of the flight\\
+        \textbf{Fit Criterion:} The user is satisfied with the stability of the footage.
 \end{itemize}
 
 \subsection{Robustness or Fault-Tolerance Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-RB-1] \emph{After short occlusion or loss, the system shall attempt auto
-          re-acquisition with p95 $\leq$ 1\,s; if unsuccessful, it shall prompt manual
-          reselect.}\\ \textbf{Rationale:} Maintains lock through realistic field
-        interruptions.\\ \textbf{Fit Criterion:} UI exposes manual reselect on failure;
-        re-acquisition succeeds within the stated budget where applicable.
+  \item[RFR-1] \emph{The system shall report all errors to the user interface for
+          timely notification and resolution.}\\[2mm]
+        \textbf{Rationale:} Immediate visibility of errors ensures users can respond quickly, improving system safety and reliability.\\
+        \textbf{Fit Criterion:} Any error condition, including hardware faults, communication losses, and software exceptions, generates a visible and descriptive message on the user interface as verified during failure injection testing.
+  \item[RFR-2] \emph{The system shall immediately stop all automated operations and
+          enter a safe state if any unrecoverable error occurs.}\\[2mm]
+        \textbf{Rationale:} Rapid cessation of activity prevents damage to equipment and ensures user safety when continued operation is unsafe.\\
+        \textbf{Fit Criterion:} Simulated unrecoverable errors (such as critical hardware failures or fatal software exceptions) cause the system to halt actuation and notify the user interface within 1 second.
 \end{itemize}
 
 \subsection{Capacity Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[PR-CAP-1] \emph{Local storage shall retain at least five complete launch
-          sessions at 1080p@30 before requiring cleanup or offload.}\\
-        \textbf{Rationale:} Ensures sufficient retention for review and backup.\\
-        \textbf{Fit Criterion:} Five full sessions can be recorded, listed, and played
-        back/exported without space errors.
+  \item[CR-1] \emph{The system must provide sufficient storage capacity to record at
+          least 100 launches.}\\[2mm]
+        \textbf{Rationale:} Ensures adequate capacity for a full series of events without requiring immediate offloading, supporting typical event schedules and operational continuity.\\
+        \textbf{Fit Criterion:} System verifies available storage prior to use; test runs confirm that at least 100 launches are recorded and preserved without storage exhaustion.
 \end{itemize}
 
 \subsection{Scalability or Extensibility Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[PR-SCL-1] \emph{The inference stack shall support ONNX deployment and TensorRT
-          optimization.}\\ \textbf{Rationale:} Preserves portability and performance
-        tuning headroom.\\ \textbf{Fit Criterion:} Models load and run via ONNX;
-        TensorRT engine builds succeed for the target GPU.
-\end{itemize}
+
+None.
 
 \subsection{Longevity Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[PR-LNG-1] \emph{System endurance shall be $\geq$ 6 hours of continuous
-          operation; daily operating cost shall be $<\$100$.}\\ \textbf{Rationale:}
-        Matches event-day duty cycles and budget constraints.\\ \textbf{Fit Criterion:}
-        Power tests show $\geq$ 6 hours; cost worksheet shows $<\$100$/day.
-\end{itemize}
+
+None.
 
 \section{Operational and Environmental Requirements}
 \subsection{Expected Physical Environment}
+- noisy
+- bright
+- wide temperature range
 \begin{itemize}[leftmargin=*]
-  \item[OER-ENV-1] \emph{Operating temperature range shall be -10\,°C to 45\,°C;
-          relative humidity up to 90\%.}\\ \textbf{Rationale:} Outdoor launch sites
-        present cold, heat, and moisture.\\ \textbf{Fit Criterion:} Climatic tests at
-        endpoints for 2 hours show stable operation without thermal shutdown.
+  \item[EPE-1] \emph{The system shall operate normally—without overheating, system
+          instability, or degraded performance—within the expected deployment
+          environments.}\\[2mm]
+        \textbf{Rationale:} Outdoor launch sites can present challenging ambient conditions; hardware and software must tolerate these environments reliably.\\
+        \textbf{Fit Criterion:} During field trials at representative sites, the system remains stable and fully functional through a typical launch day, with no evidence of thermal shutdown or operating errors due to the environment.
 \end{itemize}
 
 \subsection{Wider Environment Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[OER-WE-1] \emph{The enclosure and cabling shall meet IP65 or better for dust
-          protection and weather resistance.}\\ \textbf{Rationale:} Wind, dust, and
-        precipitation are common on ranges.\\ \textbf{Fit Criterion:} Provide test
-        certificates or equivalent field test records meeting IP65 criteria.
-\end{itemize}
+
+None.
 
 \subsection{Requirements for Interfacing with Adjacent Systems}
+
+- must use HDMI
+- must provide a flexible interface for gimbal hardware
+
 \begin{itemize}[leftmargin=*]
   \item[OER-INT-1] \emph{Provide an HDMI program feed and an IP stream compatible with
           common switchers/encoders; remote control range shall be $\geq$ 100\,m.}\\
@@ -1125,14 +1123,12 @@ The following is a state diagram of the system.
 \end{itemize}
 
 \subsection{Productization Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[OER-PZ-1] \emph{The field kit shall support integrated cabling and allow
-          deployment/teardown within 15 minutes.}\\ \textbf{Rationale:} Minimizes
-        schedule impact between flights.\\ \textbf{Fit Criterion:} Drills show average
-        deploy or teardown time $\leq$ 15 minutes.
-\end{itemize}
+
+None.
 
 \subsection{Release Requirements}
+
+- one release will be made by the end of the project
 \begin{itemize}[leftmargin=*]
   \item[OER-REL-1] \emph{Each public release shall include a parameter sheet and links
           to system, network, and support documentation.}\\ \textbf{Rationale:} Speeds
@@ -1141,99 +1137,87 @@ The following is a state diagram of the system.
 \end{itemize}
 
 \section{Maintainability and Support Requirements}
-\subsection{Maintenance Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[MSR-MA-1] \emph{Thresholds for FPS, latency, and confidence shall be adjustable
-          via configuration or admin UI without recompilation.}\\ \textbf{Rationale:}
-        Facilitates tuning across sites and hardware.\\ \textbf{Fit Criterion:} Changes
-        take effect without backend restart and within 60 seconds.
-\end{itemize}
+
+Not applicable, no features or changes are expected to be made after the
+project is completed.
 
 \subsection{Supportability Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[MSR-SP-1] \emph{Exportable logs shall include frame timestamps, tracking error,
-          and event markers (e.g., ignition, staging, chute).}\\ \textbf{Rationale:}
-        Enables post-flight analysis and issue triage.\\ \textbf{Fit Criterion:} After
-        a launch, CSV/JSON with the three fields is available for download.
-\end{itemize}
+
+Not applicable.
 
 \subsection{Adaptability Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[MSR-AD-1] \emph{The gimbal abstraction layer shall support the gimbal provided
-          by the rocket team without changes to core tracking code.}\\ \textbf{Fit
-          Criterion:} The gimbal control passes pan/tilt/zoom command and calibration
-        tests.
-\end{itemize}
+
+Not applicable, we are free to pick any hardware platform.
 
 \section{Security Requirements}
 \subsection{Access Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[SEC-AC-1] \emph{Remote management UI shall require authentication; three
-          consecutive failed logins shall trigger a lockout of at least 5 minutes.}\\
-        \textbf{Rationale:} Protects control paths exposed over the network.\\
-        \textbf{Fit Criterion:} Black-box tests confirm lockout after three failed
-        attempts.
-\end{itemize}
+
+Not applicable, we assume that the system will not be connected to the public
+internet, and only physically accessible by authorized personnel.
 
 \subsection{Integrity Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-IN-1] \emph{Configurations and logs shall include checksums or signatures;
-          control commands shall use authenticated channels.}\\ \textbf{Rationale:}
-        Prevents tampering and unauthorized actuation.\\ \textbf{Fit Criterion:}
-        Tampering is detected; unauthenticated devices cannot issue PTZ commands.
+  \item[SEC-IT-1] \emph{The system shall validate all user inputs to prevent invalid
+          commands from being sent to the gimbal.}\\ \textbf{Rationale:} Prevents
+        accidental or malicious input errors that could result in unsafe or unintended
+        gimbal motion.\\ \textbf{Fit Criterion:} All gimbal control inputs from the
+        user interface are checked for validity and range prior to execution; test
+        cases confirm that malformed or out-of-range commands are rejected and not
+        transmitted to the gimbal.
 \end{itemize}
 
 \subsection{Privacy Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[SEC-PV-1] \emph{Access to recordings and logs shall be role-based
-          (Operator/Analyst/Admin) with least-privilege defaults.}\\ \textbf{Rationale:}
-        Aligns access with duties while limiting exposure.\\ \textbf{Fit Criterion:}
-        Role matrix is enforced in acceptance tests.
-\end{itemize}
+
+None.
 
 \subsection{Audit Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[SEC-AU-1] \emph{Audit logs shall record login, configuration changes, manual
-          overrides, and deletion of recordings.}\\ \textbf{Rationale:} Supports
-        accountability and incident reconstruction.\\ \textbf{Fit Criterion:} Each
-        audited event contains actor, timestamp, action, and target.
+  \item[SEC-AU-1] \emph{The system shall log all operations performed by the user,
+          recording each action with a timestamp.}\\ \textbf{Rationale:} Comprehensive
+        logging increases traceability, supports troubleshooting, and ensures
+        accountability by maintaining an accurate record of user activity.\\
+        \textbf{Fit Criterion:} For every operation executed via the user interface,
+        the system appends an entry to the log including the nature of the operation,
+        the user (if applicable), and an accurate timestamp; audit tests confirm no
+        user action proceeds unlogged.
 \end{itemize}
 
 \subsection{Immunity Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[SEC-IM-1] \emph{On communication loss or heavy jitter, the system shall enter a
-          safe-hold state and avoid hazardous motion; upon recovery it shall reconnect
-          smoothly.}\\ \textbf{Rationale:} Prevents unsafe behavior under network
-        faults.\\ \textbf{Fit Criterion:} Injected outages of $\geq$ 10 seconds cause
-        no dangerous actuation; control recovers automatically.
-\end{itemize}
+
+Not applicable, we assume that the system will not be connected to the public
+internet, and only physically accessible by authorized personnel.
 
 \section{Cultural Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[CUL-1] \emph{The product shall suit university competition settings: bilingual
-          EN/FR support and neutral, non-biased terminology in UI and logs.}\\
-        \textbf{Rationale:} Inclusive collaboration across teams and organizers.\\
-        \textbf{Fit Criterion:} Terminology review finds no culturally biased phrasing;
-        EN/FR toggle is available.
+  \item[CUL-1] \emph{The system must avoid using colours or symbols that could be
+          culturally sensitive or offensive.}\\ \textbf{Rationale:} Ensuring cultural
+        sensitivity in design helps avoid alienating or offending users from diverse
+        backgrounds, which is critical for global acceptance and usability.\\
+        \textbf{Fit Criterion:} Conduct a cultural review to ensure that all icons and
+        colours used in the tool are neutral and universally acceptable.
+  \item[CUL-2] \emph{The system must not include content that could be considered
+          culturally insensitive.}\\ \textbf{Rationale:} Avoiding culturally insensitive
+        content ensures that the tool is respectful and inclusive, fostering a positive
+        user experience across different cultures.\\ \textbf{Fit Criterion:} A cultural
+        sensitivity review is conducted to ensure all content is appropriate for a
+        global audience.
 \end{itemize}
 
 \section{Compliance Requirements}
 \subsection{Legal Requirements}
 \begin{itemize}[leftmargin=*]
-  \item[CMP-LG-1] \emph{Recording, streaming, and data retention shall follow event and
-          venue policies regarding image rights and privacy.}\\ \textbf{Rationale:}
-        Ensures lawful operation at competitions and ranges.\\ \textbf{Fit Criterion:}
-        A pre-event compliance checklist is reviewed and approved by the organizer.
+  \item[CMP-LG-1] \emph{The system must respect user privacy by avoiding the collection
+          of any personal or identifiable data.}\\ \textbf{Rationale:} Ensuring privacy
+        builds user trust and minimizes risks associated with handling sensitive
+        information, even when specific privacy laws are not targeted.\\ \textbf{Fit
+          Criterion:} The system avoids collecting or storing personal user data,
+        including information about user activities and profiles, and operates entirely
+        within the user's local environment.
 \end{itemize}
 
 \subsection{Standards Compliance Requirements}
-\begin{itemize}[leftmargin=*]
-  \item[CMP-ST-1] \emph{Networking/interfaces shall use standard IP/HTTP and common
-          video formats; AI deployment shall be compatible with ONNX and TensorRT.}\\
-        \textbf{Rationale:} Interoperability with broadcast tools and GPU inference
-        stacks.\\ \textbf{Fit Criterion:} Ingest succeeds in mainstream
-        encoders/capture tools; ONNX models load and run with TensorRT optimization.
-\end{itemize}
+
+None.
 
 \section{Open Issues}
 
