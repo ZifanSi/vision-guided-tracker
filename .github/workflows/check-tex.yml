@@ -40,6 +40,9 @@ jobs:
           name: changed-pdfs
           path: changed_pdfs_dir
           if-no-files-found: ignore
+      - name: reset unstaged changes
+        run: |
+          git restore .
       - uses: xu-cheng/texlive-action@v3
         name: Format LaTeX Files
         with:
