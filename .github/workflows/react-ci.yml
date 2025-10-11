@@ -1,0 +1,55 @@
+name: react-ci
+
+on:
+  push:
+    branches: [ main, "frank/react-app" ]   # runs on pushes to these branches
+    paths:
+      - "src/react-app/**"                  # only run if React files change
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "src/react-app/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/react-app    # run commands inside React app folder
+
+    steps:
+      # 1. Get the code from GitHub
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Install Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20                  # use Node.js 20 LTS
+          cache: npm
+          cache-dependency-path: src/react-app/package-lock.json
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Run your Jest tests (e.g., App.test.js)
+      - name: Run tests
+        env:
+          CI: true                          # needed for CRA tests
+        run: npm test -- --watch=false
+
+      # 5. Build the React app
+      - name: Build React app
+        run: npm run build
+
+      # 6. Upload the build as an artifact (optional, handy for download)
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-build
+          path: build                       # CRA output (use dist/ if Vite)
