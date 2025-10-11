@@ -409,6 +409,7 @@ All software libraries used will not have any unknown security vulnerabilities.
 
 \input{../Reflection.tex}
 
+
 \begin{enumerate}
   \item What went well while writing this deliverable?
   \item What pain points did you experience during this deliverable, and how did you
@@ -419,6 +420,20 @@ All software libraries used will not have any unknown security vulnerabilities.
   \item Other than the risk of physical harm (some projects may not have any
         appreciable risks of this form), list at least 2 other types of risk in
         software products. Why are they important to consider?
+\end{enumerate}
+
+\begin{enumerate}
+\item \textbf{What went well while writing this deliverable? (CV perspective)} \
+From the computer vision side, what went well was how the hazard analysis helped us think beyond just performance and accuracy. Normally, we focus on improving tracking or inference speed, but this deliverable made us consider how our module’s failures could affect safety and the physical system. For example, if the CV model misidentifies or loses the rocket, the gimbal might swing too far or too fast. Listing these in the FMEA table showed clear links between the vision system and hardware movement. It also encouraged us to add fallback ideas, like recovery tracking or self-correction, which became part of SR3. The process improved our system awareness — we now design the CV pipeline not only to be fast, but also predictable and safe.
+
+\item \textbf{What pain points did you experience during this deliverable, and how did you resolve them? (Development/UI perspective)} \
+From the development side, one major challenge was figuring out how to document software-related hazards in a meaningful way. It was easier to picture a gimbal breaking than a user interface “failing,” so at first, the risks in our module sounded less serious. We realized, however, that a software crash or unclear UI could lead to real operational problems if users can’t control or monitor the camera. Formatting the FMEA table in LaTeX was also tricky — the entries for causes and effects got very long. We solved this by using short numbered lists and grouping related issues under one failure mode. Collaborating with the hardware and CV members also helped, because they could explain how our software might contribute to physical or timing failures, which gave us better context for our part of the analysis.
+
+\item \textbf{Which of your listed risks had your team thought of before this deliverable, and which did you think of while doing this deliverable? How did they come about? (Hardware perspective)} \
+From the hardware perspective, we had already identified the obvious mechanical hazards before writing this document — such as motor overdriving, gimbal snapping, or loose mounts. These were discussed early in the semester when testing servo drivers. However, new risks came up during the hazard analysis that we hadn’t thought about before. For instance, we realized that communication loss between the motion control board and the Jetson could cause unpredictable movements, and that power fluctuations might damage sensitive components. These ideas surfaced while building the FMEA table, since it forced us to trace every “what if” scenario from signal input to physical motion. It also made us think about how environmental assumptions (like stable temperature and power) affect reliability. Writing this section helped the hardware team plan safer wiring, limit switches, and emergency stops for future testing.
+
+\item \textbf{Other than the risk of physical harm, list at least 2 other types of risk in software products. Why are they important to consider? (QA perspective)} \
+From a quality assurance perspective, two major risks beyond physical harm are \textit{data integrity risk} and \textit{maintainability risk}. Data integrity risk means that logs or sensor readings might be lost, corrupted, or inconsistent — which can make debugging almost impossible. If the system fails but there’s no reliable data record, identifying the cause becomes guesswork. Maintainability risk comes from unclear code structure, missing documentation, or complex dependencies that make it hard to update safely. These are important to consider because a project that cannot be maintained or verified quickly becomes unsafe, even if it appears to “work.” Good QA practices like regression testing, version control, and traceable requirements help prevent these issues. Recognizing these risks early will help us build a more dependable system over time.
 \end{enumerate}
 
 \end{document}
