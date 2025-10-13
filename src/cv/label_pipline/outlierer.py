@@ -1,325 +1,304 @@
-import os, time, cv2, torch, numpy as np, logging
-from typing import List, Tuple
+import cv2
+import numpy as np
+import torch
+from pathlib import Path
+from PIL import Image
+import matplotlib.pyplot as plt
+from typing import List, Dict, Tuple
+import os
+
+# Install required packages:
+# pip install torch torchvision
+# pip install git+https://github.com/facebookresearch/segment-anything.git
+# pip install git+https://github.com/IDEA-Research/GroundingDINO.git
+# pip install opencv-python pillow matplotlib supervision
+
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
-from groundingdino.util.inference import Model as GroundingDINO
-from torchvision.ops import nms
-from matplotlib import pyplot as plt
-from torchvision.ops import box_convert
-import supervision as sv
-from matplotlib.patches import Rectangle
-from dino_utils import label_sam_masks_with_gdino
-from sam_utils import extract_segmented_regions
-# ----------------------------
-# Logging (switch to DEBUG for more)
-# ----------------------------
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
-log = logging.getLogger("SAM-GDINO")
+from groundingdino.util.inference import load_model, load_image, predict
 
-# ----------------------------
-# 1) Load Models
-# ----------------------------
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-
-SAM_CKPT = r"C:\Personal-Project\vision-guided-tracker\src\cv\weights\sam_vit_h_4b8939.pth"
-SAM_TYPE = "vit_h"
-
-GDINO_CKPT = r"C:\Personal-Project\vision-guided-tracker\src\cv\weights\groundingdino_swint_ogc.pth"
-GDINO_CFG  = r"C:\Personal-Project\vision-guided-tracker\src\cv\models\DINO\GroundingDINO_SwinT_OGC.py"
-
-assert os.path.isfile(SAM_CKPT), f"SAM checkpoint not found: {SAM_CKPT}"
-assert os.path.isfile(GDINO_CKPT), f"GroundingDINO checkpoint not found: {GDINO_CKPT}"
-assert os.path.isfile(GDINO_CFG),  f"GroundingDINO config not found: {GDINO_CFG}"
-
-log.info(f"Device: {DEVICE} | Torch {torch.__version__}")
-log.info(f"SAM: {SAM_TYPE} @ {SAM_CKPT}")
-log.info(f"GDINO: cfg={GDINO_CFG} ckpt={GDINO_CKPT}")
-
-t0 = time.perf_counter()
-sam = sam_model_registry[SAM_TYPE](checkpoint=SAM_CKPT).to(DEVICE).eval()
-mask_gen = SamAutomaticMaskGenerator(
-    model=sam,
-    points_per_side=32,
-    pred_iou_thresh=0.84,
-    stability_score_thresh=0.92,
-    box_nms_thresh=0.6,
-)
-log.info(f"Load SAM took {(time.perf_counter()-t0)*1000:.1f} ms")
-
-t0 = time.perf_counter()
-gdino = GroundingDINO(model_config_path=GDINO_CFG, model_checkpoint_path=GDINO_CKPT, device=DEVICE)
-log.info(f"Load GroundingDINO took {(time.perf_counter()-t0)*1000:.1f} ms")
-
-# ----------------------------
-# 2) Helpers
-# ----------------------------
-def masks_to_xyxy(masks: List[dict], image_wh: Tuple[int,int]) -> torch.Tensor:
-    W, H = image_wh
-    log.debug(f"[masks_to_xyxy] masks={len(masks)} img={W}x{H}")
-    boxes = []
-    for k, m in enumerate(masks):
-        if "bbox" not in m:
-            log.warning(f"[masks_to_xyxy] mask #{k} missing 'bbox'; skipping")
-            continue
-        x, y, w, h = m["bbox"]
-        boxes.append([x, y, x+w, y+h, float(m.get("stability_score", 0.0))])
-
-    if not boxes:
-        log.info("[masks_to_xyxy] 0 boxes after parsing masks")
-        return torch.empty((0,4), dtype=torch.float32)
-
-    boxes = torch.tensor(boxes, dtype=torch.float32)
-    keep = nms(boxes[:, :4], boxes[:, 4], iou_threshold=0.6)
-    boxes_kept = boxes[keep, :4]
-    log.info(f"[masks_to_xyxy] proposals: {len(boxes)} -> after NMS: {len(boxes_kept)}")
-    return boxes_kept
-
-def showRBG(img_rgb: np.ndarray, title="Image"):
-    plt.figure(figsize=(10,10))
-    plt.imshow(img_rgb)
-    plt.title(title)
-    plt.axis('off')
-    plt.show()
-
-def showDINO(img_rgb: np.ndarray, dets: sv.Detections, labels=None):
-    img = img_rgb.copy()
-    H, W = img.shape[:2]
-
-    # Nothing to draw
-    if dets is None or dets.xyxy is None or len(dets.xyxy) == 0:
-        plt.figure(figsize=(10, 10))
-        plt.imshow(img); plt.axis('off'); plt.show()
-        return
-
-    boxes = dets.xyxy.astype(float)  # (N,4) [x1,y1,x2,y2]
-    confs = getattr(dets, "confidence", None)
-
-    fig, ax = plt.subplots(figsize=(10, 10))
-    ax.imshow(img)
-
-    for i, (x1, y1, x2, y2) in enumerate(boxes):
-        # clip to image
-        x1 = float(np.clip(x1, 0, W - 1))
-        y1 = float(np.clip(y1, 0, H - 1))
-        x2 = float(np.clip(x2, 0, W - 1))
-        y2 = float(np.clip(y2, 0, H - 1))
-        w, h = max(0.0, x2 - x1), max(0.0, y2 - y1)
-
-        # rectangle
-        ax.add_patch(Rectangle((x1, y1), w, h, fill=False, edgecolor='r', linewidth=2))
-
-        # label text
-        score = None if confs is None else float(confs[i])
-        base = (labels[i] if labels is not None and i < len(labels) else None)
-        text = (
-            f"{base} ({score:.2f})" if (base is not None and score is not None)
-            else (base if base is not None else (f"{score:.2f}" if score is not None else ""))
-        )
-        if text:
-            ax.text(
-                x1, max(0, y1 - 3), text,
-                color='w', fontsize=9, weight='bold', va='bottom', ha='left',
-                bbox=dict(facecolor='black', alpha=0.35, pad=1.5, edgecolor='none')
-            )
-
-    ax.axis('off')
-    plt.show()
-
-def label_boxes_with_gdino(img_bgr: np.ndarray, boxes_xyxy: torch.Tensor,
-                           text_prompt: str, box_score_thresh=0.25):
-    log.info(f"[GDINO] prompt='{text_prompt}' | boxes_in={boxes_xyxy.size(0)}")
-    if boxes_xyxy.numel() == 0:
-        return []
-    showRBG(img_bgr[:, :, ::-1], title="Input Image (BGR->RGB)")
-    # --- Run GDINO ---
-    t0 = time.perf_counter()
-    try:
-        result = gdino.predict_with_caption(
-            image=img_bgr[:, :, ::-1],  # BGR->RGB
+class VideoSegmentationPipeline:
+    def __init__(self, sam_checkpoint, sam_model_type="vit_h", 
+                 gdino_config=r"C:\Personal-Project\vision-guided-tracker\src\cv\models\DINO\GroundingDINO_SwinT_OGC.py",
+                 gdino_checkpoint=r"C:\Personal-Project\vision-guided-tracker\src\cv\data\weights\groundingdino_swint_ogc.pth"):
+        """
+        Initialize the pipeline with SAM and Grounding DINO models
+        
+        Args:
+            sam_checkpoint: Path to SAM checkpoint (e.g., 'sam_vit_h_4b8939.pth')
+            sam_model_type: SAM model type ('vit_h', 'vit_l', or 'vit_b')
+            gdino_config: Path to Grounding DINO config file
+            gdino_checkpoint: Path to Grounding DINO checkpoint
+        """
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        print(f"Using device: {self.device}")
+        
+        # Initialize SAM
+        print("Loading SAM model...")
+        sam = sam_model_registry[sam_model_type](checkpoint=sam_checkpoint)
+        sam.to(device=self.device)
+        self.mask_generator = SamAutomaticMaskGenerator(sam)
+        
+        # Initialize Grounding DINO
+        print("Loading Grounding DINO model...")
+        self.gdino_model = load_model(gdino_config, gdino_checkpoint)
+        
+        self.output_dir = Path(r"C:\Personal-Project\vision-guided-tracker\src\cv\data\pipeline_output")
+        self.output_dir.mkdir(exist_ok=True)
+        
+    def step1_video_to_images(self, video_path: str, frame_interval: int = 30) -> List[np.ndarray]:
+        """
+        Convert video to images
+        
+        Args:
+            video_path: Path to input video
+            frame_interval: Extract every Nth frame (default: 30)
+            
+        Returns:
+            List of frames as numpy arrays
+        """
+        print(f"\n[STEP 1] Converting video to images...")
+        cap = cv2.VideoCapture(video_path)
+        frames = []
+        frame_count = 0
+        extracted_count = 0
+        
+        frames_dir = self.output_dir / "frames"
+        frames_dir.mkdir(exist_ok=True)
+        
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+                
+            if frame_count % frame_interval == 0:
+                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frames.append(frame_rgb)
+                
+                # Save frame
+                frame_path = frames_dir / f"frame_{extracted_count:04d}.jpg"
+                cv2.imwrite(str(frame_path), frame)
+                extracted_count += 1
+                
+            frame_count += 1
+            
+        cap.release()
+        print(f"Extracted {len(frames)} frames from video")
+        return frames
+    
+    def step2_segment_with_sam(self, image: np.ndarray) -> List[Dict]:
+        """
+        Generate masks using SAM
+        
+        Args:
+            image: Input image as numpy array
+            
+        Returns:
+            List of mask dictionaries from SAM
+        """
+        print(f"[STEP 2] Generating masks with SAM...")
+        masks = self.mask_generator.generate(image)
+        print(f"Generated {len(masks)} masks")
+        return masks
+    
+    def step3_extract_masks(self, image: np.ndarray, masks: List[Dict]) -> List[Tuple[np.ndarray, Dict]]:
+        """
+        Extract individual masked regions from image
+        
+        Args:
+            image: Original image
+            masks: List of mask dictionaries from SAM
+            
+        Returns:
+            List of tuples (masked_image, mask_info)
+        """
+        print(f"[STEP 3] Extracting {len(masks)} individual masks...")
+        extracted = []
+        
+        for idx, mask_data in enumerate(masks):
+            mask = mask_data['segmentation']
+            bbox = mask_data['bbox']  # [x, y, w, h]
+            
+            # Create masked image
+            masked_img = image.copy()
+            masked_img[~mask] = 0  # Set non-mask pixels to black
+            
+            # Crop to bounding box
+            x, y, w, h = map(int, bbox)
+            cropped = masked_img[y:y+h, x:x+w]
+            
+            extracted.append((cropped, mask_data))
+            
+        return extracted
+    
+    def step4_label_with_gdino(self, image: np.ndarray, text_prompt: str = "object. thing. item.",
+                                box_threshold: float = 0.3, text_threshold: float = 0.25) -> List[Tuple[str, float]]:
+        """
+        Label image regions using Grounding DINO
+        
+        Args:
+            image: Input image (cropped mask region)
+            text_prompt: Text prompt for Grounding DINO
+            box_threshold: Box confidence threshold
+            text_threshold: Text confidence threshold
+            
+        Returns:
+            List of (label, confidence) tuples
+        """
+        # Convert numpy array to PIL Image and save temporarily
+        temp_path = self.output_dir / "temp_crop.jpg"
+        Image.fromarray(image).save(temp_path)
+        
+        # Load and predict with Grounding DINO
+        image_source, image_tensor = load_image(str(temp_path))
+        boxes, logits, phrases = predict(
+            model=self.gdino_model,
+            image=image_tensor,
             caption=text_prompt,
-            box_threshold=box_score_thresh,
-            text_threshold=0.25
+            box_threshold=box_threshold,
+            text_threshold=text_threshold,
+            device=self.device
         )
-    except Exception as e:
-        log.exception(f"[GDINO] predict_with_caption failed: {e}")
-        return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
-    log.info(f"[GDINO] predict_with_caption took {(time.perf_counter()-t0)*1000:.1f} ms")
-
-    # --- Normalize result into gd_boxes (Nx4), gd_scores (N,), gd_labels (list[str]) ---
-    def to_tensor(x, dtype=torch.float32):
-        if x is None:
-            return torch.zeros((0,), dtype=dtype)
-        x = np.array(x) if not torch.is_tensor(x) else x.cpu().numpy()
-        return torch.tensor(x, dtype=dtype)
-
-    if result is None:
-        log.warning("[GDINO] detections is None")
-        return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
-
-    # Parse the supervision Detection object
-    gd_boxes, gd_scores, gd_labels = None, None, None
+        
+        # Clean up temp file
+        temp_path.unlink()
+        
+        # Return labels with confidence scores
+        results = [(phrase, logit.item()) for phrase, logit in zip(phrases, logits)]
+        return results if results else [("unknown", 0.0)]
     
-    if isinstance(result, tuple) and len(result) == 2:
-        dets, labels = result
-        showDINO(img_bgr[:, :, ::-1], dets, labels)
-        # Handle supervision Detection object
-        if hasattr(dets, 'xyxy'):
-            gd_boxes = to_tensor(dets.xyxy)
-            gd_scores = to_tensor(dets.confidence) if hasattr(dets, 'confidence') else torch.zeros(len(dets.xyxy))
-            gd_labels = list(labels) if labels is not None else []
-        else:
-            log.warning(f"[GDINO] unexpected detection format, missing xyxy attribute")
-            return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
-    else:
-        log.warning(f"[GDINO] unexpected result format: {type(result)}")
-        return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
-
-    # Ensure gd_boxes has correct shape
-    if gd_boxes.ndim == 1:
-        gd_boxes = gd_boxes.reshape(-1, 4)
+    def step5_visualize_results(self, image: np.ndarray, masks: List[Dict], 
+                                labels: List[List[Tuple[str, float]]], frame_idx: int = 0):
+        """
+        Visualize segmentation and labeling results
+        
+        Args:
+            image: Original image
+            masks: List of mask dictionaries
+            labels: List of labels for each mask
+            frame_idx: Frame index for saving
+        """
+        print(f"[STEP 5] Visualizing results...")
+        
+        fig, axes = plt.subplots(1, 2, figsize=(20, 10))
+        
+        # Left: All masks overlay
+        axes[0].imshow(image)
+        self._show_masks_on_image(image, masks, axes[0])
+        axes[0].set_title(f"SAM Segmentation ({len(masks)} masks)")
+        axes[0].axis('off')
+        
+        # Right: Labeled masks
+        axes[1].imshow(image)
+        self._show_labeled_masks(image, masks, labels, axes[1])
+        axes[1].set_title("Grounding DINO Labels")
+        axes[1].axis('off')
+        
+        plt.tight_layout()
+        
+        # Save result
+        result_path = self.output_dir / f"result_frame_{frame_idx:04d}.jpg"
+        plt.savefig(result_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        print(f"Saved result to {result_path}")
+        
+    def _show_masks_on_image(self, image, masks, ax):
+        """Helper to overlay masks on image"""
+        sorted_masks = sorted(masks, key=lambda x: x['area'], reverse=True)
+        
+        for mask_data in sorted_masks:
+            mask = mask_data['segmentation']
+            color = np.random.random(3)
+            
+            # Create colored overlay
+            colored_mask = np.zeros((*mask.shape, 4))
+            colored_mask[mask] = [*color, 0.4]
+            ax.imshow(colored_mask)
     
-    # Safety checks and shape alignment
-    if gd_boxes.numel() == 0:
-        log.warning("[GDINO] 0 detections; returning unlabeled proposals")
-        return [{"box": b.tolist(), "label": None, "score": None} for b in boxes_xyxy]
+    def _show_labeled_masks(self, image, masks, labels, ax):
+        """Helper to show masks with labels"""
+        for idx, (mask_data, mask_labels) in enumerate(zip(masks, labels)):
+            mask = mask_data['segmentation']
+            bbox = mask_data['bbox']
+            
+            # Draw mask outline
+            color = np.random.random(3)
+            contours, _ = cv2.findContours(mask.astype(np.uint8), 
+                                          cv2.RETR_EXTERNAL, 
+                                          cv2.CHAIN_APPROX_SIMPLE)
+            
+            for contour in contours:
+                contour = contour.squeeze()
+                if len(contour.shape) == 2:
+                    ax.plot(contour[:, 0], contour[:, 1], color=color, linewidth=2)
+            
+            # Add label text
+            if mask_labels:
+                label, conf = mask_labels[0]  # Take top label
+                x, y, w, h = bbox
+                ax.text(x, y - 5, f"{label} ({conf:.2f})", 
+                       color='white', fontsize=10, 
+                       bbox=dict(boxstyle='round', facecolor=color, alpha=0.8))
     
-    n_boxes = gd_boxes.shape[0]
-    
-    # Fix scores length
-    if gd_scores.numel() != n_boxes:
-        log.debug(f"[GDINO] score length mismatch boxes={n_boxes} scores={gd_scores.numel()}; fixing")
-        if gd_scores.numel() < n_boxes:
-            pad = torch.zeros(n_boxes - gd_scores.numel(), dtype=torch.float32)
-            gd_scores = torch.cat([gd_scores, pad], dim=0)
-        else:
-            gd_scores = gd_scores[:n_boxes]
-    
-    # Fix labels length
-    if gd_labels is None:
-        gd_labels = []
-    if len(gd_labels) != n_boxes:
-        if len(gd_labels) == 1:
-            # Broadcast single label to all boxes
-            gd_labels = gd_labels * n_boxes
-        else:
-            log.debug(f"[GDINO] label length mismatch boxes={n_boxes} labels={len(gd_labels)}; fixing")
-            gd_labels = (gd_labels[:n_boxes] + 
-                        [""] * max(0, n_boxes - len(gd_labels)))
-
-    log.info(f"[GDINO] normalized: boxes={gd_boxes.size(0)} labels={len(gd_labels)} scores={gd_scores.numel()}")
-
-    # --- IoU assignment from SAM boxes to GDINO detections ---
-    def iou(a, b):
-        tl = torch.max(a[:, None, :2], b[None, :, :2])
-        br = torch.min(a[:, None, 2:], b[None, :, 2:])
-        wh = (br - tl).clamp(min=0)
-        inter = wh[..., 0] * wh[..., 1]
-        area_a = (a[:, 2] - a[:, 0]) * (a[:, 3] - a[:, 1])
-        area_b = (b[:, 2] - b[:, 0]) * (b[:, 3] - b[:, 1])
-        union = area_a[:, None] + area_b[None, :] - inter
-        return inter / union.clamp(min=1e-6)
-
-    ious = iou(boxes_xyxy, gd_boxes)
-    best_gdino = torch.argmax(ious, dim=1)
-    best_iou = ious[torch.arange(ious.size(0)), best_gdino]
-
-    out, labeled = [], 0
-    for i, b in enumerate(boxes_xyxy):
-        j = int(best_gdino[i])
-        ok = bool(best_iou[i] >= 0.3)
-        lbl = (gd_labels[j] if ok and j < len(gd_labels) and gd_labels[j] else None)
-        scr = (float(gd_scores[j]) if ok and j < gd_scores.numel() else None)
-        if ok and lbl:  # Check if label is not empty string
-            labeled += 1
-        out.append({"box": b.tolist(), "label": lbl, "score": scr})
-
-    log.info(f"[GDINO] assigned labels: {labeled}/{boxes_xyxy.size(0)} (IoU>=0.3)")
-    return out
+    def run_pipeline(self, video_path: str, frame_interval: int = 30, 
+                     text_prompt: str = "object. thing. item. person. animal."):
+        """
+        Run the complete pipeline
+        
+        Args:
+            video_path: Path to input video
+            frame_interval: Extract every Nth frame
+            text_prompt: Text prompt for object detection
+        """
+        print("="*60)
+        print("STARTING VIDEO SEGMENTATION PIPELINE")
+        print("="*60)
+        
+        # Step 1: Video to images
+        frames = self.step1_video_to_images(video_path, frame_interval)
+        
+        # Process each frame
+        for frame_idx, frame in enumerate(frames):
+            print(f"\n{'='*60}")
+            print(f"Processing frame {frame_idx + 1}/{len(frames)}")
+            print(f"{'='*60}")
+            
+            # Step 2: Segment with SAM
+            masks = self.step2_segment_with_sam(frame)
+            
+            # Step 3: Extract masks
+            extracted_masks = self.step3_extract_masks(frame, masks)
+            
+            # Step 4: Label with Grounding DINO
+            print(f"[STEP 4] Labeling {len(extracted_masks)} masks with Grounding DINO...")
+            all_labels = []
+            for idx, (masked_img, mask_data) in enumerate(extracted_masks):
+                if masked_img.size > 0:  # Skip empty masks
+                    labels = self.step4_label_with_gdino(masked_img, text_prompt)
+                    all_labels.append(labels)
+                    if labels and labels[0][0] != "unknown":
+                        print(f"  Mask {idx}: {labels[0][0]} (conf: {labels[0][1]:.2f})")
+                else:
+                    all_labels.append([("empty", 0.0)])
+            
+            # Step 5: Visualize
+            self.step5_visualize_results(frame, masks, all_labels, frame_idx)
+        
+        print(f"\n{'='*60}")
+        print(f"PIPELINE COMPLETE! Results saved to {self.output_dir}")
+        print(f"{'='*60}")
 
 
-def draw_dets(img_bgr: np.ndarray, dets: List[dict]):
-    img = img_bgr.copy()
-    for idx, d in enumerate(dets):
-        try:
-            x1, y1, x2, y2 = map(int, d["box"])
-        except Exception:
-            log.warning(f"[draw_dets] bad box for det #{idx}: {d}")
-            continue
-        cv2.rectangle(img, (x1, y1), (x2, y2), (0,255,0), 2)
-        if d.get("label"):
-            txt = f'{d["label"]} ({d["score"]:.2f})' if d.get("score") is not None else d["label"]
-            cv2.putText(img, txt, (x1, max(0, y1-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2, cv2.LINE_AA)
-    return img
-
-# ----------------------------
-# 3) Run on an image
-# ----------------------------
-def run_on_image(img_path: str, text_prompt: str, out_path: str):
-    log.info(f"[IMAGE] input={img_path} out={out_path} prompt='{text_prompt}'")
-    img = cv2.imread(img_path)
-    assert img is not None, f"cannot read {img_path}"
-    log.info(f"[IMAGE] shape={img.shape}")
-
-    try:
-        t0 = time.perf_counter()
-        masks = mask_gen.generate(img)
-        log.info(f"[SAM] generate (image) took {(time.perf_counter()-t0)*1000:.1f} ms")
-    except Exception as e:
-        log.exception(f"[SAM] generate failed on image: {e}")
-        return
-
-    boxes = masks_to_xyxy(masks, (img.shape[1], img.shape[0]))
-    dets  = label_boxes_with_gdino(img, boxes, text_prompt)
-    vis   = draw_dets(img, dets)
-
-    ok = cv2.imwrite(out_path, vis)
-    log.info(f"[IMAGE] write result -> {out_path} | ok={ok}")
-
-# ----------------------------
-# 4) Run on a video (per-frame)
-# ----------------------------
-def run_on_video(src_mp4: str, dst_mp4: str, text_prompt: str, every_n=1):
-    log.info(f"[VIDEO] src={src_mp4} -> dst={dst_mp4} | prompt='{text_prompt}' | every_n={every_n}")
-    cap = cv2.VideoCapture(src_mp4)
-    assert cap.isOpened(), f"cannot open {src_mp4}"
-    w  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    h  = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps= cap.get(cv2.CAP_PROP_FPS) or 30
-    out = cv2.VideoWriter(dst_mp4, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w,h))
-    log.info(f"[VIDEO] size={w}x{h} fps={fps:.2f} total_frames={int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)}")
-
-    fidx = 0
-    while True:
-        ok, frame = cap.read()
-        if not ok:
-            log.info("[VIDEO] end of stream or read error")
-            break
-
-        if fidx % every_n == 0:
-            log.info(f"[Frame {fidx}] Processing...")
-            try:
-                t0 = time.perf_counter()
-                masks = mask_gen.generate(frame)
-                log.info(f"[SAM] generate (frame {fidx}) took {(time.perf_counter()-t0)*1000:.1f} ms")
-            except Exception as e:
-                log.exception(f"[SAM] generate failed at frame {fidx}: {e}")
-                out.write(frame); fidx += 1; continue
-
-            boxes = masks_to_xyxy(masks, (w, h))
-            dets  = label_boxes_with_gdino(frame, boxes, text_prompt)
-            frame = draw_dets(frame, dets)
-            log.info(f"[Frame {fidx}] wrote frame with {len(dets)} dets (boxes_in={boxes.size(0)})")
-        out.write(frame)
-        fidx += 1
-    cap.release(); out.release()
-    log.info(f"[VIDEO] done. frames_processed={fidx}, output={dst_mp4}")
-
-# ----------------------------
-# 5) Example usage
-# ----------------------------
+# Example usage
 if __name__ == "__main__":
-    run_on_video(
-        src_mp4 = r"C:\Personal-Project\vision-guided-tracker\src\cv\data\alot_of_things\Carleton__launch.mp4",
-        dst_mp4 = r"C:\Personal-Project\vision-guided-tracker\src\cv\runs\detect\Carleton__launch.mp4",
-        text_prompt = "rocket",
-        every_n = 10
+    # Initialize pipeline
+    pipeline = VideoSegmentationPipeline(
+        sam_checkpoint=r"C:\Personal-Project\vision-guided-tracker\src\cv\data\weights\sam_vit_h_4b8939.pth",  # Download from SAM repo
+        sam_model_type="vit_h"
+    )
+    
+    # Run pipeline on video
+    pipeline.run_pipeline(
+        video_path=r"C:\Personal-Project\vision-guided-tracker\src\cv\data\alot_of_things\ETS_launch_.mp4",
+        frame_interval=2, 
+        text_prompt="person. car. object. animal. building. tree."
     )
