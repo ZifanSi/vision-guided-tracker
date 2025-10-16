@@ -9,12 +9,19 @@ use {defmt_rtt as _, panic_probe as _};
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_futures::join::join;
-use embassy_stm32::Peri;
 use embassy_stm32::gpio::{Level, Output, Speed};
+use embassy_stm32::mode::Async;
 use embassy_stm32::peripherals::PA3;
 use embassy_stm32::time::mhz;
+use embassy_stm32::usart::{Config as UsartConfig, Uart};
+use embassy_stm32::{Peri, bind_interrupts, peripherals, usart};
 use embassy_time::{Duration, Ticker, Timer};
+use embedded_io_async::Write;
 use micromath::F32Ext;
+
+bind_interrupts!(struct Irqs {
+    USART1 => usart::InterruptHandler<peripherals::USART1>;
+});
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
@@ -54,6 +61,14 @@ async fn main(spawner: Spawner) {
 
     spawner.spawn(led_task(p.PA3)).unwrap();
 
+    let mut config = UsartConfig::default();
+    config.baudrate = 115200;
+    let usart = Uart::new(
+        p.USART1, p.PA10, p.PA9, Irqs, p.DMA2_CH7, p.DMA2_CH5, config,
+    )
+    .unwrap();
+    spawner.spawn(echo_task(usart)).unwrap();
+
     let mut pb5 = Output::new(p.PB5, Level::High, Speed::Low);
     let mut pb6 = Output::new(p.PB6, Level::High, Speed::Low);
     let mut ticker = Ticker::every(Duration::from_hz(50));
@@ -81,6 +96,21 @@ async fn main(spawner: Spawner) {
         angle += 0.02;
         if angle > 2.0 * core::f32::consts::PI {
             angle = 0.0;
+        }
+    }
+}
+
+#[embassy_executor::task]
+async fn echo_task(mut uart: Uart<'static, Async>) {
+    let mut buffer = [0u8; 128];
+    loop {
+        match uart.read_until_idle(&mut buffer).await {
+            Ok(n) => {
+                info!("Received: {:?}", &buffer[..n]);
+                uart.write_all(&buffer[..n]).await.ok();
+                uart.write_all("!".as_bytes()).await.ok();
+            }
+            Err(e) => error!("Error: {:?}", e),
         }
     }
 }
