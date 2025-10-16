@@ -8,11 +8,13 @@ use {defmt_rtt as _, panic_probe as _};
 
 use defmt::*;
 use embassy_executor::Spawner;
+use embassy_futures::join::join;
 use embassy_stm32::Peri;
 use embassy_stm32::gpio::{Level, Output, Speed};
 use embassy_stm32::peripherals::PA3;
 use embassy_stm32::time::mhz;
-use embassy_time::Timer;
+use embassy_time::{Duration, Ticker, Timer};
+use micromath::F32Ext;
 
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
@@ -51,6 +53,36 @@ async fn main(spawner: Spawner) {
     info!("Hello World!");
 
     spawner.spawn(led_task(p.PA3)).unwrap();
+
+    let mut pb5 = Output::new(p.PB5, Level::High, Speed::Low);
+    let mut pb6 = Output::new(p.PB6, Level::High, Speed::Low);
+    let mut ticker = Ticker::every(Duration::from_hz(50));
+    let mut angle: f32 = 0.0;
+    loop {
+        ticker.next().await;
+        // Calculate pulse width between 1000us and 2000us using sine wave
+        // range: 500 - 2500us
+        let tilt_pulse_width = (1200.0 + (300.0 * angle.sin())) as u64;
+        let pan_pulse_width = (1500.0 + (500.0 * angle.cos())) as u64;
+
+        let fut1 = async {
+            pb5.set_low();
+            Timer::after_micros(tilt_pulse_width).await;
+            pb5.set_high();
+        };
+        let fut2 = async {
+            pb6.set_low();
+            Timer::after_micros(pan_pulse_width).await;
+            pb6.set_high();
+        };
+        join(fut1, fut2).await;
+
+        // Increment angle (adjust speed by changing increment)
+        angle += 0.02;
+        if angle > 2.0 * core::f32::consts::PI {
+            angle = 0.0;
+        }
+    }
 }
 
 #[embassy_executor::task]

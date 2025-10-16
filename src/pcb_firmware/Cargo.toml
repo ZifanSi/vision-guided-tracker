@@ -42,6 +42,7 @@ lora-phy = { git = "https://github.com/lora-rs/lora-rs.git", default-features = 
 ] }
 embassy-embedded-hal = { git = "https://github.com/embassy-rs/embassy.git" }
 embedded-io-async = "0.6.1"
+micromath = "2.1.0"
 
 [[bin]]
 name = "firmware"
