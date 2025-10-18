@@ -32,8 +32,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
   \toprule {\bf Date} & {\bf Version} & {\bf Notes} \\
   \midrule
-  Date 1              & 1.0           & Notes       \\
-  Date 2              & 1.1           & Notes       \\
+  Date 1              & 1.0           & Initial Draft      \\
   \bottomrule
 \end{tabularx}
 
@@ -56,14 +55,6 @@
 
 \tableofcontents
 
-\listoftables
-\wss{Remove this section if it isn't needed}
-
-\listoffigures
-\wss{Remove this section if it isn't needed}
-
-\newpage
-
 \section{Symbols, Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
@@ -71,7 +62,14 @@
   \toprule
   \textbf{symbol} & \textbf{description} \\
   \midrule
-  T               & Test                 \\
+  Yolo               & You only look once -- an existing object detection model\\
+  CNN                & Convolutional Neural Network \\
+  Jetson             & abbreviatio for specifcally Jetson Nano Orin, which is the
+  proposed board for this project
+  \\
+  ST32              & abbreviation for specifically ST32 microcontroller, which is the
+  proposed microcontroller for this project\\
+
   \bottomrule
 \end{tabular}\\
 
@@ -84,17 +82,48 @@
 
 \pagenumbering{arabic}
 
-This document ... \wss{provide an introductory blurb and roadmap of the
+This Verification and Validation (VnV) plan establishes the evidence that our 
+RoCam model-rocket tracking system is both built right and the right build. 
+Verification confirms each SRS and design requirement—camera and gimbal specs, 
+timing/latency budgets, fault handling, and code quality—via reviews, static 
+analysis, unit/integration tests, bench and simulation runs, with full 
+requirement-to-test traceability. Validation demonstrates the system fulfills 
+user and mission needs in field conditions by acquiring the rocket at launch, 
+maintaining continuous tracking through boost/coast and occlusions, and supporting 
+a safe, simple operator workflow. Success is judged against quantitative targets 
+and operational criteria. Deliverables include test plans/cases, 
+automated reports, calibration and operating procedures, field-test results, 
+and a validation summary with stakeholder sign-off.
+
+ \wss{provide an introductory blurb and roadmap of the
   Verification and Validation plan}
 
 \section{General Information}
 
 \subsection{Summary}
 
+The RoCam system is a ground-based camera and gimbal assembly designed to autonomously
+track model rockets during launch and flight. It utilizes a high-resolution camera
+coupled with a motorized gimbal to maintain visual lock on the rocket, providing
+real-time positional data and video feed. The system includes a react frontend that 
+utilizes computer vision algorithms to detect and follow the rocket. We also desgined a 
+ST32 microcontroller-based gimbal controller that interfaces with the Jetson board to 
+physically move the camera for automated tracking. The primary purpose of RoCam is 
+to replace the traditional unreliable manual tracking methods with an automated solution
+to produce high-quality flight data and video footage. To better assist model rocket teams
+across Canada to conduct successful launches by providing an affordable and reliable system
+that can be easily track launching movements.
+
 \wss{Say what software is being tested.  Give its name and a brief overview of
   its general functions.}
 
 \subsection{Objectives}
+\begin{itemize}
+    \item \textbf{Performance:} sustained \(\geq 60\) FPS video, \(\grq 1080p\) resolution, real-time streaming. 
+    \item \textbf{Reliability \& Safety:} emergency stop all movements. 
+    \item \textbf{Usability:} operator can arm, acquire, and track in \(\leq 4\) clicks; clear status prompts.
+    \item \textbf{Out of scope:} operate under extreme environment. Third party usage.
+\end{itemize}
 
 \wss{State what is intended to be accomplished.  The objective will be around
   the qualities that are most important for your project.  You might have
