@@ -1,35 +1,68 @@
-import React from "react";
+// src/react-app/src/components/GimbalPad.js
+import React, { useState, useEffect } from "react";
 
 /**
  * Props:
- *  - busy: boolean (disables buttons while sending)
- *  - onCommand: (cmd: "arm"|"disarm"|"up"|"down"|"left"|"right") => void|Promise<void>
+ *  - busy: boolean
+ *  - onCommand: (cmd: "arm"|"disarm"|"up"|"down"|"left"|"right") => Promise<void>|void
+ *  - mode?: "manual" | "auto"    // optional controlled prop from backend status
+ *
+ * Behavior:
+ *  - Click ARM -> ARM button turns orange; DISARM loses orange.
+ *  - Click DISARM -> DISARM turns orange; ARM loses orange.
+ *  - We optimistically set the highlight; if onCommand throws, we revert.
  */
-export default function GimbalPad({ busy, onCommand }) {
+export default function GimbalPad({ busy = false, onCommand, mode }) {
+  // local selected state: "arm" | "disarm" | null
+  const [active, setActive] = useState(null);
+
+  // If parent passes `mode` from /api/status, keep UI in sync
+  useEffect(() => {
+    if (!mode) return;
+    setActive(mode === "manual" ? "arm" : "disarm");
+  }, [mode]);
+
+  async function handle(cmd) {
+    if (busy) return;
+    const prev = active;
+
+    // optimistic highlight for ARM/DISARM only
+    if (cmd === "arm" || cmd === "disarm") setActive(cmd);
+
+    try {
+      await onCommand?.(cmd);
+    } catch (e) {
+      // revert highlight on error
+      setActive(prev);
+    }
+  }
+
   return (
     <div className="dpad">
+      {/* Top row: ARM / DISARM (highlight the selected one) */}
       <div className="keys">
         <button
-          className="pill pill--arm"
+          className={`pill ${active === "arm" ? "pill--active" : ""}`}
           disabled={busy}
-          onClick={() => onCommand?.("arm")}
+          onClick={() => handle("arm")}
         >
           ARM
         </button>
         <button
-          className="pill"
+          className={`pill ${active === "disarm" ? "pill--active" : ""}`}
           disabled={busy}
-          onClick={() => onCommand?.("disarm")}
+          onClick={() => handle("disarm")}
         >
           DISARM
         </button>
       </div>
 
+      {/* Round control pad */}
       <div className="dpad__pad" role="group" aria-label="Gimbal control pad">
         <button
           className="dpad__btn up"
           disabled={busy}
-          onClick={() => onCommand?.("up")}
+          onClick={() => handle("up")}
           aria-label="Up"
         >
           ▲
@@ -37,7 +70,7 @@ export default function GimbalPad({ busy, onCommand }) {
         <button
           className="dpad__btn down"
           disabled={busy}
-          onClick={() => onCommand?.("down")}
+          onClick={() => handle("down")}
           aria-label="Down"
         >
           ▼
@@ -45,7 +78,7 @@ export default function GimbalPad({ busy, onCommand }) {
         <button
           className="dpad__btn left"
           disabled={busy}
-          onClick={() => onCommand?.("left")}
+          onClick={() => handle("left")}
           aria-label="Left"
         >
           ◀
@@ -53,7 +86,7 @@ export default function GimbalPad({ busy, onCommand }) {
         <button
           className="dpad__btn right"
           disabled={busy}
-          onClick={() => onCommand?.("right")}
+          onClick={() => handle("right")}
           aria-label="Right"
         >
           ▶
