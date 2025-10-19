@@ -292,3 +292,6 @@ ultralytics/
 runs/
 weights/
 
+.idea/
+
+
