@@ -31,9 +31,9 @@
 \section*{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-  \toprule {\bf Date} & {\bf Version} & {\bf Notes} \\
+  \toprule {\bf Date} & {\bf Version} & {\bf Notes}   \\
   \midrule
-  Date 1              & 1.0           & Initial Draft      \\
+  Date 1              & 1.0           & Initial Draft \\
   \bottomrule
 \end{tabularx}
 
@@ -61,15 +61,15 @@
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{l l}
   \toprule
-  \textbf{symbol} & \textbf{description} \\
+  \textbf{symbol} & \textbf{description}                                             \\
   \midrule
-  Yolo               & You only look once -- an existing object detection model\\
-  CNN                & Convolutional Neural Network \\
-  Jetson             & abbreviatio for specifcally Jetson Nano Orin, which is the
+  Yolo            & You only look once -- an existing object detection model         \\
+  CNN             & Convolutional Neural Network                                     \\
+  Jetson          & abbreviatio for specifcally Jetson Nano Orin, which is the
   proposed board for this project
   \\
-  ST32              & abbreviation for specifically ST32 microcontroller, which is the
-  proposed microcontroller for this project\\
+  ST32            & abbreviation for specifically ST32 microcontroller, which is the
+  proposed microcontroller for this project                                          \\
 
   \bottomrule
 \end{tabular}\\
@@ -83,79 +83,81 @@
 
 \pagenumbering{arabic}
 
-This Verification and Validation (VnV) plan establishes the evidence that our 
-RoCam model-rocket tracking system is both built right and the right build. 
-Verification confirms each SRS and design requirement—camera and gimbal specs, 
-timing/latency budgets, fault handling, and code quality—via reviews, static 
-analysis, unit/integration tests, bench and simulation runs, with full 
-requirement-to-test traceability. Validation demonstrates the system fulfills 
-user and mission needs in field conditions by acquiring the rocket at launch, 
-maintaining continuous tracking through boost/coast and occlusions, and supporting 
-a safe, simple operator workflow. Success is judged against quantitative targets 
-and operational criteria. Deliverables include test plans/cases, 
-automated reports, calibration and operating procedures, field-test results, 
-and a validation summary with stakeholder sign-off.
+This Verification and Validation (VnV) plan establishes the evidence that our
+RoCam model-rocket tracking system is both built right and the right build.
+Verification confirms each SRS and design requirement—camera and gimbal specs,
+timing/latency budgets, fault handling, and code quality—via reviews, static
+analysis, unit/integration tests, bench and simulation runs, with full
+requirement-to-test traceability. Validation demonstrates the system fulfills
+user and mission needs in field conditions by acquiring the rocket at launch,
+maintaining continuous tracking through boost/coast and occlusions, and
+supporting a safe, simple operator workflow. Success is judged against
+quantitative targets and operational criteria. Deliverables include test
+plans/cases, automated reports, calibration and operating procedures,
+field-test results, and a validation summary with stakeholder sign-off.
 
- \wss{provide an introductory blurb and roadmap of the
+\wss{provide an introductory blurb and roadmap of the
   Verification and Validation plan}
 
 \section{General Information}
 
 \subsection{Summary}
 
-The RoCam system is a ground-based camera and gimbal assembly designed to autonomously
-track model rockets during launch and flight. It utilizes a high-resolution camera
-coupled with a motorized gimbal to maintain visual lock on the rocket, providing
-real-time positional data and video feed. The system includes a react frontend that
-utilizes computer vision algorithms to detect and follow the rocket. We also designed a
-ST32 microcontroller-based gimbal controller that interfaces with the Jetson board to
-physically move the camera for automated tracking. The primary purpose of RoCam is 
-to replace the traditional unreliable manual tracking methods with an automated solution
-to produce high-quality flight data and video footage. To better assist model rocket teams
-across Canada to conduct successful launches by providing an affordable and reliable system
-that can be easily track launching movements.
+The RoCam system is a ground-based camera and gimbal assembly designed to
+autonomously track model rockets during launch and flight. It utilizes a
+high-resolution camera coupled with a motorized gimbal to maintain visual lock
+on the rocket, providing real-time positional data and video feed. The system
+includes a react frontend that utilizes computer vision algorithms to detect
+and follow the rocket. We also designed a ST32 microcontroller-based gimbal
+controller that interfaces with the Jetson board to physically move the camera
+for automated tracking. The primary purpose of RoCam is to replace the
+traditional unreliable manual tracking methods with an automated solution to
+produce high-quality flight data and video footage. To better assist model
+rocket teams across Canada to conduct successful launches by providing an
+affordable and reliable system that can be easily track launching movements.
 
 \wss{Say what software is being tested.  Give its name and a brief overview of
   its general functions.}
 
 \subsection{Objectives}
-The primary objective of the \textbf{RoCam} project is to \textbf{demonstrate reliable,
- real-time visual tracking of small-scale model rockets} through an autonomous, 
- vision-guided camera system. The project aims to achieve \textbf{high accuracy}, 
- \textbf{low latency}, and \textbf{stable video performance}, ensuring that the rocket 
- remains centered in frame throughout its flight. By focusing on \
-\textbf{system performance}, \textbf{tracking precision}, and \textbf{robustness under
-real launch conditions}, RoCam seeks to provide high-quality flight footage that
-supports post-launch analysis and safety validation.
+The primary objective of the \textbf{RoCam} project is to \textbf{demonstrate
+  reliable, real-time visual tracking of small-scale model rockets} through an
+autonomous, vision-guided camera system. The project aims to achieve
+\textbf{high accuracy}, \textbf{low latency}, and \textbf{stable video
+  performance}, ensuring that the rocket remains centered in frame throughout its
+flight. By focusing on \ \textbf{system performance}, \textbf{tracking
+  precision}, and \textbf{robustness under real launch conditions}, RoCam seeks
+to provide high-quality flight footage that supports post-launch analysis and
+safety validation.
 
 \subsection{In-Scope Objectives}
 Verification and validation efforts will prioritize the following qualities:
 \begin{itemize}
-    \item \textbf{Correctness:} Ensure the reliability of tracking and control 
-    algorithms through testing and validation.
-    \item \textbf{Performance:} Achieve real-time processing of 1080p 60\,fps 
-    video and maintain minimal gimbal control latency.
-    \item \textbf{Reliability and Safety:} Guarantee that the system operates s
-    afely and consistently under outdoor launch conditions.
+  \item \textbf{Correctness:} Ensure the reliability of tracking and control
+        algorithms through testing and validation.
+  \item \textbf{Performance:} Achieve real-time processing of 1080p 60\,fps
+        video and maintain minimal gimbal control latency.
+  \item \textbf{Reliability and Safety:} Guarantee that the system operates s
+        afely and consistently under outdoor launch conditions.
 \end{itemize}
 
 \subsection{Out-of-Scope Objectives}
 The following objectives are excluded from this project due to time, budget,
- and resource constraints:
+and resource constraints:
 \begin{itemize}
-    \item \textbf{Comprehensive Usability Testing:} User experience will be evaluated
-     informally via team and client feedback rather than large-scale formal studies.
-    \item \textbf{Third-Party Component Verification:} External hardware such as the 
-    gimbal controller and camera are assumed to perform according to their
-     manufacturer specifications.
-    \item \textbf{Scalability Beyond Small-Scale Rockets:} Tracking a 
-    bullet or extremely difficult
-    targets beyond a model rocket is outside the scope of this project.
+  \item \textbf{Comprehensive Usability Testing:} User experience will be evaluated
+        informally via team and client feedback rather than large-scale formal studies.
+  \item \textbf{Third-Party Component Verification:} External hardware such as the
+        gimbal controller and camera are assumed to perform according to their
+        manufacturer specifications.
+  \item \textbf{Scalability Beyond Small-Scale Rockets:} Tracking a
+        bullet or extremely difficult
+        targets beyond a model rocket is outside the scope of this project.
 \end{itemize}
 
-By defining these priorities and exclusions, the RoCam project ensures that 
-available effort is directed toward validating the most critical system qualities:
- \textbf{performance, accuracy, and operational safety}.
+By defining these priorities and exclusions, the RoCam project ensures that
+available effort is directed toward validating the most critical system
+qualities: \textbf{performance, accuracy, and operational safety}.
 
 \wss{State what is intended to be accomplished.  The objective will be around
   the qualities that are most important for your project.  You might have
@@ -169,45 +171,44 @@ available effort is directed toward validating the most critical system qualitie
   worthwhile to justify why the objectives are left out.}
 
 \wss{The objectives are important because they highlight that you are aware of
-  limitations in your resources for verification and validation.  
-  You can't do everything, so what are you going to prioritize? 
+  limitations in your resources for verification and validation.
+  You can't do everything, so what are you going to prioritize?
   As an example, if your system depends on an external library,
-   you can explicitly state that you will assume that external library
+  you can explicitly state that you will assume that external library
   has already been verified by its implementation team.}
 
 \subsection{Challenge Level and Extras}
 
-The \textbf{RoCam} project is an engineering heavy capstone project. 
-One of the major challenges of this project is the integration of multiple 
-complex subsystems, including \textbf{real-time computer vision}, 
-\textbf{hardware–software interfacing}, and \textbf{autonomous motion control}. 
+The \textbf{RoCam} project is an engineering heavy capstone project. One of the
+major challenges of this project is the integration of multiple complex
+subsystems, including \textbf{real-time computer vision},
+\textbf{hardware–software interfacing}, and \textbf{autonomous motion control}.
 The project requires the implementation of algorithms capable of detecting,
-tracking, and maintaining a visual lock on fast-moving model rockets, 
-while ensuring real-time performance at 1080p\,60\,fps and 
-stable gimbal control under dynamic outdoor conditions. 
-In addition, the system's design encompasses both software engineering 
-and embedded hardware domains, further contributing to its advanced
- technical scope.
+tracking, and maintaining a visual lock on fast-moving model rockets, while
+ensuring real-time performance at 1080p\,60\,fps and stable gimbal control
+under dynamic outdoor conditions. In addition, the system's design encompasses
+both software engineering and embedded hardware domains, further contributing
+to its advanced technical scope.
 
 \subsubsection*{Extras}
-Beyond the core objectives, the RoCam project includes several 
+Beyond the core objectives, the RoCam project includes several
 \textbf{approved extras} that enhance its quality and usability:
 \begin{itemize}
-    \item \textbf{STM32 control circuit design:} Development of a 
-    custom control circuit to interface the gimbal actuators with 
-    the host computer, enabling precise motion control and feedback sensing.
-    \item \textbf{User Instructional Video:} Creation of a short instructional 
-    video demonstrating system setup, calibration, and operation to support 
-    new users and ensure safe deployment.
-    \item \textbf{Usability Evaluation:} Informal field-based usability 
-    evaluation with feedback from the McMaster Rocketry Team to validate 
-    ease of use and interface clarity.
+  \item \textbf{STM32 control circuit design:} Development of a
+        custom control circuit to interface the gimbal actuators with
+        the host computer, enabling precise motion control and feedback sensing.
+  \item \textbf{User Instructional Video:} Creation of a short instructional
+        video demonstrating system setup, calibration, and operation to support
+        new users and ensure safe deployment.
+  \item \textbf{Usability Evaluation:} Informal field-based usability
+        evaluation with feedback from the McMaster Rocketry Team to validate
+        ease of use and interface clarity.
 \end{itemize}
 
-These extras aim to improve the overall usability, accessibility, 
-and documentation quality of the final deliverable, reinforcing RoCam's 
-emphasis on practical integration between computer vision 
- software, mechanical control, and end-user experience.
+These extras aim to improve the overall usability, accessibility, and
+documentation quality of the final deliverable, reinforcing RoCam's emphasis on
+practical integration between computer vision software, mechanical control, and
+end-user experience.
 
 \wss{State the challenge level (advanced, general, basic) for your project.
   Your challenge level should exactly match what is included in your problem
@@ -225,12 +226,12 @@ emphasis on practical integration between computer vision
 
 \subsection{Relevant Documentation}
 
-IDK What to do here
-\wss{Reference relevant documentation.  This will definitely include your SRS
-  and your other project documents (design documents, like MG, MIS, etc).  You
-  can include these even before they are written, since by the time the project
-  is done, they will be written.  You can create BibTeX entries for your
-  documents and within those entries include a hyperlink to the documents.}
+IDK What to do here \wss{Reference relevant documentation. This will definitely
+  include your SRS and your other project documents (design documents, like MG,
+  MIS, etc). You can include these even before they are written, since by the
+  time the project is done, they will be written. You can create BibTeX entries
+  for your documents and within those entries include a hyperlink to the
+  documents.}
 
 \citet{SRS}
 
@@ -250,55 +251,55 @@ IDK What to do here
 
 \subsection{SRS Verification}
 
-The verification and validation (V\&V) process for the \textbf{RoCam} 
-project is carried out collaboratively by all team members under the 
-supervision of the faculty advisor. 
-Each member is responsible for verifying specific components of the system 
-based on their primary area of contribution, ensuring that both software and 
-hardware subsystems meet performance, safety, and usability requirements. 
-Table~\ref{tab:vnv_team} summarizes the V\&V responsibilities for each team member.
+The verification and validation (V\&V) process for the \textbf{RoCam} project
+is carried out collaboratively by all team members under the supervision of the
+faculty advisor. Each member is responsible for verifying specific components
+of the system based on their primary area of contribution, ensuring that both
+software and hardware subsystems meet performance, safety, and usability
+requirements. Table~\ref{tab:vnv_team} summarizes the V\&V responsibilities for
+each team member.
 
 \begin{table}[H]
-\centering
-\caption{Verification and Validation Team Responsibilities}
-\label{tab:vnv_team}
-\begin{tabular}{|p{3.5cm}|p{3.5cm}|p{8cm}|}
-\hline
-\textbf{Name} & \textbf{Role} & \textbf{V\&V Responsibilities} \\ \hline
+  \centering
+  \caption{Verification and Validation Team Responsibilities}
+  \label{tab:vnv_team}
+  \begin{tabular}{|p{3.5cm}|p{3.5cm}|p{8cm}|}
+    \hline
+    \textbf{Name}                  & \textbf{Role}                     & \textbf{V\&V Responsibilities} \\ \hline
 
-\textbf{Zifan Si} & Team member & 
-Responsible for verifying and validating the usability and functionality of the 
-react frontend interface.
-Ensure usability, robustness of frontend features. \\ \hline
+    \textbf{Zifan Si}              & Team member                       &
+    Responsible for verifying and validating the usability and functionality of the
+    react frontend interface.
+    Ensure usability, robustness of frontend features.                                                  \\ \hline
 
-\textbf{Jianqing Liu} & Team Lead & 
-Conduct integration test and system validation. Validate the functionality and 
-performance of the system against requirements and use cases. \\ \hline
+    \textbf{Jianqing Liu}          & Team Lead                         &
+    Conduct integration test and system validation. Validate the functionality and
+    performance of the system against requirements and use cases.                                       \\ \hline
 
-\textbf{Mike Chen} & Hardware and Control Lead & 
-Verify and validate computer vision pipeline performance, including object detection 
-and tracking accuracy. \\ \hline
+    \textbf{Mike Chen}             & Hardware and Control Lead         &
+    Verify and validate computer vision pipeline performance, including object detection
+    and tracking accuracy.                                                                              \\ \hline
 
-\textbf{Xiaotian Lou} & Software Quality and Testing Lead & 
-Implement automated testing frameworks in all software components. \\ \hline
+    \textbf{Xiaotian Lou}          & Software Quality and Testing Lead &
+    Implement automated testing frameworks in all software components.                                  \\ \hline
 
-\textbf{Dr. Shahin Sirouspour} & Faculty Supervisor & 
-Provides oversight and ensures that verification and validation procedures
- align with academic and engineering standards. 
-Reviews test methodologies, validates safety-critical procedures, and 
-confirms that deliverables meet course and institutional requirements. \\ \hline
+    \textbf{Dr. Shahin Sirouspour} & Faculty Supervisor                &
+    Provides oversight and ensures that verification and validation procedures
+    align with academic and engineering standards.
+    Reviews test methodologies, validates safety-critical procedures, and
+    confirms that deliverables meet course and institutional requirements.                              \\ \hline
 
-\textbf{Launch Canada} & Stakeholder & 
-Provides feedback on system performance during field tests.
-\\ \hline
+    \textbf{Launch Canada}         & Stakeholder                       &
+    Provides feedback on system performance during field tests.
+    \\ \hline
 
-\end{tabular}
+  \end{tabular}
 \end{table}
 
-Together, this team structure ensures that verification and 
-validation activities are distributed across all critical system 
-components—computer vision, control, integration, and software 
-reliability—resulting in a robust and well-tested final product.
+Together, this team structure ensures that verification and validation
+activities are distributed across all critical system components—computer
+vision, control, integration, and software reliability—resulting in a robust
+and well-tested final product.
 
 \wss{List any approaches you intend to use for SRS verification.  This may
   include ad hoc feedback from reviewers, like your classmates (like your
@@ -314,114 +315,113 @@ reliability—resulting in a robust and well-tested final product.
 
 \subsection{Design Verification}
 
-The design verification process for the \textbf{RoCam} project ensures that 
-the proposed architecture, algorithms, and hardware interfaces satisfy all 
-functional and non-functional requirements before implementation. 
-Design verification activities will be conducted through structured design 
-reviews, peer evaluations, and the use of detailed verification checklists. 
-The goal is to confirm that the design meets the intended performance, 
-reliability, and safety objectives defined in the SRS.
+The design verification process for the \textbf{RoCam} project ensures that the
+proposed architecture, algorithms, and hardware interfaces satisfy all
+functional and non-functional requirements before implementation. Design
+verification activities will be conducted through structured design reviews,
+peer evaluations, and the use of detailed verification checklists. The goal is
+to confirm that the design meets the intended performance, reliability, and
+safety objectives defined in the SRS.
 
 \subsubsection*{Verification Plan}
 The design verification will proceed in three main stages:
 \begin{enumerate}
-    \item \textbf{Internal Design Review:}  
-    Each subsystem (computer vision, control, and UI) 
-    will undergo an internal review by each team member. Each member must
-    agree on the designed architecture, algorithms, and interfaces.
-    Interfaces must be clearly defined for scalability.
+  \item \textbf{Internal Design Review:}
+        Each subsystem (computer vision, control, and UI)
+        will undergo an internal review by each team member. Each member must
+        agree on the designed architecture, algorithms, and interfaces.
+        Interfaces must be clearly defined for scalability.
 
-    
-    \item \textbf{Peer Review by Classmates:}  
-    A peer design review session will be conducted with other capstone 
-    teams to obtain external feedback.  
-    Reviewers will evaluate the system’s clarity, feasibility, and 
-    maintainability based on the shared design artifacts (block diagrams
-    , interface specifications, and test plans).
+  \item \textbf{Peer Review by Classmates:}
+        A peer design review session will be conducted with other capstone
+        teams to obtain external feedback.
+        Reviewers will evaluate the system’s clarity, feasibility, and
+        maintainability based on the shared design artifacts (block diagrams
+        , interface specifications, and test plans).
 
-    \item \textbf{Supervisor and TA Review:}  
-    The project supervisor and teaching assistants will review the 
-    finalized design to ensure compliance with academic standards, 
-    capstone expectations, and safety considerations.
+  \item \textbf{Supervisor and TA Review:}
+        The project supervisor and teaching assistants will review the
+        finalized design to ensure compliance with academic standards,
+        capstone expectations, and safety considerations.
 \end{enumerate}
 
 \subsubsection*{Verification Artifacts}
 Design verification will produce the following artifacts:
 \begin{itemize}
-    \item Verified design diagrams and interface specifications.
-    \item Annotated review feedback forms from classmates and supervisor.
-    \item Updated design documents reflecting corrections and improvements.
-    \item Completed design verification checklists (see below).
+  \item Verified design diagrams and interface specifications.
+  \item Annotated review feedback forms from classmates and supervisor.
+  \item Updated design documents reflecting corrections and improvements.
+  \item Completed design verification checklists (see below).
 \end{itemize}
 
 \subsubsection*{Design Verification Checklist}
-The following checklist will be used during design reviews to ensure 
+The following checklist will be used during design reviews to ensure
 completeness and consistency across all modules:
 
-\newpage 
+\newpage
 
 \begin{table}[H]
-\centering
-\caption{RoCam Design Verification Checklist}
-\label{tab:design_verification_checklist}
-\begin{tabular}{|p{10cm}|c|}
-\hline
-\textbf{Verification Item} & \textbf{Status (\ding{51}/\ding{55})} \\ \hline
+  \centering
+  \caption{RoCam Design Verification Checklist}
+  \label{tab:design_verification_checklist}
+  \begin{tabular}{|p{10cm}|c|}
+    \hline
+    \textbf{Verification Item}                              & \textbf{Status (\ding{51}/\ding{55})} \\ \hline
 
-\textbf{Requirements Traceability:} Each design module (vision, 
-control, UI, data management) maps directly to specific functional and 
-non-functional requirements in the SRS. &  \\ \hline
+    \textbf{Requirements Traceability:} Each design module (vision,
+    control, UI, data management) maps directly to specific functional and
+    non-functional requirements in the SRS.                 &                                       \\ \hline
 
-\textbf{System Architecture Validation:} The proposed architecture 
-supports concurrent data acquisition, vision inference, and gimbal 
-control without violating latency constraints. &  \\ \hline
+    \textbf{System Architecture Validation:} The proposed architecture
+    supports concurrent data acquisition, vision inference, and gimbal
+    control without violating latency constraints.          &                                       \\ \hline
 
-\textbf{Performance Objectives:} Design supports 1080p 60 fps video 
-input/output, with an end-to-end latency target of less than 120 ms 
-between camera frame and gimbal response. &  \\ \hline
+    \textbf{Performance Objectives:} Design supports 1080p 60 fps video
+    input/output, with an end-to-end latency target of less than 120 ms
+    between camera frame and gimbal response.               &                                       \\ \hline
 
-\textbf{Rocket Tracking Algorithm:} The computer vision subsystem’s 
-design ensures accurate rocket detection, tracking, and reacquisition 
-under changing lighting and smoke conditions. &  \\ \hline
+    \textbf{Rocket Tracking Algorithm:} The computer vision subsystem’s
+    design ensures accurate rocket detection, tracking, and reacquisition
+    under changing lighting and smoke conditions.           &                                       \\ \hline
 
-\textbf{Gimbal Control and Stability:} The control architecture 
-provides smooth, stable movement
-and sufficient angular speed for small rocket tracking. &  \\ \hline
+    \textbf{Gimbal Control and Stability:} The control architecture
+    provides smooth, stable movement
+    and sufficient angular speed for small rocket tracking. &                                       \\ \hline
 
-\textbf{Hardware–Software Interface:} Communication between the Jetson 
-platform, STM32 controller, and gimbal is well-defined, with verified 
-protocol timing and error handling. &  \\ \hline
+    \textbf{Hardware–Software Interface:} Communication between the Jetson
+    platform, STM32 controller, and gimbal is well-defined, with verified
+    protocol timing and error handling.                     &                                       \\ \hline
 
-\textbf{Safety and Fault Handling:} Safe-state transitions (Idle, 
-Armed, Tracking) are fully defined and prevent uncontrolled gimbal 
-motion on error or manual override. &  \\ \hline
+    \textbf{Safety and Fault Handling:} Safe-state transitions (Idle,
+    Armed, Tracking) are fully defined and prevent uncontrolled gimbal
+    motion on error or manual override.                     &                                       \\ \hline
 
-\textbf{Reliability and Robustness:} Design includes fail-safes for 
-connection loss, power interruption, and unexpected frame drop events 
-during operation. &  \\ \hline
+    \textbf{Reliability and Robustness:} Design includes fail-safes for
+    connection loss, power interruption, and unexpected frame drop events
+    during operation.                                       &                                       \\ \hline
 
-\textbf{User Interface Design:} The UI supports outdoor readability, 
-bilingual support (English/French), and visual status indicators for 
-all operational states. &  \\ \hline
+    \textbf{User Interface Design:} The UI supports outdoor readability,
+    bilingual support (English/French), and visual status indicators for
+    all operational states.                                 &                                       \\ \hline
 
-\textbf{Data Recording and Storage:} Recording subsystem design 
-supports synchronized video and gimbal-angle logging at 1080p 60 fps, 
-with enough local storage for a full launch day. &  \\ \hline
+    \textbf{Data Recording and Storage:} Recording subsystem design
+    supports synchronized video and gimbal-angle logging at 1080p 60 fps,
+    with enough local storage for a full launch day.        &                                       \\ \hline
 
-\textbf{Testing and Validation Plan Alignment:} Each subsystem has 
-a defined verification procedure (unit tests, simulation, or field test) 
-linked to corresponding SRS fit criteria. &  \\ \hline
+    \textbf{Testing and Validation Plan Alignment:} Each subsystem has
+    a defined verification procedure (unit tests, simulation, or field test)
+    linked to corresponding SRS fit criteria.               &                                       \\ \hline
 
-\textbf{Peer Review and Feedback Resolution:} All feedback from peer 
-design reviews and supervisor evaluations has been documented and 
-addressed in the updated design artifacts. &  \\ \hline
+    \textbf{Peer Review and Feedback Resolution:} All feedback from peer
+    design reviews and supervisor evaluations has been documented and
+    addressed in the updated design artifacts.              &                                       \\ \hline
 
-\end{tabular}
+  \end{tabular}
 \end{table}
 
 \noindent
-By following this structured verification plan and checklist, the team 
-ensures that the RoCam design is both technically sound and fully aligned 
+By following this structured verification plan and checklist, the team
+ensures that the RoCam design is both technically sound and fully aligned
 with its performance and safety goals prior to implementation.
 
 \wss{Plans for design verification}
@@ -432,7 +432,6 @@ with its performance and safety goals prior to implementation.
 
 \subsection{Verification and Validation Plan Verification}
 
-
 \wss{The verification and validation plan is an artifact that should also be
   verified.  Techniques for this include review and mutation testing.}
 
@@ -442,143 +441,141 @@ with its performance and safety goals prior to implementation.
 
 \subsection{Implementation Verification}
 
-The implementation verification for the \textbf{RoCam} project 
-ensures that the developed software and integrated hardware components
- correctly realize the verified design. 
-This phase confirms that the implemented system satisfies the functional
- and non-functional requirements defined in the SRS through a combination 
- of structured testing, static verification, and peer review.
+The implementation verification for the \textbf{RoCam} project ensures that the
+developed software and integrated hardware components correctly realize the
+verified design. This phase confirms that the implemented system satisfies the
+functional and non-functional requirements defined in the SRS through a
+combination of structured testing, static verification, and peer review.
 
 \subsubsection*{Dynamic Verification}
-Dynamic verification activities focus on confirming that the system 
-behaves as intended under realistic operating conditions. 
+Dynamic verification activities focus on confirming that the system
+behaves as intended under realistic operating conditions.
 They include the following elements:
 
 \begin{itemize}
-    \item \textbf{Unit Testing:}  
-    Each software module (vision processing, gimbal control, data 
-    recording, and UI management) will undergo unit testing to verify
-     functional correctness in isolation. 
+  \item \textbf{Unit Testing:}
+        Each software module (vision processing, gimbal control, data
+        recording, and UI management) will undergo unit testing to verify
+        functional correctness in isolation.
 
-    \item \textbf{Integration Testing:}  
-    Once individual modules are verified, integration tests will 
-    confirm proper data flow between subsystems (camera input 
-    $\rightarrow$ vision algorithm $\rightarrow$ gimbal control 
-    $\rightarrow$ UI).  
-    Tests will ensure synchronization, timing correctness, and 
-    robustness under real-time constraints.
+  \item \textbf{Integration Testing:}
+        Once individual modules are verified, integration tests will
+        confirm proper data flow between subsystems (camera input
+        $\rightarrow$ vision algorithm $\rightarrow$ gimbal control
+        $\rightarrow$ UI).
+        Tests will ensure synchronization, timing correctness, and
+        robustness under real-time constraints.
 
-    \item \textbf{System Testing:}  
-    Full-system field tests will validate end-to-end performance, 
-    including real-time video tracking, system state transitions 
-    (Idle, Armed, Tracking), and video recording accuracy at 1080p\,60\,fps. 
-    These tests correspond directly to the verification items in 
-    the SRS functional and performance requirements.
+  \item \textbf{System Testing:}
+        Full-system field tests will validate end-to-end performance,
+        including real-time video tracking, system state transitions
+        (Idle, Armed, Tracking), and video recording accuracy at 1080p\,60\,fps.
+        These tests correspond directly to the verification items in
+        the SRS functional and performance requirements.
 \end{itemize}
 
 \subsubsection*{Static Verification}
-Static verification will be performed throughout the implementation 
-phase to ensure that the codebase meets quality, safety, 
-nd maintainability standards before execution. 
+Static verification will be performed throughout the implementation
+phase to ensure that the codebase meets quality, safety,
+nd maintainability standards before execution.
 Planned techniques include:
 
 \begin{itemize}
-    \item \textbf{Code Walkthroughs:}  
-    Conducted during the final CAS~741 presentation, where each 
-    subsystem lead presents core implementation logic and design decisions. 
-    This serves as a semi-formal walkthrough for peer and instructor 
-    review, enabling early identification of potential design or coding issues.
+  \item \textbf{Code Walkthroughs:}
+        Conducted during the final CAS~741 presentation, where each
+        subsystem lead presents core implementation logic and design decisions.
+        This serves as a semi-formal walkthrough for peer and instructor
+        review, enabling early identification of potential design or coding issues.
 
-    \item \textbf{Code Inspection:}  
-    Team members will review each other’s pull requests prior to 
-    merging into the main branch.  
-    Reviews will focus on coding standard compliance, potential 
-    logic errors, exception handling, and safety-critical sections 
-    (e.g., gimbal actuation and state transitions).
+  \item \textbf{Code Inspection:}
+        Team members will review each other’s pull requests prior to
+        merging into the main branch.
+        Reviews will focus on coding standard compliance, potential
+        logic errors, exception handling, and safety-critical sections
+        (e.g., gimbal actuation and state transitions).
 
-    \item \textbf{Static Analysis Tools:}  
-    Tools such as \texttt{clang-tidy}, \texttt{cppcheck}, and 
-    \texttt{pylint} will be used to detect memory leaks, uninitialized variables, 
-    and other common implementation defects. 
-    Results from static analysis will be logged and reviewed 
-    as part of the verification record.
+  \item \textbf{Static Analysis Tools:}
+        Tools such as \texttt{clang-tidy}, \texttt{cppcheck}, and
+        \texttt{pylint} will be used to detect memory leaks, uninitialized variables,
+        and other common implementation defects.
+        Results from static analysis will be logged and reviewed
+        as part of the verification record.
 
-    \item \textbf{Documentation Review:}  
-    The team will verify that all inline comments, module-level 
-    documentation, and API references are consistent with the design 
-    specification and user documentation requirements.
+  \item \textbf{Documentation Review:}
+        The team will verify that all inline comments, module-level
+        documentation, and API references are consistent with the design
+        specification and user documentation requirements.
 \end{itemize}
 
 \subsubsection*{Presentation and Usability Review}
-The final CAS~741 presentation will serve as both a 
-\textbf{code walkthrough} and a partial \textbf{usability evaluation}.  
-During the presentation, peers and instructors will observe live 
-system operation, assess user interface clarity, and provide 
-feedback on usability, responsiveness, and overall system behavior.  
-This qualitative feedback will be incorporated into the final 
-verification summary and used to refine user-facing components 
+The final CAS~741 presentation will serve as both a
+\textbf{code walkthrough} and a partial \textbf{usability evaluation}.
+During the presentation, peers and instructors will observe live
+system operation, assess user interface clarity, and provide
+feedback on usability, responsiveness, and overall system behavior.
+This qualitative feedback will be incorporated into the final
+verification summary and used to refine user-facing components
 prior to final submission.
 
 \noindent
-Together, these verification activities ensure that the RoCam 
-implementation is thoroughly tested, statically verified, and 
+Together, these verification activities ensure that the RoCam
+implementation is thoroughly tested, statically verified, and
 validated against both its design and real-world performance expectations.
 
 \subsection{Automated Testing and Verification Tools}
 
-For Phase~1, the implementation is \textbf{Python-first} (OpenCV 
-pipeline, control logic, and operator UI services). Our automation 
-focuses on Python and the web UI; any C/C++ tools will be introduced only 
-in a later phase if needed.
+For Phase~1, the implementation is \textbf{Python-first} (OpenCV pipeline,
+control logic, and operator UI services). Our automation focuses on Python and
+the web UI; any C/C++ tools will be introduced only in a later phase if needed.
 
 \subsubsection*{Unit and Integration Testing}
 \begin{itemize}
-  \item \textbf{Python:} \texttt{pytest} with \texttt{pytest-cov}; fixtures 
-  simulate camera frames (OpenCV \texttt{VideoCapture} stubs), gimbal feedback, 
-  and UI requests.
+  \item \textbf{Python:} \texttt{pytest} with \texttt{pytest-cov}; fixtures
+        simulate camera frames (OpenCV \texttt{VideoCapture} stubs), gimbal feedback,
+        and UI requests.
   \item \textbf{Web UI (if applicable):} Jest + Testing Library for component
-   tests; Playwright for smoke-level end-to-end checks covering the operator 
-   workflow (arm~$\rightarrow$~track~$\rightarrow$~stop~$\rightarrow$~export).
+        tests; Playwright for smoke-level end-to-end checks covering the operator
+        workflow (arm~$\rightarrow$~track~$\rightarrow$~stop~$\rightarrow$~export).
 \end{itemize}
 
 \subsubsection*{Static Analysis, Linters, and Style}
 \begin{itemize}
-  \item \textbf{Python:} \texttt{flake8} and \texttt{pylint} (lint), 
-  \texttt{mypy} (type checking for critical paths), \texttt{bandit} (basic security checks).
-  \item \textbf{Formatting:} \texttt{black} + \texttt{isort}; enforced 
-  via pre-commit hooks and CI.
+  \item \textbf{Python:} \texttt{flake8} and \texttt{pylint} (lint),
+        \texttt{mypy} (type checking for critical paths), \texttt{bandit} (basic security checks).
+  \item \textbf{Formatting:} \texttt{black} + \texttt{isort}; enforced
+        via pre-commit hooks and CI.
   \item \textbf{Web UI:} ESLint with project rules; Prettier for formatting.
 \end{itemize}
 
 \subsubsection*{Coverage and Build Automation}
 \begin{itemize}
-  \item \textbf{Coverage (Python):} \texttt{coverage.py} via \texttt{pytest-cov}; 
-  HTML reports published by CI.
+  \item \textbf{Coverage (Python):} \texttt{coverage.py} via \texttt{pytest-cov};
+        HTML reports published by CI.
   \item \textbf{Coverage (Web UI):} Istanbul/NYC for statements/branches/functions/lines.
   \item \textbf{Build/Tasks:} \texttt{pip} + \texttt{pyproject.toml}/\texttt{requirements.txt};
-   \texttt{npm} scripts for the UI.
-  \item \textbf{CI/CD:} GitLab CI pipelines run on every push/MR; jobs enforce: lints clean, 
-  type check passes, unit tests pass, and minimum coverage gates.
+        \texttt{npm} scripts for the UI.
+  \item \textbf{CI/CD:} GitLab CI pipelines run on every push/MR; jobs enforce: lints clean,
+        type check passes, unit tests pass, and minimum coverage gates.
 \end{itemize}
 
 \subsubsection*{Profiling and Runtime Diagnostics}
 \begin{itemize}
-  \item \textbf{Python:} \texttt{cProfile}, \texttt{line\_profiler}, and 
-  \texttt{memory\_profiler} on CV hot paths; timestamped logs to measure 
-  camera$\rightarrow$inference$\rightarrow$gimbal command latency.
-  \item \textbf{Observability:} Structured logs (JSON) with frame IDs and timing; 
-  optional Prometheus-style counters for latency histograms (median/95th).
+  \item \textbf{Python:} \texttt{cProfile}, \texttt{line\_profiler}, and
+        \texttt{memory\_profiler} on CV hot paths; timestamped logs to measure
+        camera$\rightarrow$inference$\rightarrow$gimbal command latency.
+  \item \textbf{Observability:} Structured logs (JSON) with frame IDs and timing;
+        optional Prometheus-style counters for latency histograms (median/95th).
 \end{itemize}
 
 \subsubsection*{Coverage Reporting Plan}
 \begin{itemize}
-  \item \textbf{Thresholds:} Line coverage $\geq 80\%$ for safety-critical 
-  modules (state machine, tracking loop, command arbitration); $\geq 70\%$ for other 
-  modules. Branch coverage is reported for state-transition logic.
-  \item \textbf{Reports:} CI publishes HTML artifacts and a coverage badge; weekly trend 
-  tracked and cited in the V\&V report.
-  \item \textbf{Scope Notes:} Hardware I/O shims (e.g., serial/gimbal stubs) are measured 
-  separately; excluded/generated code is documented.
+  \item \textbf{Thresholds:} Line coverage $\geq 80\%$ for safety-critical
+        modules (state machine, tracking loop, command arbitration); $\geq 70\%$ for other
+        modules. Branch coverage is reported for state-transition logic.
+  \item \textbf{Reports:} CI publishes HTML artifacts and a coverage badge; weekly trend
+        tracked and cited in the V\&V report.
+  \item \textbf{Scope Notes:} Hardware I/O shims (e.g., serial/gimbal stubs) are measured
+        separately; excluded/generated code is documented.
 \end{itemize}
 
 \wss{What tools are you using for automated testing.  Likely a unit testing
@@ -599,65 +596,64 @@ in a later phase if needed.
 \subsection{Software Validation}
 
 Software validation confirms that \textbf{RoCam} satisfies stakeholder needs
- and accurately implements the intended use cases (``building the right system''). 
- Validation complements verification and is referenced to the SRS goals 
- nd stakeholder roles.
+and accurately implements the intended use cases (``building the right
+system''). Validation complements verification and is referenced to the SRS
+goals nd stakeholder roles.
 
 \subsubsection*{Stakeholder Reviews and Task-Based Inspection}
 \begin{itemize}
-  \item \textbf{Requirements Walkthroughs:} Scheduled reviews of the SRS 
-  and UI wireframes with the McMaster Rocketry Team (client) to confirm
-  scope, priorities, and acceptance criteria.
-  \item \textbf{Task-Based Inspection:} Stakeholders perform 
-  representative tasks (arm system, initiate tracking, stop tracking, export 
-  footage) while observers record issues, ambiguities, and unmet expectations.
-  \item \textbf{Peer Reviews:} Classmate reviews focus on clarity, 
-  testability, and completeness (per CAS~741 guidance); all feedback and
-   resolutions are logged.
+  \item \textbf{Requirements Walkthroughs:} Scheduled reviews of the SRS
+        and UI wireframes with the McMaster Rocketry Team (client) to confirm
+        scope, priorities, and acceptance criteria.
+  \item \textbf{Task-Based Inspection:} Stakeholders perform
+        representative tasks (arm system, initiate tracking, stop tracking, export
+        footage) while observers record issues, ambiguities, and unmet expectations.
+  \item \textbf{Peer Reviews:} Classmate reviews focus on clarity,
+        testability, and completeness (per CAS~741 guidance); all feedback and
+        resolutions are logged.
 \end{itemize}
 
 \subsubsection*{Field and Demo-Based Validation}
 \begin{itemize}
-  \item \textbf{Rev~0/PoC Demo:} Used to validate that early 
-  functionality aligns with stakeholder expectations (e.g., preview 
-  latency, arm/track state semantics). Post-demo debrief captures change 
-  requests.
-  \item \textbf{Supervisor Validation:} A focused session shortly 
-  after Rev~0 to confirm that the demonstrable behaviors match the 
-  SRS’s product use cases and performance intent.
-  \item \textbf{User (Operator) Sessions:} ``Hallway'' usability 
-  checks with camera operators validate readability in outdoor-like 
-  conditions and UI flow (single-page ops without scrolling on 1920$\times$1080).
+  \item \textbf{Rev~0/PoC Demo:} Used to validate that early
+        functionality aligns with stakeholder expectations (e.g., preview
+        latency, arm/track state semantics). Post-demo debrief captures change
+        requests.
+  \item \textbf{Supervisor Validation:} A focused session shortly
+        after Rev~0 to confirm that the demonstrable behaviors match the
+        SRS’s product use cases and performance intent.
+  \item \textbf{User (Operator) Sessions:} ``Hallway'' usability
+        checks with camera operators validate readability in outdoor-like
+        conditions and UI flow (single-page ops without scrolling on 1920$\times$1080).
 \end{itemize}
 
 \subsubsection*{External Data and Bench Validation}
 \begin{itemize}
-  \item \textbf{Reference Footage:} Where live launches are unavailable, 
-  public model-rocket videos and internally recorded dry-runs are used 
-  to validate detection/tracking logic and reacquisition behavior.
-  \item \textbf{Synthetic Scenarios:} Scripted clips with 
-  occlusion/smoke/backlight and varying apparent rocket sizes validate 
-  robustness claims prior to field tests.
+  \item \textbf{Reference Footage:} Where live launches are unavailable,
+        public model-rocket videos and internally recorded dry-runs are used
+        to validate detection/tracking logic and reacquisition behavior.
+  \item \textbf{Synthetic Scenarios:} Scripted clips with
+        occlusion/smoke/backlight and varying apparent rocket sizes validate
+        robustness claims prior to field tests.
 \end{itemize}
 
 \subsubsection*{Acceptance and Traceability}
 \begin{itemize}
-  \item \textbf{Acceptance Criteria:} Derived from the SRS (e.g., 
-  sustained 1080p\,60\,fps I/O, end-to-end latency $\leq 120$\,ms, 
-  successful tracking through nominal flight phases, recording with a
-  ngle overlays).
-  \item \textbf{Traceability:} Validation tests map to SRS goals and 
-  stakeholder needs; a table links each validation activity to the 
-  corresponding SRS item(s) and planned evidence (videos, logs, checklists).
+  \item \textbf{Acceptance Criteria:} Derived from the SRS (e.g.,
+        sustained 1080p\,60\,fps I/O, end-to-end latency $\leq 120$\,ms,
+        successful tracking through nominal flight phases, recording with a
+        ngle overlays).
+  \item \textbf{Traceability:} Validation tests map to SRS goals and
+        stakeholder needs; a table links each validation activity to the
+        corresponding SRS item(s) and planned evidence (videos, logs, checklists).
 \end{itemize}
 
 \noindent
-If no suitable external datasets are available for certain scenarios, 
-this limitation will be stated explicitly; in those cases, validation 
-will rely on stakeholder task-based inspections and controlled synthetic 
-footage. This section also references the SRS verification section for 
+If no suitable external datasets are available for certain scenarios,
+this limitation will be stated explicitly; in those cases, validation
+will rely on stakeholder task-based inspections and controlled synthetic
+footage. This section also references the SRS verification section for
 consistency checks between validated behaviors and specified requirements.
-
 
 \wss{If there is any external data that can be used for validation, you should
   point to it here.  If there are no plans for validation, you should state that
