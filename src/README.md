@@ -11,7 +11,7 @@ cd src\react-app && npm start
 
 # Dev logs
 ## 10/17/2025
-The ui has 5 major sections: 
+The final ui has 5 major sections: 
 Top navigation/status bar (brand, tabs, area/weather/mission/clock).
 
 TOP LEFT: Main camera feed
