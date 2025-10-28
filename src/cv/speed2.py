@@ -1,26 +1,30 @@
-# yolo_v4l2_display.py  —— 线程抓帧 + 无损优化 + 自绘框（保持 imgsz=640, conf=0.8）
+# yolo_v4l2_display.py —— 最小化无损优化版（保持 imgsz=1080, conf=0.13）
 import os, time, cv2, torch, threading
-import numpy as np
 from collections import deque
+from collections import deque as _deque
+import numpy as np
 from ultralytics import YOLO
 
-# ------------ 显示与加速设置（无损） ------------
+# ---------- 显示/底层加速（无损） ----------
 os.environ.setdefault("DISPLAY", ":0")
 os.environ.setdefault("XAUTHORITY", "/home/rocam/.Xauthority")
 cv2.setNumThreads(1)
-cv2.useOptimized(True)
+cv2.setUseOptimized(True)
+
 torch.backends.cudnn.benchmark = True
 try:
     torch.set_float32_matmul_precision("high")
 except Exception:
     pass
 
-# ------------ 相机参数 ------------
+# ---------- 相机参数 ----------
 DEV = "/dev/video0"
 W, H, FPS = 1280, 720, 30
-USE_YUYV = True   # True=YUYV(推荐, 无压缩), False=MJPG(压缩, CPU需解码)
 
-# ------------ 打开摄像头 ------------
+# 是否使用无压缩 YUYV（更低延迟、更好画质；USB2 可能带不动 720p 以上）
+USE_YUYV = False  # 先沿用你原来的 MJPG；若USB3/带宽允许可改 True
+
+# 用 V4L2 后端直连
 cap = cv2.VideoCapture(DEV, cv2.CAP_V4L2)
 assert cap.isOpened(), f"V4L2 打不开: {DEV}"
 
@@ -32,19 +36,19 @@ else:
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,  W)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, H)
 cap.set(cv2.CAP_PROP_FPS,         FPS)
+# 尽量减小采集端缓冲，避免积帧
 try:
-    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)   # 尽量减小积帧
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 except Exception:
     pass
 
-# ------------ 后台抓帧（只保留最新一帧） ------------
+# ====== 后台抓帧（只保留最新一帧，主动丢旧帧）======
 class LatestFrameGrabber:
-    def __init__(self, cap, use_yuyv=True, drops=1):
+    def __init__(self, cap, use_yuyv=False, drops=1):
         self.cap = cap
         self.use_yuyv = use_yuyv
-        self.drops = max(0, int(drops))  # 每圈先 grab 丢旧帧次数
-        self.latest = None
-        self.lock = threading.Lock()
+        self.drops = max(0, int(drops))  # 每圈 grab 丢旧帧次数
+        self.buf = _deque(maxlen=1)      # 仅保留最新一帧
         self.stop_flag = False
         self.t = threading.Thread(target=self._loop, daemon=True)
 
@@ -54,7 +58,7 @@ class LatestFrameGrabber:
 
     def _loop(self):
         while not self.stop_flag:
-            # 丢掉可能积压的旧帧，降低尾延迟
+            # 主动丢旧帧，降低尾延迟（根据负载可设为 1~3）
             for _ in range(self.drops):
                 self.cap.grab()
 
@@ -65,28 +69,22 @@ class LatestFrameGrabber:
                 ok, frame = self.cap.retrieve()
                 if not ok:
                     continue
-                # YUYV → BGR（无压缩）
+                # YUYV -> BGR（无压缩解码）
                 frame = cv2.cvtColor(frame, cv2.COLOR_YUV2BGR_YUYV)
             else:
-                ok, frame = self.cap.read()  # MJPG: read 内含解码
+                ok, frame = self.cap.read()  # MJPG: read 内含 JPEG 解码
                 if not ok:
                     continue
 
-            # 保证内存连续，减少后续拷贝
             frame = np.ascontiguousarray(frame)
-
-            with self.lock:
-                self.latest = frame
+            self.buf.clear()
+            self.buf.append(frame)
 
     def get(self, timeout_ms=100):
         end = time.time() + timeout_ms/1000.0
-        while time.time() < end and not self.stop_flag:
-            with self.lock:
-                if self.latest is not None:
-                    return self.latest
+        while not self.buf and time.time() < end and not self.stop_flag:
             time.sleep(0.001)
-        with self.lock:
-            return self.latest
+        return self.buf[0] if self.buf else None
 
     def stop(self):
         self.stop_flag = True
@@ -94,27 +92,26 @@ class LatestFrameGrabber:
 
 grabber = LatestFrameGrabber(cap, use_yuyv=USE_YUYV, drops=1).start()
 
-# ------------ 加载 YOLO（保持你的检测质量不变） ------------
+# ---------- 加载模型（不改你的权重与阈值/尺寸） ----------
 model = YOLO("weights/yolo12n")  # 或 "yolov8n.pt"
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
-# 可选：FP16（基本无损；若你追求完全 FP32，可注释掉）
-USE_HALF = False
-if device.startswith("cuda"):
+# 可选：半精度（基本不影响mAP；若你追求位一致，改为 False）
+USE_HALF = True if device.startswith("cuda") else False
+if USE_HALF:
     try:
         model.model.half()
-        USE_HALF = True
     except Exception:
-        pass
+        USE_HALF = False
 
-# ------------ 预热（消除首帧内核构建抖动） ------------
+# 预热：不影响结果，只是消除首帧抖动
 warm = grabber.get(timeout_ms=500)
 if warm is not None:
-    for _ in range(10):
-        _ = model(warm, imgsz=640, conf=0.8, verbose=False)
+    for _ in range(8):
+        _ = model(warm, imgsz=1080, conf=0.13, verbose=False)
 
-# ------------ 工具：自绘检测框（替代 r[0].plot） ------------
+# ---------- 自绘框（替代 r[0].plot()，不影响检测结果，只省渲染时间） ----------
 def draw_detections(img, res):
     vis = img
     if res.boxes is None or len(res.boxes) == 0:
@@ -133,25 +130,27 @@ def draw_detections(img, res):
                         1, cv2.LINE_AA)
     return vis
 
-# ------------ 主循环 ------------
+# —— 1秒窗口的吞吐FPS（与你原来一致） ——
 clock = time.perf_counter
 tsq = deque()
 frames = 0
-cv2.namedWindow("YOLO V4L2", cv2.WINDOW_NORMAL)
 
+cv2.namedWindow("YOLO V4L2", cv2.WINDOW_NORMAL)
 print("Press ESC to quit")
 try:
     while True:
-        frame = grabber.get(timeout_ms=200)
+        # 从后台线程拿“最新一帧”；若暂时还没帧，就继续等一会儿
+        frame = grabber.get(timeout_ms=100)
         if frame is None:
-            # 暂无帧，继续等待
             continue
 
-        # 推理（不再传 device 参数）
-        r = model(frame, imgsz=640, conf=0.8, verbose=False)
+        # 推理（不要再传 device 参数；保持 imgsz=1080, conf=0.13）
+        r = model(frame, imgsz=1080, conf=0.13, verbose=False)
+
+        # 自绘（不改变检测结果）
         vis = draw_detections(frame, r[0])
 
-        # 最近 1 秒吞吐 FPS
+        # 更新时间戳队列（保留最近1秒）
         now = clock()
         tsq.append(now)
         one_sec_ago = now - 1.0
@@ -160,7 +159,7 @@ try:
 
         frames += 1
         if frames % 30 == 0:
-            fps = len(tsq) / 1.0
+            fps = len(tsq) / 1.0  # 最近1秒端到端吞吐FPS
             mode = "YUYV" if USE_YUYV else "MJPG"
             cv2.setWindowTitle("YOLO V4L2",
                                f"YOLO V4L2  ~{fps:.1f} FPS | {mode} {W}x{H}@{FPS} | half={USE_HALF}")
