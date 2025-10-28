@@ -1,5 +1,6 @@
 # yolo_v4l2_display.py
 import os, time, cv2, torch
+from collections import deque
 from ultralytics import YOLO
 
 # 把窗口显示到 Jetson 本地屏幕
@@ -25,7 +26,11 @@ cap.set(cv2.CAP_PROP_FPS,         FPS)
 model = YOLO("weights/yolo12n")  # 或 "yolov8n.pt"
 model.to("cuda:0" if torch.cuda.is_available() else "cpu")  # 只在这里指定一次设备
 
-t0, frames = time.time(), 0
+# —— 方案A：1秒窗口的吞吐FPS（最小改动） ——
+clock = time.perf_counter
+tsq = deque()
+frames = 0
+
 print("Press ESC to quit")
 while True:
     ok, frame = cap.read()
@@ -41,9 +46,16 @@ while True:
     r = model(frame, imgsz=640, conf=0.01, verbose=False)
     vis = r[0].plot()
 
+    # 更新时间戳队列（保留最近1秒）
+    now = clock()
+    tsq.append(now)
+    one_sec_ago = now - 1.0
+    while tsq and tsq[0] < one_sec_ago:
+        tsq.popleft()
+
     frames += 1
     if frames % 30 == 0:
-        fps = frames / (time.time() - t0)
+        fps = len(tsq) / 1.0  # 最近1秒的端到端吞吐FPS
         cv2.setWindowTitle("YOLO V4L2", f"YOLO V4L2  ~{fps:.1f} FPS")
 
     cv2.imshow("YOLO V4L2", vis)

@@ -1,12 +1,12 @@
 # yolo_v4l2_display.py
 import os, time, cv2, torch
 from ultralytics import YOLO
-
+# DISPLAY=:0 xhost +SI:localuser:root
 # --- 显示环境修复（关键） ---
 os.environ.setdefault("DISPLAY", ":0")  # 若用 SSH -Y，会自动给 DISPLAY，不需要这行
 os.environ.setdefault("XAUTHORITY", "/home/rocam/.Xauthority")
 os.environ.setdefault("GDK_BACKEND", "x11")  # Wayland 下用 XWayland
-
+# Defaults    env_keep += "DISPLAY XAUTHORITY WAYLAND_DISPLAY XDG_RUNTIME_DIR"
 def can_show():
     # 有 DISPLAY 且不是纯 headless；sudo -E 后这里应有值
     return bool(os.environ.get("DISPLAY"))
