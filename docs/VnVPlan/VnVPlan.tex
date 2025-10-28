@@ -46,6 +46,7 @@
   2025-10-21          & 1.0           & Initial Draft                                      \\
   2025-10-23          & 2.0           & Revised on section 3                               \\
   2025-10-26          & 3.0           & Revised on section 3 based on TA and peer feedback \\
+  2025-10-27          & 4.0           & Added system tests \\
   \bottomrule
 \end{tabularx}
 
@@ -793,54 +794,176 @@ consistency checks between validated behaviors and specified requirements.
 \wss{Include a blurb here to explain why the subsections below
   cover the requirements.  References to the SRS would be good here.}
 
-\subsubsection{Area of Testing1}
+The following manual tests are designed to evaluate the robustness of the
+Tracking Camera System. Each test includes its initial state, input, expected
+output, justification (test case derivation), and procedure. Tests are
+organized by functional area. The intent is to verify compliance with the
+functional requirements (FR) while deliberately stressing the system to expose
+edge cases.
 
-\wss{It would be nice to have a blurb here to explain why the subsections below
-  cover the requirements.  References to the SRS would be good here.  If a section
-  covers tests for input constraints, you should reference the data constraints
-  table in the SRS.}
+\subsubsection{Area of Testing: Video Acquisition and Output}
 
-\paragraph{Title for Test}
+\subsubsection*{test-aquire-frame: Camera Frames are Acquired at Startup}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System powered off; camera connected; HDMI monitor attached.
+  \item \textbf{Input:} Power on the system and allow it to fully initialize.
+  \item \textbf{Expected Output:} Within 10s of boot, logs show that the camera is acquiring frames.
+  \item \textbf{Test Case Derivation:} The system's operation depends on a valid video feed.
+  \item \textbf{How Test Will Be Performed:} Boot the device; observe the program logs.
+\end{itemize}
 
-\begin{enumerate}
+\subsubsection*{test-disconnect-camera: Camera Disconnect During Operation}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; preview and HDMI output active.
+  \item \textbf{Input:} Physically disconnect the camera from the system.
+  \item \textbf{Expected Output:} On disconnect, the UI and HDMI output show a clear error message; no crash.
+  \item \textbf{Test Case Derivation:} When the camera is disconnected, the system should gracefully handle the loss without crashing. And it should notify the operator that the camera is disconnected.
+  \item \textbf{How Test Will Be Performed:} Disconnect the camera from the system; observe the UI and HDMI output for error messages.
+\end{itemize}
 
-  \item{test-id1\\}
+\subsubsection*{test-hdmi-output: HDMI Output with Info Overlay}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input:} Move the gimbal manually through the UI.
+  \item \textbf{Expected Output:} HDMI shows 1080p60 camera feed with a text overlay of current pan/tilt angles.
+  \item \textbf{Test Case Derivation:} The system should be able to display the current camera feed and the pan/tilt angles for the viewers
+  \item \textbf{How Test Will Be Performed:} Move the gimbal manually, and visually verify overlay values change smoothly and match commanded motion
+\end{itemize}
 
-        Control: Manual versus Automatic
+\subsubsection*{test-disconnect-hdmi: HDMI Disconnect}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; preview and HDMI output active.
+  \item \textbf{Input:} Physically disconnect the HDMI cable.
+  \item \textbf{Expected Output:} On disconnect, the UI show a clear error message; no crash.
+  \item \textbf{Test Case Derivation:} When the HDMI cable is disconnected, the system should gracefully handle the loss without crashing. And it should notify the operator that the HDMI cable is disconnected.
+  \item \textbf{How Test Will Be Performed:} Disconnect the HDMI cable from the system; observe the UI for error messages.
+\end{itemize}
 
-        Initial State:
+\subsubsection*{test-preview-real-time: Preview with Real-Time Info}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input:} Move the gimbal manually through the UI.
+  \item \textbf{Expected Output:} Preview in the UI updates fluidly (target $\geq$15fps) and displays current pan/tilt angles.
+  \item \textbf{Test Case Derivation:} The system should allow the camera operator to see the current pan/tilt angles and HDMI output in real-time.
+  \item \textbf{How Test Will Be Performed:} Move the gimbal manually, and visually verify the preview in the UI updates fluidly and displays the current pan/tilt angles.
+\end{itemize}
 
-        Input:
+\subsubsection*{test-network-disconnect: Network Disconnect While Viewing UI}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; preview and HDMI output active.
+  \item \textbf{Input:} Disconnect the system from the network for 30s; reconnect.
+  \item \textbf{Expected Output:} The system keeps functioning as normal without network; UI show a clear error message; upon reconnection, the UI session restores automatically within 5s without reboot; no data loss or crash.
+  \item \textbf{Test Case Derivation:} The system need to be resilient against transient network failures in field conditions.
+  \item \textbf{How Test Will Be Performed:} Manually disconnect and connect the system from the network; observe the UI for error messages.
+\end{itemize}
 
-        Output: \wss{The expected result for the given inputs. Output is not how you
-          are going to return the results of the test. The output is the expected
-          result.}
+\subsubsection{Area of Testing: Recording}
 
-        Test Case Derivation: \wss{Justify the expected value given in the Output
-          field}
+\subsubsection*{test-recording: Start and Stop Recording}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; sufficient disk space.
+  \item \textbf{Input:} Press "Start Recording", wait 10s, then press "Stop Recording".
+  \item \textbf{Expected Output:} A 10 second 1080p60 video file is created and saved to the disk.
+  \item \textbf{Test Case Derivation:} The system should be able to start and stop recording.
+  \item \textbf{How Test Will Be Performed:} Press "Start Recording", wait 10s, then press "Stop Recording".
+\end{itemize}
 
-        How test will be performed:
+\subsubsection*{test-disk-full: Disk Full Behavior During Recording}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; storage nearly full (simulate by filling disk leaving $<1$min recording capacity).
+  \item \textbf{Input:} Start recording and allow disk to fill.
+  \item \textbf{Expected Output:} UI show a clear "Storage Full" alert; current recording is stopped and the file is saved to the disk; no crash.
+  \item \textbf{Test Case Derivation:} The system should be able to handle storage exhaustion gracefully.
+  \item \textbf{How Test Will Be Performed:} Fill the disk with data until it is nearly full; start recording; observe the UI for the "Storage Full" alert; check the disk for the saved file.
+\end{itemize}
 
-  \item{test-id2\\}
+\subsubsection*{test-manage-recordings: List and Download Recordings}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} At least two prior recordings exist.
+  \item \textbf{Input:} Open recordings list; download the latest file and an older file; delete a small test clip.
+  \item \textbf{Expected Output:} List shows correct entries (name, timestamp, duration); downloads succeed; delete removes the selected item only.
+  \item \textbf{Test Case Derivation:} The system should be able to list, delete, and download recordings.
+  \item \textbf{How Test Will Be Performed:} Open the recordings list; download the latest file and an older file; delete a small test clip; check the list for the correct entries; check the disk for the saved files.
+\end{itemize}
 
-        Control: Manual versus Automatic
+\subsubsection{Area of Testing: Tracking}
 
-        Initial State:
+\subsubsection*{test-manual-control: Manual Gimbal Control in Idle}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input:} Issue manual pan and tilt commands via UI.
+  \item \textbf{Expected Output:} The gimbal follows commands smoothly.
+  \item \textbf{Test Case Derivation:} The operator should be able to manually control the gimbal in idle state.
+  \item \textbf{How Test Will Be Performed:} Issue manual pan and tilt commands via UI; observe the gimbal movement.
+\end{itemize}
 
-        Input:
+\subsubsection*{test-transition-to-tracking: Transition to Tracking When Rocket Detected}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input:} Arm the system via UI, and waving a model rocket in front of the camera.
+  \item \textbf{Expected Output:} The system transitions to tracking state as soon as the rocket is detected; the UI shows the system is in tracking state
+  \item \textbf{Test Case Derivation:} The system should be able to transition to tracking state when a rocket is detected.
+  \item \textbf{How Test Will Be Performed:} Arm the system via UI, and waving a model rocket in front of the camera; observe the UI for the system to transition to tracking state.
+\end{itemize}
 
-        Output: \wss{The expected result for the given inputs}
+\subsubsection*{test-tracking: Keep Rocket in Frame While Tracking}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; tracking state; preview and HDMI output active.
+  \item \textbf{Input:} Continue waving the model rocket in front of the camera.
+  \item \textbf{Expected Output:} Gimbal should continuously adjust its position to keep the rocket in the frame for the duration of the test.
+  \item \textbf{Test Case Derivation:} The system should be able to keep the rocket in the frame while tracking.
+  \item \textbf{How Test Will Be Performed:} Wave the model rocket in front of the camera; observe the gimbal movement; observe the preview in the UI.
+\end{itemize}
 
-        Test Case Derivation: \wss{Justify the expected value given in the Output
-          field}
+\subsubsection*{test-return-to-idle: Return to Idle When Rocket is Lost}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; tracking state; preview and HDMI output active.
+  \item \textbf{Input:} Occlude the model rocket.
+  \item \textbf{Expected Output:} Within 2s of sustained loss, system transitions to idle state; ceases autonomous gimbal commands; UI indicates "target lost".
+  \item \textbf{Test Case Derivation:} The system should be able to return to idle state when the rocket is lost.
+  \item \textbf{How Test Will Be Performed:} Occlude the model rocket; observe the UI for the system to transition to idle state.
+\end{itemize}
 
-        How test will be performed:
+\subsubsection*{test-exit-gimbal-range: Rocket Exits Gimbal Range}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; tracking state; preview and HDMI output active.
+  \item \textbf{Input:} Move the model rocket outside of the gimbal's range of motion.
+  \item \textbf{Expected Output:} The gimbal moves until it reaches its mechanical limit, then stops moving further; no errors or warnings are presented to the user; system remains responsive.
+  \item \textbf{Test Case Derivation:} The system must safely handle objects that leave the gimbal's range without faulting or reporting spurious errors.
+  \item \textbf{How Test Will Be Performed:} Move the model rocket outside of the gimbal's range of motion; observe the gimbal reaches its mechanical end and stops; verify that no error messages appear in the UI and that all other system functions remain operational.
+\end{itemize}
 
-\end{enumerate}
+\subsubsection{Field Testing}
 
-\subsubsection{Area of Testing2}
+Field testing will be conducted by one of our clients. The client will be
+provided with the manual of the system and be in charge of operating the
+system. The field test will be conducted in a model rocket launch event
+outdoors. The client will go through all the use cases of the system listed in
+the SRS during the field test. The use cases includes manually controlling the
+gimbal, arming and disarming the system, starting and stopping recording, and
+tracking a model rocket.
 
-...
+Since the field test is conducted at an external event, the exact steps of the
+test will vary depending on the event. The development team will be present at
+the event to assist the client with the test.
+
+After the field test, the client will fill out a survey (Appendix 6.2) to
+evaluate the system. Additionally, the development team will review the logs to
+ensure the system operates as expected.
 
 \subsection{Tests for Nonfunctional Requirements}
 
@@ -865,46 +988,191 @@ consistency checks between validated behaviors and specified requirements.
   How will they be done?  In cases like code (or document) walkthroughs, who will
   be involved? Be specific.}
 
-\subsubsection{Area of Testing1}
+\subsubsection{UI Walkthrough}
 
-\paragraph{Title for Test}
+The UI walkthrough will be conducted by the capstone team members themselves
+before the field test.
 
-\begin{enumerate}
+\subsubsection*{test-consistent-units: Consistent and Changeable Units}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input/Condition:} Go through the UI twice, once with metric units, once with imperial units.
+  \item \textbf{Output/Result:} The units are consistent and changeable.
+  \item \textbf{How Test Will Be Performed:} The capstone team members will go through the UI twice, once with metric units, once with imperial units; observe the units in the UI.
+\end{itemize}
 
-  \item{test-id1\\}
+\subsubsection*{test-bilingual-ui: Bilingual UI}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; language = English.
+  \item \textbf{Input/Condition:} Switch UI language to French and back; navigate all UI sections, dialogs, and toasts.
+  \item \textbf{Output/Result:} All visible strings/localized assets appear in the selected language; no truncation/overflow; no mixed-language strings; hotkeys remain functional; date/time/number formats localize correctly.
+  \item \textbf{How Test Will Be Performed:} Perform a complete UI walkthrough in French; capture screenshots of each page/dialog; switch back to English and repeat spot checks.
+\end{itemize}
 
-        Type: Functional, Dynamic, Manual, Static etc.
+\subsubsection*{test-immediate-ui-feedback: Immediate UI Feedback}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System idle; UI ready.
+  \item \textbf{Input/Condition:} Trigger representative actions: button press, toggle, menu selection, starting/stopping recording, arming/disarming, opening settings.
+  \item \textbf{Output/Result:} A visible confirmation (pressed state, spinner, toast, label change) appears within 0.2s for each action.
+  \item \textbf{How Test Will Be Performed:} Observe the UI while performing each action
+\end{itemize}
 
-        Initial State:
+\subsubsection*{test-visual-indicators: Rely on Visual Indicators}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; speakers muted or disconnected.
+  \item \textbf{Input/Condition:} Trigger statuses/alerts: armed, tracking, target lost, storage low/full, network disconnect, device error.
+  \item \textbf{Output/Result:} Every status/alert is presented visually (icons, colors, banners, toasts) without relying on sound; no action-critical info is audio-only.
+  \item \textbf{How Test Will Be Performed:} With audio disabled, induce each state/fault; verify a visible indicator appears and remains long enough to be noticed.
+\end{itemize}
 
-        Input/Condition:
+\subsubsection*{test-confirmation-prompts: Confirmation Prompts for Safety-Critical Actions}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System idle; gimbal powered.
+  \item \textbf{Input/Condition:} Attempt potentially hazardous actions: force home while tracking, hard stop, high-speed slew, firmware update during armed state, factory reset.
+  \item \textbf{Output/Result:} A blocking confirmation dialog appears for each action; dialog text states the specific risk and outcome; default action is “Cancel”; action proceeds only after explicit confirmation.
+  \item \textbf{How Test Will Be Performed:} Trigger each action; capture screenshots of the prompt; verify risk wording is specific (not generic); verify no motion/change occurs until “Confirm” is pressed.
+\end{itemize}
 
-        Output/Result:
+\subsubsection*{test-manual-idle-mode: Manual Idle Mode / Override}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System armed or tracking.
+  \item \textbf{Input/Condition:} Press “Idle” (or equivalent) control while tracking.
+  \item \textbf{Output/Result:} System transitions to idle within 1\,s; autonomous commands cease; manual controls become available; status clearly shows “Idle.”
+  \item \textbf{How Test Will Be Performed:} Enter tracking, then invoke manual idle; observe immediate cessation of gimbal motion; verify state banner change and manual jog controls responsiveness.
+\end{itemize}
 
-        How test will be performed:
+\subsubsection*{test-no-collection-pii: No Collection of PII}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; default configuration.
+  \item \textbf{Input/Condition:} Inspect all settings, logs, exported files, filenames/paths, and network-configurable fields.
+  \item \textbf{Output/Result:} No fields request or store personal identifiers (names, emails, phone numbers, precise home addresses, faces with identity tags); logs contain only technical data; telemetry excludes PII.
+  \item \textbf{How Test Will Be Performed:} Open each settings and log panel; download logs/recordings; inspect metadata (EXIF/JSON/CSV) for PII keys; verify any optional labels are device/session IDs, not personal data.
+\end{itemize}
 
-  \item{test-id2\\}
+\subsubsection*{test-color-vision-deficiency: Color-Vision Deficiency Accessibility}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; all status indicators visible.
+  \item \textbf{Input/Condition:} Review all status/alert states (normal, armed, tracking, warning, error) and interactive controls (enabled/disabled) under simulated Protanopia/Deuteranopia/Tritanopia or printed CVD reference swatches.
+  \item \textbf{Output/Result:} Each state is distinguishable without relying on hue alone (uses shape, text labels, patterns, or contrast); contrast ratio \(\geq\) 4.5:1 for text/icons against background.
+  \item \textbf{How Test Will Be Performed:} Cycle UI through all states; verify distinct icon shapes/labels; optionally view via a CVD simulator; record pass/fail with screenshots; confirm tooltips/textual labels exist for each color state.
+\end{itemize}
 
-        Type: Functional, Dynamic, Manual, Static etc.
+\subsubsection{Code and Documentation Walkthrough}
 
-        Initial State:
+\subsubsection*{test-manual-arm-mode: Manual Arm Mode Only}
+\begin{itemize}
+  \item \textbf{Type:} Static
+  \item \textbf{Initial State:} N/A
+  \item \textbf{Input/Condition:} Inspect all state transition code and configuration defaults.
+  \item \textbf{Output/Result:} The system only enters armed mode when explicitly commanded by the user, never automatically.
+  \item \textbf{How Test Will Be Performed:} Review code for all references to the armed state, verify guards require user input.
+\end{itemize}
 
-        Input:
+\subsubsection*{test-gimbal-interface: Gimbal Interface Documentation Review}
+\begin{itemize}
+  \item \textbf{Type:} Static
+  \item \textbf{Initial State:} N/A
+  \item \textbf{Input/Condition:} Review the interface specification with the client, including command set, telemetry, timing, and safety notes.
+  \item \textbf{Output/Result:} The client confirms the interface documentation is complete, clear, and suitable for supporting multiple gimbal systems.
+  \item \textbf{How Test Will Be Performed:} Conduct a walkthrough meeting with the client, check all required topics against a prepared checklist.
+\end{itemize}
 
-        Output:
+\subsubsection{Error Handling and Logging}
 
-        How test will be performed:
+\subsubsection*{test-report-errors: Report All Errors to the User}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized and idle.
+  \item \textbf{Input/Condition:} Manually trigger hardware, communication, and software faults.
+  \item \textbf{Output/Result:} Each error generates a visible and descriptive message on the user interface.
+  \item \textbf{How Test Will Be Performed:} Disconnect devices, kill processes, and simulate faults while observing the UI for clear error reporting.
+\end{itemize}
 
-\end{enumerate}
+\subsubsection*{test-stop-immediately: Stop Immediately on Unrecoverable Error}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System operating in tracking mode.
+  \item \textbf{Input/Condition:} Introduce a fatal condition such as gimbal communication loss or corrupted control process.
+  \item \textbf{Output/Result:} The system immediately stops all automated operations and transitions to a safe idle state.
+  \item \textbf{How Test Will Be Performed:} Disconnect the gimbal or crash the tracking process, verify that motion stops and the system displays a clear unrecoverable error message.
+\end{itemize}
 
-\subsubsection{Area of Testing2}
+\subsubsection*{test-validate-commands: Validate All Commands}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System idle.
+  \item \textbf{Input/Condition:} Enter invalid or out-of-range user commands through the UI or API.
+  \item \textbf{Output/Result:} The system rejects invalid commands and displays a validation error without sending them to the gimbal.
+  \item \textbf{How Test Will Be Performed:} Attempt to send commands beyond gimbal limits or in unsupported formats and confirm that they are blocked with clear feedback.
+\end{itemize}
 
-...
+\subsubsection*{test-log-operations: Log All Operations}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized and user logged in.
+  \item \textbf{Input/Condition:} Perform a series of user operations such as arming, tracking, and recording.
+  \item \textbf{Output/Result:} Each action is logged with a timestamp and operation details in the system log.
+  \item \textbf{How Test Will Be Performed:} After the field test, review the log file to confirm all actions and timestamps are recorded accurately.
+\end{itemize}
+
+\subsubsection{Field Testing}
+
+\subsubsection*{test-user-survey: User Survey}
+\begin{itemize}
+  \item \textbf{Type:} Static
+  \item \textbf{Initial State:} N/A
+  \item \textbf{Input/Condition:} N/A
+  \item \textbf{Output/Result:} Completed user survey.
+  \item \textbf{How Test Will Be Performed:} After the field test, the client fills out the survey and returns it to the development team.
+\end{itemize}
 
 \subsection{Traceability Between Test Cases and Requirements}
 
 \wss{Provide a table that shows which test cases are supporting which
   requirements.}
+
+\begin{tabularx}{\textwidth}{p{5cm}X}
+  \toprule {\bf Test ID}       & {\bf Requirements}                                                                                \\
+  \midrule
+  test-aquire-frame            & FR-1, SLR-2                                                                                       \\
+  test-disconnect-camera       & FR-1                                                                                              \\
+  test-hdmi-output             & FR-8, FR-9, INT-1, SLR-3                                                                          \\
+  test-disconnect-hdmi         & FR-8                                                                                              \\
+  test-preview-real-time       & FR-10                                                                                             \\
+  test-network-disconnect      & FR-10                                                                                             \\
+  test-recording               & FR-11                                                                                             \\
+  test-disk-full               & FR-11                                                                                             \\
+  test-manage-recordings       & FR-12                                                                                             \\
+  test-manual-control          & FR-2, FR-6                                                                                        \\
+  test-transition-to-tracking  & FR-3, FR-4                                                                                        \\
+  test-tracking                & FR-2, FR-3, FR-7                                                                                  \\
+  test-return-to-idle          & FR-5                                                                                              \\
+  test-exit-gimbal-range       & FR-2, FR-7                                                                                        \\
+  test-consistent-units        & EZ-1, PI-1                                                                                        \\
+  test-bilingual-ui            & PI-2                                                                                              \\
+  test-immediate-ui-feedback   & EZ-2                                                                                              \\
+  test-visual-indicators       & EZ-3                                                                                              \\
+  test-confirmation-prompts    & EZ-4, UPR-3                                                                                       \\
+  test-manual-idle-mode        & SCR-1                                                                                             \\
+  test-no-collection-pii       & LR-1                                                                                              \\
+  test-color-vision-deficiency & AR-1                                                                                              \\
+  test-manual-arm-mode         & SCR-4                                                                                             \\
+  test-gimbal-interface        & INT-2                                                                                             \\
+  test-report-errors           & RFR-1                                                                                             \\
+  test-stop-immediately        & RFR-2                                                                                             \\
+  test-validate-commands       & IR-1                                                                                              \\
+  test-log-operations          & AUR-1                                                                                             \\
+  test-user-survey             & AR-1, AR-2, SR-1, LR-1, UPR-1, UPR-2, PAR-1, SLR-1, RFR-5, CR-1, CR-2, SCR-2, SCR-3, RFR-3, EPE-1 \\
+  \bottomrule
+\end{tabularx}
 
 \section{Unit Test Description}
 
@@ -1048,9 +1316,49 @@ This is where you can place additional information.
 The definition of the test cases will call for SYMBOLIC\_CONSTANTS. Their
 values are defined in this section for easy maintenance.
 
-\subsection{Usability Survey Questions?}
+\subsection{User Survey Questions}
 
 \wss{This is a section that would be appropriate for some projects.}
+
+Please answer each question based on your experience during the field test. For
+questions rated on a scale, circle the number that best reflects your opinion:
+1 = Strongly Disagree, 2 = Disagree, 3 = Neutral, 4 = Agree, 5 = Strongly
+Agree.
+
+\subsubsection*{User Interface}
+
+\begin{enumerate}
+  \item The interface was readable and easy to see outdoors. \hfill (1 2 3 4 5)
+  \item The interface looked professional and well-designed. \hfill (1 2 3 4 5)
+  \item The important information was immediately visible on the screen. \hfill (1 2 3
+        4 5)
+  \item No unnecessary or confusing information was shown. \hfill (1 2 3 4 5)
+  \item The system was easy to learn and operate after a short time. \hfill (1 2 3 4 5)
+  \item The terms and labels used in the interface were clear and understandable.
+        \hfill (1 2 3 4 5)
+\end{enumerate}
+
+\subsubsection*{System Performance}
+
+\begin{enumerate}
+  \item The tracking footage was stable and smooth. \hfill (1 2 3 4 5)
+  \item The tracking system maintained lock on the rocket reliably. \hfill (1 2 3 4 5)
+  \item The system operated as expected without major errors. \hfill (1 2 3 4 5)
+  \item Once armed, the system operated fully autonomously. \hfill (1 2 3 4 5)
+  \item I was able to fully operate and monitor the system remotely. \hfill (1 2 3 4 5)
+\end{enumerate}
+
+\subsubsection*{User Experience and Feedback}
+
+\begin{enumerate}
+  \item Were any colors, symbols, or content elements disrespectful or inappropriate to
+        you?\\ \textit{(Please describe if applicable)}\\[1em]
+        \makebox[0.95\textwidth]{\hrulefill}\\[0.5em]
+        \makebox[0.95\textwidth]{\hrulefill}
+  \item What improvements would you suggest for future versions of RoCam?\\[1em]
+        \makebox[0.95\textwidth]{\hrulefill}\\[0.5em]
+        \makebox[0.95\textwidth]{\hrulefill}
+\end{enumerate}
 
 \newpage{}
 \section*{Appendix --- Reflection}
