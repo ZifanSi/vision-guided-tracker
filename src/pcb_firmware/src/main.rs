@@ -4,17 +4,30 @@
 #![feature(associated_type_defaults)]
 #![feature(try_blocks)]
 
+use crate::{
+    led::{arm_led_task, set_arm_led, set_status_led, status_led_task},
+    servo::servo_task,
+};
+
 use {defmt_rtt as _, panic_probe as _};
 
+mod led;
+mod servo;
+
+use cortex_m::singleton;
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_futures::join::join;
 use embassy_stm32::gpio::{Level, Output, Speed};
 use embassy_stm32::mode::Async;
-use embassy_stm32::peripherals::PA3;
+use embassy_stm32::peripherals::{PC11, PD2};
 use embassy_stm32::time::mhz;
 use embassy_stm32::usart::{Config as UsartConfig, Uart};
 use embassy_stm32::{Peri, bind_interrupts, peripherals, usart};
+use embassy_sync::{
+    blocking_mutex::raw::{CriticalSectionRawMutex, NoopRawMutex},
+    watch::Watch,
+};
 use embassy_time::{Duration, Ticker, Timer};
 use embedded_io_async::Write;
 use micromath::F32Ext;
@@ -57,9 +70,15 @@ async fn main(spawner: Spawner) {
         config
     };
     let p = embassy_stm32::init(config);
-    info!("Hello World!");
+    info!("Hello RoCam!");
 
-    spawner.spawn(led_task(p.PA3)).unwrap();
+    spawner.must_spawn(arm_led_task(p.PC11));
+    spawner.must_spawn(status_led_task(p.PD2));
+
+    let tilt_angle_deg_watch = singleton!(: Watch<NoopRawMutex, f32, 1> = Watch::new()).unwrap();
+    let pan_angle_deg_watch = singleton!(: Watch<NoopRawMutex, f32, 1> = Watch::new()).unwrap();
+    spawner.must_spawn(servo_task(p.PB5.into(), tilt_angle_deg_watch));
+    spawner.must_spawn(servo_task(p.PB6.into(), pan_angle_deg_watch));
 
     let mut config = UsartConfig::default();
     config.baudrate = 115200;
@@ -67,30 +86,17 @@ async fn main(spawner: Spawner) {
         p.USART1, p.PA10, p.PA9, Irqs, p.DMA2_CH7, p.DMA2_CH5, config,
     )
     .unwrap();
-    spawner.spawn(echo_task(usart)).unwrap();
+    spawner.must_spawn(uart_task(usart));
 
-    let mut pb5 = Output::new(p.PB5, Level::High, Speed::Low);
-    let mut pb6 = Output::new(p.PB6, Level::High, Speed::Low);
     let mut ticker = Ticker::every(Duration::from_hz(50));
     let mut angle: f32 = 0.0;
     loop {
         ticker.next().await;
         // Calculate pulse width between 1000us and 2000us using sine wave
         // range: 500 - 2500us
-        let tilt_pulse_width = (1200.0 + (300.0 * angle.sin())) as u64;
-        let pan_pulse_width = (1500.0 + (500.0 * angle.cos())) as u64;
+        let angle2 = angle.sin() * 90.0;
 
-        let fut1 = async {
-            pb5.set_low();
-            Timer::after_micros(tilt_pulse_width).await;
-            pb5.set_high();
-        };
-        let fut2 = async {
-            pb6.set_low();
-            Timer::after_micros(pan_pulse_width).await;
-            pb6.set_high();
-        };
-        join(fut1, fut2).await;
+        // tilt_angle_deg_watch.sender().send(angle2);
 
         // Increment angle (adjust speed by changing increment)
         angle += 0.02;
@@ -101,7 +107,7 @@ async fn main(spawner: Spawner) {
 }
 
 #[embassy_executor::task]
-async fn echo_task(mut uart: Uart<'static, Async>) {
+async fn uart_task(mut uart: Uart<'static, Async>) {
     let mut buffer = [0u8; 128];
     loop {
         match uart.read_until_idle(&mut buffer).await {
@@ -112,14 +118,5 @@ async fn echo_task(mut uart: Uart<'static, Async>) {
             }
             Err(e) => error!("Error: {:?}", e),
         }
-    }
-}
-
-#[embassy_executor::task]
-async fn led_task(pin: Peri<'static, PA3>) {
-    let mut led = Output::new(pin, Level::High, Speed::Low);
-    loop {
-        Timer::after_millis(500).await;
-        led.toggle();
     }
 }

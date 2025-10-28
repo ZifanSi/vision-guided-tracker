@@ -4,14 +4,13 @@ rustflags = [
   "-C", "link-arg=--nmagic",
   "-C", "link-arg=-Tlink.x",
   "-C", "link-arg=-Tdefmt.x",
-  "-C", "linker=flip-link",
 ]
 
 [build]
 target = "thumbv7em-none-eabihf"
 
 [env]
-DEFMT_LOG = "warn,firmware_common_new=debug,firmware=debug,gcm=debug"
+DEFMT_LOG = "warn,firmware=debug"
 
 [unstable]
 build-std = ["core"]
