@@ -1,0 +1,37 @@
+name: firmware-ci
+
+on:
+  push:
+    branches: [ main, "pega/pcb-firmware" ]   # runs on pushes to these branches
+    paths:
+      - "src/pcb-firmware/**"                  # only run if React files change
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "src/pcb-firmware/**"
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/pcb-firmware
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build firmware
+        run: cargo build # debug build has the same profile as release build
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: target/thumbv7em-none-eabihf/debug/firmware
+      - name: Check formatting
+        run: cargo fmt --check
