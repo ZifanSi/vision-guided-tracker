@@ -2,9 +2,9 @@ name: firmware-ci
 
 on:
   push:
-    branches: [ main, "pega/pcb-firmware" ]   # runs on pushes to these branches
+    branches: [ main, "pega/pcb-firmware" ]
     paths:
-      - "src/pcb-firmware/**"                  # only run if React files change
+      - "src/pcb-firmware/**"
   pull_request:
     branches: [ main ]
     paths:
