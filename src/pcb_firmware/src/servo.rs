@@ -37,7 +37,6 @@ pub async fn servo_task(
 
         let angle_deg = receiver.try_get().unwrap_or(0.0);
         let pulse_width_us = servo_angle_to_pulse_width_us(angle_deg);
-        info!("{}", pulse_width_us);
         pwm_pin.set_high();
         Timer::after_micros(pulse_width_us).await;
         pwm_pin.set_low();
