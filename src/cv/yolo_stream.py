@@ -43,7 +43,8 @@ while True:
     # frame = cv2.cvtColor(frame, cv2.COLOR_YUV2BGR_UYVY)  # UYVY
 
     # 推理（不要再传 device 参数）
-    r = model(frame, imgsz=640, conf=0.01, verbose=False)
+    r = model(frame, imgsz=640, conf=0.8, verbose=False)
+    print(0.8)
     vis = r[0].plot()
 
     # 更新时间戳队列（保留最近1秒）
