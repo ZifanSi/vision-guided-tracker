@@ -1,9 +1,10 @@
-# yolo_v4l2_display.py —— 最小化无损优化版（保持 imgsz=1080, conf=0.13）
+# yolo_v4l2_display.py —— 最小化无损优化版（保持 imgsz≈1080, conf=0.13；自动对齐到32的倍数）
 import os, time, cv2, torch, threading
 from collections import deque
 from collections import deque as _deque
 import numpy as np
 from ultralytics import YOLO
+import math
 
 # ---------- 显示/底层加速（无损） ----------
 os.environ.setdefault("DISPLAY", ":0")
@@ -92,24 +93,25 @@ class LatestFrameGrabber:
 
 grabber = LatestFrameGrabber(cap, use_yuyv=USE_YUYV, drops=1).start()
 
-# ---------- 加载模型（不改你的权重与阈值/尺寸） ----------
+# ---------- 加载模型 ----------
 model = YOLO("weights/yolo12n")  # 或 "yolov8n.pt"
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
-# 可选：半精度（基本不影响mAP；若你追求位一致，改为 False）
-USE_HALF = True if device.startswith("cuda") else False
-if USE_HALF:
-    try:
-        model.model.half()
-    except Exception:
-        USE_HALF = False
+# —— 计算与1080最接近且满足stride要求的IMGSZ（一次性） —— #
+BASE_IMGSZ = 1080
+try:
+    stride = int(getattr(model.model, "stride").max().item())
+except Exception:
+    stride = 32
+IMGSZ = int(math.ceil(BASE_IMGSZ / stride) * stride)  # 1080 -> 1088
+HALF_INFER = device.startswith("cuda")
 
 # 预热：不影响结果，只是消除首帧抖动
 warm = grabber.get(timeout_ms=500)
 if warm is not None:
     for _ in range(8):
-        _ = model(warm, imgsz=1080, conf=0.13, verbose=False)
+        _ = model(warm, imgsz=IMGSZ, conf=0.13, half=HALF_INFER, verbose=False)
 
 # ---------- 自绘框（替代 r[0].plot()，不影响检测结果，只省渲染时间） ----------
 def draw_detections(img, res):
@@ -144,8 +146,8 @@ try:
         if frame is None:
             continue
 
-        # 推理（不要再传 device 参数；保持 imgsz=1080, conf=0.13）
-        r = model(frame, imgsz=1080, conf=0.13, verbose=False)
+        # 推理（使用对齐后的 IMGSZ，避免每帧警告）
+        r = model(frame, imgsz=IMGSZ, conf=0.13, half=HALF_INFER, verbose=False)
 
         # 自绘（不改变检测结果）
         vis = draw_detections(frame, r[0])
@@ -162,7 +164,7 @@ try:
             fps = len(tsq) / 1.0  # 最近1秒端到端吞吐FPS
             mode = "YUYV" if USE_YUYV else "MJPG"
             cv2.setWindowTitle("YOLO V4L2",
-                               f"YOLO V4L2  ~{fps:.1f} FPS | {mode} {W}x{H}@{FPS} | half={USE_HALF}")
+                               f"YOLO V4L2  ~{fps:.1f} FPS | {mode} {W}x{H}@{FPS} | imgsz={IMGSZ} | half={HALF_INFER}")
 
         cv2.imshow("YOLO V4L2", vis)
         if cv2.waitKey(1) == 27:  # ESC
