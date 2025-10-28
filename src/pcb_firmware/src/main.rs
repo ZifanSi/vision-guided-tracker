@@ -64,13 +64,13 @@ async fn main(spawner: Spawner) {
     let p = embassy_stm32::init(config);
     info!("Hello RoCam!");
 
-    spawner.must_spawn(arm_led_task(p.PC11));
-    spawner.must_spawn(status_led_task(p.PD2));
+    spawner.spawn(arm_led_task(p.PC11).unwrap());
+    spawner.spawn(status_led_task(p.PD2).unwrap());
 
     let tilt_angle_deg_watch = singleton!(: Watch<NoopRawMutex, f32, 1> = Watch::new()).unwrap();
     let pan_angle_deg_watch = singleton!(: Watch<NoopRawMutex, f32, 1> = Watch::new()).unwrap();
-    spawner.must_spawn(servo_task(p.PB5.into(), tilt_angle_deg_watch));
-    spawner.must_spawn(servo_task(p.PB6.into(), pan_angle_deg_watch));
+    spawner.spawn(servo_task(p.PB5.into(), tilt_angle_deg_watch).unwrap());
+    spawner.spawn(servo_task(p.PB6.into(), pan_angle_deg_watch).unwrap());
 
     let mut config = UsartConfig::default();
     config.baudrate = 115200;
@@ -82,5 +82,5 @@ async fn main(spawner: Spawner) {
         tilt_angle_deg_watch,
         pan_angle_deg_watch,
     };
-    spawner.must_spawn(rpc_task(usart, gimbal_rpc));
+    spawner.spawn(rpc_task(usart, gimbal_rpc).unwrap());
 }

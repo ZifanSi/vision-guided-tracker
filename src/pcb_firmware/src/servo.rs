@@ -1,4 +1,3 @@
-use defmt::info;
 use embassy_stm32::{
     Peri,
     gpio::{AnyPin, Level, Output, Speed},
