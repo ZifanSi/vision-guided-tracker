@@ -69,8 +69,8 @@ async fn main(spawner: Spawner) {
 
     let tilt_angle_deg_watch = singleton!(: Watch<NoopRawMutex, f32, 1> = Watch::new()).unwrap();
     let pan_angle_deg_watch = singleton!(: Watch<NoopRawMutex, f32, 1> = Watch::new()).unwrap();
-    spawner.spawn(servo_task(p.PB5.into(), tilt_angle_deg_watch).unwrap());
-    spawner.spawn(servo_task(p.PB6.into(), pan_angle_deg_watch).unwrap());
+    spawner.spawn(servo_task(p.PB5.into(), 49.0, true, tilt_angle_deg_watch).unwrap());
+    spawner.spawn(servo_task(p.PB6.into(), -7.0, false, pan_angle_deg_watch).unwrap());
 
     let mut config = UsartConfig::default();
     config.baudrate = 115200;

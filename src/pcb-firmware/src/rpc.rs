@@ -25,7 +25,17 @@ impl GimbalRpcServer for GimbalRpc {
         StatusLedResponse {}
     }
 
-    async fn move_deg(&mut self, tilt: f32, pan: f32) -> MoveDegResponse {
+    async fn move_deg(&mut self, mut tilt: f32, mut pan: f32) -> MoveDegResponse {
+        if tilt > 90.0 {
+            tilt = 90.0;
+        } else if tilt < 0.0 {
+            tilt = 0.0;
+        }
+        if pan > 45.0 {
+            pan = 45.0;
+        } else if pan < -45.0 {
+            pan = -45.0;
+        }
         self.tilt_angle_deg_watch.sender().send(tilt);
         self.pan_angle_deg_watch.sender().send(pan);
         MoveDegResponse {}

@@ -25,6 +25,8 @@ fn servo_angle_to_pulse_width_us(mut angle_deg: f32) -> u64 {
 #[embassy_executor::task(pool_size = 2)]
 pub async fn servo_task(
     pwm_pin: Peri<'static, AnyPin>,
+    offset_deg: f32,
+    reverse_direction: bool,
     angle_deg_watch: &'static Watch<NoopRawMutex, f32, 1>,
 ) {
     let mut pwm_pin = Output::new(pwm_pin, Level::Low, Speed::Low);
@@ -34,7 +36,9 @@ pub async fn servo_task(
     loop {
         ticker.next().await;
 
-        let angle_deg = receiver.try_get().unwrap_or(0.0);
+        let angle_deg = receiver.try_get().unwrap_or(0.0)
+            * (if reverse_direction { -1.0 } else { 1.0 })
+            + offset_deg;
         let pulse_width_us = servo_angle_to_pulse_width_us(angle_deg);
         pwm_pin.set_high();
         Timer::after_micros(pulse_width_us).await;
