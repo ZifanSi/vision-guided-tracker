@@ -1,0 +1,18 @@
+[target.thumbv7em-none-eabihf]
+runner = 'probe-rs run --chip STM32F405RGTx --connect-under-reset'
+rustflags = [
+  "-C", "link-arg=--nmagic",
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=-Tdefmt.x",
+]
+
+[build]
+target = "thumbv7em-none-eabihf"
+
+[env]
+DEFMT_LOG = "warn,firmware=debug"
+
+[unstable]
+build-std = ["core"]
+# Uncomment to get rid of all the panic messages, makes it a lot harder to debug but saves a lot of space
+# build-std-features = ["panic_immediate_abort"]

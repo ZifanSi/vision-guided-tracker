@@ -1,0 +1,66 @@
+# This file was automatically generated.
+
+[package]
+edition = "2024"
+name = "firmware"
+version = "0.1.0"
+
+[dependencies]
+cortex-m = { version = "0.7.7", features = [
+    "inline-asm",
+    "critical-section-single-core",
+] }
+cortex-m-rt = "0.7.5"
+crc = "3.3.0"
+defmt = "1.0.1"
+defmt-rtt = "1.0.0"
+embassy-executor = { git = "https://github.com/embassy-rs/embassy.git", features = [
+    "arch-cortex-m",
+    "executor-thread",
+    "defmt",
+    "nightly",
+] }
+embassy-futures = { git = "https://github.com/embassy-rs/embassy.git" }
+embassy-stm32 = { git = "https://github.com/embassy-rs/embassy.git", features = [
+    "memory-x",
+    "stm32f405rg",
+    "time-driver-any",
+    "exti",
+    "defmt",
+    "unstable-pac",
+] }
+embassy-sync = { git = "https://github.com/embassy-rs/embassy.git" }
+embassy-time = { git = "https://github.com/embassy-rs/embassy.git", features = [
+    "tick-hz-1_000_000",
+    "defmt",
+    "defmt-timestamp-uptime",
+] }
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+stm32-device-signature = { version = "0.3.3", features = ["stm32f4"] }
+lora-phy = { git = "https://github.com/lora-rs/lora-rs.git", default-features = false, features = [
+    "defmt-03",
+] }
+embassy-embedded-hal = { git = "https://github.com/embassy-rs/embassy.git" }
+embedded-io-async = "0.6.1"
+micromath = "2.1.0"
+firmware-common-new = { git = "https://github.com/McMaster-Rocketry-Team/Rust_Monorepo", default-features = false, features = [
+    "defmt",
+] }
+
+[[bin]]
+name = "firmware"
+path = "src/main.rs"
+test = false
+bench = false
+
+[profile.dev]
+debug = true
+lto = true
+opt-level = "z"
+incremental = true
+
+[profile.release]
+debug = true
+lto = true
+opt-level = "z"
+incremental = true
