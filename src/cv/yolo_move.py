@@ -5,6 +5,8 @@ from ultralytics import YOLO
 import threading
 from collections import deque as _deque
 
+from src.cv.ct import GimbalSerial
+
 # 把窗口显示到 Jetson 本地屏幕
 os.environ.setdefault("DISPLAY", ":0")
 os.environ.setdefault("XAUTHORITY", "/home/rocam/.Xauthority")
@@ -20,15 +22,16 @@ assert cap.isOpened(), f"V4L2 打不开: {DEV}"
 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
 
 # 分辨率与帧率（不被设备支持时会被忽略；以 v4l2-ctl --list-formats-ext 为准）
-cap.set(cv2.CAP_PROP_FRAME_WIDTH,  W)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, W)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, H)
-cap.set(cv2.CAP_PROP_FPS,         FPS)
+cap.set(cv2.CAP_PROP_FPS, FPS)
+
 
 # ====== 新增：后台抓帧（只保留最新一帧）======
 class LatestFrameGrabber:
     def __init__(self, cap):
         self.cap = cap
-        self.buf = _deque(maxlen=1)   # 仅保留最新一帧
+        self.buf = _deque(maxlen=1)  # 仅保留最新一帧
         self.stop_flag = False
         self.t = threading.Thread(target=self._loop, daemon=True)
 
@@ -41,12 +44,12 @@ class LatestFrameGrabber:
             ok, frame = self.cap.read()
             if not ok:
                 continue
-            self.buf.clear()          # 丢掉旧帧
+            self.buf.clear()  # 丢掉旧帧
             self.buf.append(frame)
 
     def get(self, timeout_ms=100):
         # 简单等待：避免主线程空转
-        end = time.time() + timeout_ms/1000.0
+        end = time.time() + timeout_ms / 1000.0
         while not self.buf and time.time() < end and not self.stop_flag:
             time.sleep(0.001)
         return self.buf[0] if self.buf else None
@@ -54,6 +57,7 @@ class LatestFrameGrabber:
     def stop(self):
         self.stop_flag = True
         self.t.join(timeout=0.5)
+
 
 grabber = LatestFrameGrabber(cap).start()
 
@@ -65,6 +69,12 @@ model.to("cuda:0" if torch.cuda.is_available() else "cpu")  # 只在这里指定
 clock = time.perf_counter
 tsq = deque()
 frames = 0
+
+gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.5)
+gimbal.move_deg(0, 0)
+gimbal_tilt = 0
+gimbal_pan = 0
+time.sleep(1)
 
 print("Press ESC to quit")
 try:
@@ -80,9 +90,60 @@ try:
         # frame = cv2.cvtColor(frame, cv2.COLOR_YUV2BGR_UYVY)  # UYVY
 
         # 推理（不要再传 device 参数）
-        r = model(frame, imgsz=1088, conf=0.13, verbose=False)
+        r = model(frame, imgsz=1088, conf=0.5, verbose=False)
+
+        # ========== 新增：拿最高置信度框 ==========
+        best_box_xyxy = None  # 默认没有目标
+        best_conf = None
+
+        boxes = r[0].boxes  # ultralytics.engine.results.Boxes
+
+        if boxes is not None and boxes.shape[0] > 0:
+            confs = boxes.conf  # tensor [N]
+            xyxy = boxes.xyxy   # tensor [N,4]  format: x1,y1,x2,y2
+
+            # 找到最大置信度的下标
+            max_idx = torch.argmax(confs).item()
+
+            # 取该框的坐标和置信度
+            best_conf = float(confs[max_idx].item())
+            best_box_xyxy = xyxy[max_idx].tolist()  # [x1,y1,x2,y2] as python list[4]
+
+            # 你可以在这里print或用来驱动云台
+            # 中心点也可以直接算出来:
+            x1, y1, x2, y2 = best_box_xyxy
+            cx = 0.5 * (x1 + x2)
+            cy = 0.5 * (y1 + y2)
+
+
+            center_x = W/2
+            center_y = H/2
+            error_x = cx - center_x
+            error_y = cy - center_y
+            gimbal_pan -= error_y * 0.01
+            gimbal_tilt -= error_x * 0.01
+
+            if gimbal_pan > 45:
+                gimbal_pan = 45
+            elif gimbal_pan < -45:
+                gimbal_pan = -45
+            if gimbal_tilt > 90:
+                gimbal_tilt = 90
+            elif gimbal_tilt < 0:
+                gimbal_tilt = 0
+            gimbal.move_deg(gimbal_tilt, gimbal_pan)
+
+            print(f"[TRACK] best_conf={best_conf:.3f}, box={best_box_xyxy}, center=({cx:.1f},{cy:.1f})")
+        else:
+            # 没检测到
+            print("[TRACK] no detections")
+
+        # （可选）把上面cx, cy存到全局/共享变量给别的线程用
+        # gimbal_target = (cx, cy)  #
+
+        # 带框可视化
         vis = r[0].plot()
-        
+
         # 更新时间戳队列（保留最近1秒）
         now = clock()
         tsq.append(now)

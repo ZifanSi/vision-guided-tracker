@@ -81,7 +81,7 @@ try:
 
         # 使用 TensorRT 引擎推理
         # imgsz 必须和你导出 engine 时用的一样，比如 1088
-        r = engine_model(frame, imgsz=1088, conf=0.13, verbose=False)
+        r = engine_model(frame, imgsz=1024, conf=0.13, verbose=False)
 
         # 可视化检测框
         vis = r[0].plot()
