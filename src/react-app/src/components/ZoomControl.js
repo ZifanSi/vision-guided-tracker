@@ -20,7 +20,6 @@ export default function ZoomControl({
   return (
     <div className={`panel ${className}`} style={{ padding: 12 }}>
       <div style={{ fontWeight: 600, marginBottom: 8 }}>Zoom</div>
-      <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 6 }}>Level</div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <button className="pill" onClick={zoomOut} aria-label="Zoom out">−</button>

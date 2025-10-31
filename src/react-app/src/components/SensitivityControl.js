@@ -20,9 +20,6 @@ export default function SensitivityControl({
   return (
     <div className={`panel ${className}`} style={{ padding: 12 }}>
       <div style={{ fontWeight: 600, marginBottom: 8 }}>Sensitivity</div>
-      <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 6 }}>
-        Degrees per nudge
-      </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <button className="pill" onClick={dec} aria-label="Decrease sensitivity">−</button>
