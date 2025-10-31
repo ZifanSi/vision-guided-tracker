@@ -292,3 +292,8 @@ ultralytics/
 #ignore temperary latex
 temp.tex
 temp.pdf
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
