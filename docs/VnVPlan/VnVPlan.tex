@@ -13,11 +13,22 @@
     urlcolor=blue
 }
 \usepackage[round]{natbib}
+\usepackage{pifont}
+\usepackage{booktabs,tabularx}
+\usepackage{float}
+\usepackage{array}      % better column types
+\usepackage{float}      % [H] placement
+\usepackage{amssymb} 
 
 \input{../Comments}
 \input{../Common}
 
+
 \begin{document}
+
+\newcommand{\SRS}{\href{https://www.google.com/maps}{SRS}}
+\newcommand{\MG}{\href{https://www.google.com/maps}{MG}}
+\newcommand{\MIS}{\href{https://www.google.com/maps}{MIS}}
 
 \title{System Verification and Validation Plan for \progname{}}
 \author{\authname}
@@ -30,10 +41,12 @@
 \section*{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-  \toprule {\bf Date} & {\bf Version} & {\bf Notes} \\
+  \toprule {\bf Date} & {\bf Version} & {\bf Notes}                                        \\
   \midrule
-  Date 1              & 1.0           & Notes       \\
-  Date 2              & 1.1           & Notes       \\
+  2025-10-21          & 1.0           & Initial Draft                                      \\
+  2025-10-23          & 2.0           & Revised on section 3                               \\
+  2025-10-26          & 3.0           & Revised on section 3 based on TA and peer feedback \\
+  2025-10-27          & 4.0           & Added system tests                                 \\
   \bottomrule
 \end{tabularx}
 
@@ -56,22 +69,21 @@
 
 \tableofcontents
 
-\listoftables
-\wss{Remove this section if it isn't needed}
-
-\listoffigures
-\wss{Remove this section if it isn't needed}
-
-\newpage
-
 \section{Symbols, Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{l l}
   \toprule
-  \textbf{symbol} & \textbf{description} \\
+  \textbf{symbol} & \textbf{description}                                              \\
   \midrule
-  T               & Test                 \\
+  Yolo            & You only look once -- an existing object detection model          \\
+  CNN             & Convolutional Neural Network                                      \\
+  Jetson          & abbreviatio for specifcally Jetson Nano Orin, which is the
+  proposed board for this project
+  \\
+  STM32           & abbreviation for specifically STM32 microcontroller, which is the
+  proposed microcontroller for this project                                           \\
+
   \bottomrule
 \end{tabular}\\
 
@@ -84,17 +96,93 @@
 
 \pagenumbering{arabic}
 
-This document ... \wss{provide an introductory blurb and roadmap of the
+This Verification and Validation (V\&V) plan outlines how the RoCam project
+will demonstrate that the system is built correctly (verification) and fits
+stakeholder needs (validation). It anchors testing to the SRS, architecture
+(MG), and detailed design (MIS), ensuring every requirement is traceable to one
+or more tests. Verification relies on structured reviews, checklists, and
+staged testing (unit, integration, and system) to confirm functional behavior,
+performance expectations, interface consistency, and safety assumptions.
+Validation complements this with stakeholder walkthroughs, task-based
+inspections, and controlled field or demo sessions to confirm the system’s
+real-world suitability and operator workflow. Roles and responsibilities are
+assigned to team members and the supervisor to keep eviews focused and
+accountable, with feedback captured and tracked. Priorities emphasize
+correctness, performance, reliability, and safety; lower-priority or
+out-of-scope items (e.g., exhaustive usability studies or independent
+verification of third-party components) are noted to keep the plan feasible.
+The document concludes with traceability tables, placeholders for unit-level
+details after design finalization, and appendices for parameters and optional
+surveys—forming a clear, practical roadmap for building credible evidence of
+quality.
+
+\wss{provide an introductory blurb and roadmap of the
   Verification and Validation plan}
 
 \section{General Information}
 
 \subsection{Summary}
 
+The RoCam system is a ground-based camera and gimbal assembly designed to
+autonomously track model rockets during launch and flight. It utilizes a
+high-resolution camera coupled with a motorized gimbal to maintain visual lock
+on the rocket, providing real-time data and video feed. The system consists of
+a STM32 based motion controller that interfaces with the physical gimbal; a
+Jetson compute module that processes the camera feed; and a react frontend that
+displays the video preview and allows the user to control the gimbal. The
+primary purpose of RoCam is to replace the traditional unreliable manual
+tracking methods with an automated solution to produce high-quality flight data
+and video footage. To better assist model rocket teams across Canada to conduct
+successful launches by providing an affordable and reliable system that can be
+easily track launching movements.
+
 \wss{Say what software is being tested.  Give its name and a brief overview of
   its general functions.}
 
 \subsection{Objectives}
+The primary objective of this Verification and Validation V\&V Plan is to
+establish confidence in the correctness, performance, and reliability of the
+RoCam system by ensuring that all verification and validation activities are
+thorough, traceable, and aligned with project requirements. The plan emphasizes
+testing and peer review to confirm that functional and performance criteria are
+fully addressed, with improvements tracked through GitHub Issues. Validation
+focuses on both automated and field testing to confirm that the system performs
+as intended in real-world launch conditions. These qualities—correctness,
+performance, reliability, and traceability—are fundamental to the success of
+the V\&V process, ensuring that the RoCam system is both technically sound and
+operationally dependable. Certain objectives, such as independent verification
+of third-party hardware and extended usability testing, are excluded due to
+scope and resource limitations, with reliance placed on manufacturer and
+stakeholder validation.
+
+\subsection{In-Scope Objectives}
+Verification and validation efforts will prioritize the following qualities:
+\begin{itemize}
+  \item \textbf{Correctness:} Ensure the reliability of tracking and control
+        algorithms through testing and validation.
+  \item \textbf{Performance:} Achieve real-time processing of 1080p 60\,fps
+        video and maintain minimal gimbal control latency.
+  \item \textbf{Safety:} Guarantee that the system operates safely under
+        assumed conditions, with fail-safe mechanisms.
+\end{itemize}
+
+\subsection{Out-of-Scope Objectives}
+The following objectives are excluded from this project due to time, budget,
+and resource constraints:
+\begin{itemize}
+  \item \textbf{Comprehensive Usability Testing:} User experience will be evaluated
+        informally via team and client feedback rather than large-scale formal studies.
+  \item \textbf{Third-Party Component Verification:} External hardware such as the
+        gimbal controller and camera are assumed to perform according to their
+        manufacturer specifications.
+  \item \textbf{Scalability Beyond Small-Scale Rockets:} Tracking a
+        bullet or extremely difficult
+        targets beyond a model rocket is outside the scope of this project.
+\end{itemize}
+
+By defining these priorities and exclusions, the RoCam project ensures that
+available effort is directed toward validating the most critical system
+qualities: \textbf{performance, accuracy, and operational safety}.
 
 \wss{State what is intended to be accomplished.  The objective will be around
   the qualities that are most important for your project.  You might have
@@ -108,12 +196,30 @@ This document ... \wss{provide an introductory blurb and roadmap of the
   worthwhile to justify why the objectives are left out.}
 
 \wss{The objectives are important because they highlight that you are aware of
-  limitations in your resources for verification and validation.  You can't do everything,
-  so what are you going to prioritize?  As an example, if your system depends on an
-  external library, you can explicitly state that you will assume that external library
+  limitations in your resources for verification and validation.
+  You can't do everything, so what are you going to prioritize?
+  As an example, if your system depends on an external library,
+  you can explicitly state that you will assume that external library
   has already been verified by its implementation team.}
 
-\subsection{Challenge Level and Extras}
+\subsection{Extras}
+
+\subsubsection*{Extras}
+Beyond the core objectives, the RoCam project includes several
+extras that enhance its quality and usability:
+\begin{itemize}
+  \item \textbf{STM32 control circuit design:} Development of a
+        custom control circuit to interface the gimbal actuators with
+        the host computer, enabling precise motion control and feedback sensing.
+  \item \textbf{User Instructional Video:} Creation of a short instructional
+        video demonstrating system setup, calibration, and operation to support
+        new users and ensure safe deployment.
+\end{itemize}
+
+These extras aim to improve the overall usability, accessibility, and
+documentation quality of the final deliverable, reinforcing RoCam's emphasis on
+practical integration between computer vision software, mechanical control, and
+end-user experience.
 
 \wss{State the challenge level (advanced, general, basic) for your project.
   Your challenge level should exactly match what is included in your problem
@@ -131,23 +237,84 @@ This document ... \wss{provide an introductory blurb and roadmap of the
 
 \subsection{Relevant Documentation}
 
-\wss{Reference relevant documentation.  This will definitely include your SRS
-  and your other project documents (design documents, like MG, MIS, etc).  You
-  can include these even before they are written, since by the time the project
-  is done, they will be written.  You can create BibTeX entries for your
-  documents and within those entries include a hyperlink to the documents.}
+\textbf{Software Requirements Specification (\SRS~\cite{SRS}):}
+The SRS document serves as a outline for the VnV plan. The SRS document
+contains specific functional and non-functional requirements, performance
+criteria, and constraints. The SRS document also contains detailed stakeholder
+roles and scope of the work. Aligning the VnV plan with the SRS document ensures
+that all specified requirements are adequately verified and validated.
 
-\citet{SRS}
+\textbf{Software Architecture MG (\MG~\cite{MG}) }
+The MG document provides details of our system architecture. To effectively design
+tests to validate and verify the system, it is important to understand the
+architecture and functionality of each module.
+
+\textbf{Software Detailed Design Document (MIS~\cite{MIS}):}
+The MIS document provides detailed design of our system. It provides critical information
+about the implementation details, including data structures, algorithms, and interfaces.
+This document is essential for efficient test design to specific modules.
+
+\wss{Reference relevant documentation. This will definitely
+  include your SRS and your other project documents (design documents, like MG,
+  MIS, etc). You can include these even before they are written, since by the
+  time the project is done, they will be written. You can create BibTeX entries
+  for your documents and within those entries include a hyperlink to the
+  documents.}
 
 \wss{Don't just list the other documents.  You should explain why they are relevant and
   how they relate to your VnV efforts.}
 
 \section{Plan}
 
-\wss{Introduce this section.  You can provide a roadmap of the sections to
-  come.}
+This section outlines the overall Verification and Validation (V\&V) plan for
+the \textbf{RoCam} project. It defines the structure, responsibilities, and
+methods used to verify that the system meets its functional and non-functional
+requirements and to validate that it fulfills stakeholder needs. The section
+covers the verification of the SRS, design, implementation, and automated
+testing processes, as well as the validation strategy through stakeholder
+reviews and field testing. Its purpose is to provide a clear, organized
+framework ensuring that all aspects of RoCam are systematically tested,
+reviewed, and proven reliable before final deployment. \wss{Introduce this
+  section. You can provide a roadmap of the sections to come.}
 
 \subsection{Verification and Validation Team}
+
+\begin{table}[H]
+  \centering
+  \caption{Verification and Validation Team Responsibilities}
+  \label{tab:vnv_team}
+  \begin{tabular}{|p{3.5cm}|p{3.5cm}|p{8cm}|}
+    \hline
+    \textbf{Name}                  & \textbf{Role}                                    & \textbf{V\&V Responsibilities} \\ \hline
+
+    \textbf{Zifan Si}              & Front End Interface Tester                       &
+    Responsible for verifying and validating the usability and functionality of the
+    react frontend interface.
+    Ensure usability, robustness of frontend features.                                                                 \\ \hline
+
+    \textbf{Jianqing Liu}          & Team Lead                                        &
+    Conduct integration test and system validation. Validate the functionality and
+    performance of the system against requirements and use cases. Validate system
+    design and functionality.                                                                                          \\ \hline
+
+    \textbf{Mike Chen}             & CV Tester                                        &
+    Verify and validate computer vision pipeline performance, including object detection
+    and tracking accuracy.                                                                                             \\ \hline
+
+    \textbf{Xiaotian Lou}          & Integration Tester and test automation developer &
+    Implement automated testing frameworks in all software components. Implement
+    API, and integration test across different modules.
+    \\ \hline
+
+    \textbf{Dr. Shahin Sirouspour} & Faculty Supervisor                               &
+    Provides oversight and ensures that verification and validation procedures
+    align with academic and engineering standards.
+    Reviews test methodologies, validates safety-critical procedures, and
+    confirms that deliverables meet course and institutional requirements.
+    \\ \hline
+
+  \end{tabular}
+\end{table}
 
 \wss{Your teammates.  Maybe your supervisor.
   You should do more than list names.  You should say what each person's role is
@@ -155,9 +322,62 @@ This document ... \wss{provide an introductory blurb and roadmap of the
 
 \subsection{SRS Verification}
 
-\wss{List any approaches you intend to use for SRS verification.  This may
-  include ad hoc feedback from reviewers, like your classmates (like your
-  primary reviewer), or you may plan for something more rigorous/systematic.}
+The SRS verification will focus on verify whether the system design satisfy all
+functional and non-functional requirements, stakeholder needs, scope of work
+and constraints specified. The SRS verification will be conducted through the
+following steps:
+
+\subsubsection{functional and Non-Functional Requirement Review}
+Since the Design function will evaluate in detail whether the system align with
+the functional and non-functional requirements. The SRS verification will focus
+on verify the system design as a whole against the requirements. It will be
+implemented as integration test in the final stages of development.
+
+\subsubsection{Stakeholder Review}
+Several review sessions will be schedules with the stakeholders, such as Dr.
+Shahin Sirouspour, the McMaster Rocketry Team. Our team can revise the future
+feature implementation based on their feedback.
+
+\subsubsection{Constraints and Scope of Work Review}
+Several internal review sessions will be conducted to ensure that our system
+design and implementation are within the defined scope of work and constraints
+specified in the SRS document.
+
+\begin{table}[H]
+  \centering
+  \caption{SRS Verification Checklist}
+  \label{tab:srs_verification_checklist}
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{8pt}
+  \begin{tabular}{|p{4.4cm}|p{10.1cm}|}
+    \hline
+    \textbf{Phase}                                  & \textbf{Verification Activities}                                                              \\ \hline
+
+    Functional \& Non-Functional Requirement Review & $\square$ \; Review all
+    requirements against current system design                                                                                                      \\[-2pt]
+                                                    & $\square$ \; Create automated system tests for functional requirements                        \\[-2pt]
+                                                    & $\square$ \; Measure performance, safety, and reliability against non-functional requirements \\[-2pt]
+                                                    & $\square$ \; Record test results and address any failed cases                                 \\[-2pt]
+                                                    & $\square$ \; Update traceability matrix after verification                                    \\ \hline
+
+    Stakeholder Review                              & $\square$ \; Schedule review sessions with stakeholders                                       \\[-2pt]
+                                                    & $\square$ \; Present verified results and collect feedback                                    \\[-2pt]
+                                                    & $\square$ \; Document required changes based on feedback                                      \\[-2pt]
+                                                    & $\square$ \; Obtain stakeholder confirmation or approval                                      \\ \hline
+
+    Constraints \& Scope of Work Review             & $\square$ \; Verify implementation stays
+    within project scope                                                                                                                            \\[-2pt]
+                                                    & $\square$ \; Check compliance with all technical and safety constraints                       \\[-2pt]
+                                                    & $\square$ \; Review design against timeline and budget limits                                 \\[-2pt]
+                                                    & $\square$ \; Update records if scope or constraints change                                    \\ \hline
+
+    Integration Verification                        & $\square$ \; Conduct integration tests covering all
+    system components                                                                                                                               \\[-2pt]
+                                                    & $\square$ \; Validate full system behavior against SRS requirements                           \\[-2pt]
+                                                    & $\square$ \; Log and resolve all integration issues                                           \\[-2pt]
+                                                    & $\square$ \; Prepare final verification report for stakeholder review                         \\ \hline
+  \end{tabular}
+\end{table}
 
 \wss{If you have a supervisor for the project, you shouldn't just say they will
   read over the SRS.  You should explain your structured approach to the review.
@@ -169,6 +389,93 @@ This document ... \wss{provide an introductory blurb and roadmap of the
 
 \subsection{Design Verification}
 
+The design verification process for the \textbf{RoCam} project ensures that the
+proposed architecture, algorithms, and hardware interfaces satisfy all
+functional and non-functional requirements before implementation. Design
+verification activities will be conducted through structured design reviews,
+peer evaluations, and the use of detailed verification checklists. The goal is
+to confirm that the design meets the intended performance, reliability, and
+safety objectives defined in the SRS.
+
+\subsubsection*{Verification Plan}
+The design verification will proceed in three main stages:
+\begin{enumerate}
+  \item \textbf{Internal Design Review:}
+        Each subsystem (computer vision, control, and UI)
+        will undergo an internal review by each team member. Each member must
+        agree on the designed architecture, algorithms, and interfaces.
+        Interfaces must be clearly defined for scalability.
+
+  \item \textbf{Peer Review by Classmates:}
+        A peer design review session will be conducted with other capstone
+        teams to obtain external feedback.
+        Reviewers will evaluate the system’s clarity, feasibility, and
+        maintainability based on the shared design artifacts (block diagrams
+        , interface specifications, and test plans).
+
+  \item \textbf{Supervisor and TA Review:}
+        The project supervisor and teaching assistants will review the
+        finalized design to ensure compliance with academic standards,
+        capstone expectations, and safety considerations.
+\end{enumerate}
+
+\subsubsection*{Verification Artifacts}
+Design verification will produce the following artifacts:
+\begin{itemize}
+  \item Verified design diagrams and interface specifications.
+  \item Annotated review feedback forms from classmates and supervisor.
+  \item Updated design documents reflecting corrections and improvements.
+  \item Completed design verification checklists (see below).
+\end{itemize}
+
+\subsubsection*{Design Verification Checklist}
+The following checklist will be used during design reviews to ensure
+completeness and consistency across all modules:
+
+\newpage
+
+\begin{table}[H]
+  \centering
+  \caption{Design Verification Checklist}
+  \label{tab:design_verification_checklist}
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{8pt}
+  \begin{tabular}{|p{4.4cm}|p{10.1cm}|}
+    \hline
+    \textbf{Phase}            & \textbf{Verification Activities}                                                         \\ \hline
+
+    Internal Design Review    & $\square$ \; Review subsystem architectures (vision,
+    control, UI) with all team members                                                                                   \\[-2pt]
+                              & $\square$ \; Confirm APIs that are agreed upon                                           \\[-2pt]
+                              & $\square$ \; Verify all module interfaces are clearly defined and documented in code     \\[-2pt]
+                              & $\square$ \; Ensure design supports scalability and modularity                           \\[-2pt]
+                              & $\square$ \; Record review comments and update design diagrams                           \\ \hline
+
+    Peer Review by Classmates & $\square$ \; Present system design and interface
+    specifications to peer teams                                                                                         \\[-2pt]
+                              & $\square$ \; Collect peer feedback on clarity, feasibility, and maintainability          \\[-2pt]
+                              & $\square$ \; Address identified issues or ambiguities in documentation                   \\[-2pt]
+                              & $\square$ \; Record peer feedback summaries and resolutions                              \\ \hline
+
+    Supervisor and TA Review  & $\square$ \; Submit finalized design package
+    (diagrams, specs, test plans) for review                                                                             \\[-2pt]
+                              & $\square$ \; Confirm compliance with academic and capstone standards                     \\[-2pt]
+                              & $\square$ \; Review safety considerations and risk mitigations                           \\[-2pt]
+                              & $\square$ \; Document supervisor and TA comments and update design documents accordingly \\ \hline
+
+    Verification Artifacts    & $\square$ \; Store verified design diagrams and
+    updated interface specifications                                                                                     \\[-2pt]
+                              & $\square$ \; Archive annotated feedback forms from peers and supervisor                  \\[-2pt]
+                              & $\square$ \; Maintain an updated version-controlled design document repository           \\[-2pt]
+                              & $\square$ \; Complete and file the final design verification checklist                   \\ \hline
+  \end{tabular}
+\end{table}
+
+\noindent
+By following this structured verification plan and checklist, the team
+ensures that the RoCam design is both technically sound and fully aligned
+with its performance and safety goals prior to implementation.
+
 \wss{Plans for design verification}
 
 \wss{The review will include reviews by your classmates}
@@ -176,6 +483,58 @@ This document ... \wss{provide an introductory blurb and roadmap of the
 \wss{Create a checklists?}
 
 \subsection{Verification and Validation Plan Verification}
+
+The verification of the verification and validation (VnV) plan for the
+\textbf{RoCam} project will be verified through testing and peer review from
+peers and supervisors. Each iteration of feedbacks and improvements will be
+tracked with github issues. The focus on the verification plan will ensure
+functionality, performance metrics are adequately covered in design.
+
+For the validation plan, it will be measured through a combination of field
+tests and automated test cases. The automated test will make sure our program
+functions as expected in the developing environment. The field test will be
+used as our integration tests to validate the entire system.
+
+% Preamble:
+% \usepackage{array}
+% \usepackage{float}
+% \usepackage{amssymb}
+
+\begin{table}[H]
+  \centering
+  \caption{RoCam Verification and Validation (V\&V) Checklist}
+  \label{tab:rocam_vnv_checklist}
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{8pt}
+  \begin{tabular}{|p{4.4cm}|p{10.1cm}|}
+    \hline
+    \textbf{Phase}                 & \textbf{Actionable Verification and Validation Activities}                             \\ \hline
+
+    Verification Plan Review       & $\square$ \; Conduct internal reviews of the V\&V
+    plan with team and supervisor                                                                                           \\[-2pt]
+                                   & $\square$ \; Ensure functionality and performance metrics are fully covered            \\[-2pt]
+                                   & $\square$ \; Perform peer review sessions for completeness and clarity                 \\[-2pt]
+                                   & $\square$ \; Track feedback and revisions using GitHub Issues                          \\[-2pt]
+                                   & $\square$ \; Confirm all review comments are resolved before approval                  \\ \hline
+
+    Automated Verification Testing & $\square$ \; Develop automated tests for
+    vision, control, and UI components                                                                                      \\[-2pt]
+                                   & $\square$ \; Verify software behavior under simulated conditions                       \\[-2pt]
+                                   & $\square$ \; Record test results and compare against performance criteria              \\[-2pt]
+                                   & $\square$ \; Update test scripts based on identified defects or regressions            \\ \hline
+
+    Field Validation Testing       & $\square$ \; Conduct full system integration tests
+    during field trials                                                                                                     \\[-2pt]
+                                   & $\square$ \; Validate real-time tracking, communication, and safety functions          \\[-2pt]
+                                   & $\square$ \; Collect and analyze field performance data (latency, accuracy, stability) \\[-2pt]
+                                   & $\square$ \; Log and resolve issues through GitHub and retest after fixes              \\ \hline
+
+    Continuous Monitoring          & $\square$ \; Review automated and field test outcomes
+    after each iteration                                                                                                    \\[-2pt]
+                                   & $\square$ \; Maintain test evidence and validation summaries in repository             \\[-2pt]
+                                   & $\square$ \; Update the V\&V plan to reflect system improvements and new test cases    \\ \hline
+  \end{tabular}
+\end{table}
 
 \wss{The verification and validation plan is an artifact that should also be
   verified.  Techniques for this include review and mutation testing.}
@@ -197,7 +556,134 @@ This document ... \wss{provide an introductory blurb and roadmap of the
   walkthrough.  There is also a possibility of using the final presentation (in
   CAS741) for a partial usability survey.}
 
+The implementation verification for the \textbf{RoCam} project ensures that the
+developed software and integrated hardware components correctly realize the
+verified design. This phase confirms that the implemented system satisfies the
+functional and non-functional requirements defined in the SRS through a
+combination of structured testing, static verification, and peer review.
+
+\subsubsection*{Dynamic Verification}
+Dynamic verification activities focus on confirming that the system
+behaves as intended under realistic operating conditions.
+They include the following elements:
+
+\begin{itemize}
+  \item \textbf{Unit Testing:}
+        Each software module (vision processing, gimbal control, data
+        recording, and UI management) will undergo unit testing to verify
+        functional correctness in isolation.
+
+  \item \textbf{Integration Testing:}
+        Once individual modules are verified, integration tests will
+        confirm proper data flow between subsystems (camera input
+        $\rightarrow$ vision algorithm $\rightarrow$ gimbal control
+        $\rightarrow$ UI).
+        Tests will ensure synchronization, timing correctness, and
+        robustness under real-time constraints.
+
+  \item \textbf{System Testing:}
+        Full-system field tests will validate end-to-end performance,
+        including real-time video tracking, system state transitions
+        (Idle, Armed, Tracking), and video recording accuracy at 1080p\,60\,fps.
+        These tests correspond directly to the verification items in
+        the SRS functional and performance requirements.
+\end{itemize}
+
+\subsubsection*{Static Verification}
+Static verification will be performed throughout the implementation
+phase to ensure that the codebase meets quality, safety,
+nd maintainability standards before execution.
+Planned techniques include:
+
+\begin{itemize}
+  \item \textbf{Code Walkthroughs:}
+        Conducted during the final CAS~741 presentation, where each
+        subsystem lead presents core implementation logic and design decisions.
+        This serves as a semi-formal walkthrough for peer and instructor
+        review, enabling early identification of potential design or coding issues.
+
+  \item \textbf{Code Inspection:}
+        Team members will review each other’s pull requests prior to
+        merging into the main branch.
+        Reviews will focus on coding standard compliance, potential
+        logic errors, exception handling, and safety-critical sections
+        (e.g., gimbal actuation and state transitions).
+
+  \item \textbf{Static Analysis Tools:}
+        Tools such as \texttt{clang-tidy}, \texttt{cppcheck}, and
+        \texttt{pylint} will be used to detect memory leaks, uninitialized variables,
+        and other common implementation defects.
+        Results from static analysis will be logged and reviewed
+        as part of the verification record.
+
+  \item \textbf{Documentation Review:}
+        The team will verify that all inline comments, module-level
+        documentation, and API references are consistent with the design
+        specification and user documentation requirements.
+\end{itemize}
+
+\subsubsection*{Presentation and Usability Review}
+The final CAS~741 presentation will serve as both a
+\textbf{code walkthrough} and a partial \textbf{usability evaluation}.
+During the presentation, peers and instructors will observe live
+system operation, assess user interface clarity, and provide
+feedback on usability, responsiveness, and overall system behavior.
+This qualitative feedback will be incorporated into the final
+verification summary and used to refine user-facing components
+prior to final submission.
+
+\noindent
+Together, these verification activities ensure that the RoCam
+implementation is thoroughly tested, statically verified, and
+validated against both its design and real-world performance expectations.
+
 \subsection{Automated Testing and Verification Tools}
+
+The RoCam project adopts a structured automated testing approach that
+prioritizes maintainability, integration compatibility, and developer
+productivity. The selection of testing frameworks was guided by three key
+criteria: (1) \textbf{ecosystem compatibility}, ensuring each tool aligns with
+its respective language and runtime; (2) \textbf{ease of automation}, to
+integrate smoothly with CI/CD pipelines; and (3) \textbf{scalability}, so that
+test coverage can expand as the project evolves. These principles ensure a
+consistent and reliable testing environment across backend, frontend, and
+end-to-end validation stages.
+
+Each subsystem of RoCam employs tools optimized for its function and
+implementation language: \textbf{Testing Frameworks:} \\
+\begin{itemize}
+  \item \textbf{Backend (Python):} The project uses \textbf{Pytest} for unit testing due
+        to its simplicity, readability, and powerful plugin system. It supports fixture
+        management and integrates easily with coverage analysis and mock testing.
+  \item \textbf{Frontend (React/TypeScript):} The project uses \textbf{Jest}, which is
+        tightly integrated with React and TypeScript. It enables rapid component testing,
+        snapshot validation, and ensures that UI logic behaves as expected across updates.
+  \item \textbf{System-Level and Web UI:} The project uses \textbf{Playwright} for
+        end-to-end (E2E) and Web UI testing. Playwright enables simulation of realistic
+        operator workflows such as arming, tracking, and recording, ensuring smooth
+        coordination between the frontend, backend, and physical hardware layers.
+\end{itemize}
+
+\textbf{Code Coverage and Reporting Plan:} \\
+Coverage analysis is conducted using the following tools:
+\begin{itemize}
+  \item \textbf{pytest-cov:} Provides granular coverage reporting for Python code,
+        including line, branch, and function-level metrics, seamlessly integrated with
+        Pytest test runs.
+  \item \textbf{Jest (built-in coverage):} Tracks statement, branch, and function coverage
+        for TypeScript components and produces standardized reports that align with Python
+        output formats for unified tracking.
+\end{itemize}
+
+\textbf{Linters and Formatters:} \\
+To maintain coding standards and prevent stylistic or logical errors, RoCam enforces
+consistent linting and formatting across both stacks:
+\begin{itemize}
+  \item \textbf{Python:} Uses \textbf{Ruff} and \textbf{Black} for linting and code
+        formatting to enforce PEP 8 compliance and maintain readability.
+  \item \textbf{Frontend (TypeScript):} Uses \textbf{ESLint} and \textbf{Prettier} to
+        maintain uniform style rules and detect syntax or logical inconsistencies.
+\end{itemize}
 
 \wss{What tools are you using for automated testing.  Likely a unit testing
   framework and maybe a profiling tool, like ValGrind.  Other possible tools
@@ -215,6 +701,66 @@ This document ... \wss{provide an introductory blurb and roadmap of the
   implementation.}
 
 \subsection{Software Validation}
+
+Software validation confirms that \textbf{RoCam} satisfies stakeholder needs
+and accurately implements the intended use cases (``building the right
+system''). Validation complements verification and is referenced to the SRS
+goals nd stakeholder roles.
+
+\subsubsection*{Stakeholder Reviews and Task-Based Inspection}
+\begin{itemize}
+  \item \textbf{Requirements Walkthroughs:} Scheduled reviews of the SRS
+        and UI wireframes with the McMaster Rocketry Team (client) to confirm
+        scope, priorities, and acceptance criteria.
+  \item \textbf{Task-Based Inspection:} Stakeholders perform
+        representative tasks (arm system, initiate tracking, stop tracking, export
+        footage) while observers record issues, ambiguities, and unmet expectations.
+  \item \textbf{Peer Reviews:} Classmate reviews focus on clarity,
+        testability, and completeness (per CAS~741 guidance); all feedback and
+        resolutions are logged.
+\end{itemize}
+
+\subsubsection*{Field and Demo-Based Validation}
+\begin{itemize}
+  \item \textbf{Rev~0/PoC Demo:} Used to validate that early
+        functionality aligns with stakeholder expectations (e.g., preview
+        latency, arm/track state semantics). Post-demo debrief captures change
+        requests.
+  \item \textbf{Supervisor Validation:} A focused session shortly
+        after Rev~0 to confirm that the demonstrable behaviors match the
+        SRS’s product use cases and performance intent.
+  \item \textbf{User (Operator) Sessions:} ``Hallway'' usability
+        checks with camera operators validate readability in outdoor-like
+        conditions and UI flow (single-page ops without scrolling on 1920$\times$1080).
+\end{itemize}
+
+\subsubsection*{External Data and Bench Validation}
+\begin{itemize}
+  \item \textbf{Reference Footage:} Where live launches are unavailable,
+        public model-rocket videos and internally recorded dry-runs are used
+        to validate detection/tracking logic and reacquisition behavior.
+  \item \textbf{Synthetic Scenarios:} Scripted clips with
+        occlusion/smoke/backlight and varying apparent rocket sizes validate
+        robustness claims prior to field tests.
+\end{itemize}
+
+\subsubsection*{Acceptance and Traceability}
+\begin{itemize}
+  \item \textbf{Acceptance Criteria:} Derived from the SRS (e.g.,
+        sustained 1080p\,60\,fps I/O, end-to-end latency $\leq 120$\,ms,
+        successful tracking through nominal flight phases, recording with a
+        ngle overlays).
+  \item \textbf{Traceability:} Validation tests map to SRS goals and
+        stakeholder needs; a table links each validation activity to the
+        corresponding SRS item(s) and planned evidence (videos, logs, checklists).
+\end{itemize}
+
+\noindent
+If no suitable external datasets are available for certain scenarios,
+this limitation will be stated explicitly; in those cases, validation
+will rely on stakeholder task-based inspections and controlled synthetic
+footage. This section also references the SRS verification section for
+consistency checks between validated behaviors and specified requirements.
 
 \wss{If there is any external data that can be used for validation, you should
   point to it here.  If there are no plans for validation, you should state that
@@ -248,54 +794,176 @@ This document ... \wss{provide an introductory blurb and roadmap of the
 \wss{Include a blurb here to explain why the subsections below
   cover the requirements.  References to the SRS would be good here.}
 
-\subsubsection{Area of Testing1}
+The following manual tests are designed to evaluate the robustness of the
+Tracking Camera System. Each test includes its initial state, input, expected
+output, justification (test case derivation), and procedure. Tests are
+organized by functional area. The intent is to verify compliance with the
+functional requirements (FR) while deliberately stressing the system to expose
+edge cases.
 
-\wss{It would be nice to have a blurb here to explain why the subsections below
-  cover the requirements.  References to the SRS would be good here.  If a section
-  covers tests for input constraints, you should reference the data constraints
-  table in the SRS.}
+\subsubsection{Area of Testing: Video Acquisition and Output}
 
-\paragraph{Title for Test}
+\subsubsection*{test-aquire-frame: Camera Frames are Acquired at Startup}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System powered off; camera connected; HDMI monitor attached.
+  \item \textbf{Input:} Power on the system and allow it to fully initialize.
+  \item \textbf{Expected Output:} Within 10s of boot, logs show that the camera is acquiring frames.
+  \item \textbf{Test Case Derivation:} The system's operation depends on a valid video feed.
+  \item \textbf{How Test Will Be Performed:} Boot the device; observe the program logs.
+\end{itemize}
 
-\begin{enumerate}
+\subsubsection*{test-disconnect-camera: Camera Disconnect During Operation}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; preview and HDMI output active.
+  \item \textbf{Input:} Physically disconnect the camera from the system.
+  \item \textbf{Expected Output:} On disconnect, the UI and HDMI output show a clear error message; no crash.
+  \item \textbf{Test Case Derivation:} When the camera is disconnected, the system should gracefully handle the loss without crashing. And it should notify the operator that the camera is disconnected.
+  \item \textbf{How Test Will Be Performed:} Disconnect the camera from the system; observe the UI and HDMI output for error messages.
+\end{itemize}
 
-  \item{test-id1\\}
+\subsubsection*{test-hdmi-output: HDMI Output with Info Overlay}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input:} Move the gimbal manually through the UI.
+  \item \textbf{Expected Output:} HDMI shows 1080p60 camera feed with a text overlay of current pan/tilt angles.
+  \item \textbf{Test Case Derivation:} The system should be able to display the current camera feed and the pan/tilt angles for the viewers
+  \item \textbf{How Test Will Be Performed:} Move the gimbal manually, and visually verify overlay values change smoothly and match commanded motion
+\end{itemize}
 
-        Control: Manual versus Automatic
+\subsubsection*{test-disconnect-hdmi: HDMI Disconnect}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; preview and HDMI output active.
+  \item \textbf{Input:} Physically disconnect the HDMI cable.
+  \item \textbf{Expected Output:} On disconnect, the UI show a clear error message; no crash.
+  \item \textbf{Test Case Derivation:} When the HDMI cable is disconnected, the system should gracefully handle the loss without crashing. And it should notify the operator that the HDMI cable is disconnected.
+  \item \textbf{How Test Will Be Performed:} Disconnect the HDMI cable from the system; observe the UI for error messages.
+\end{itemize}
 
-        Initial State:
+\subsubsection*{test-preview-real-time: Preview with Real-Time Info}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input:} Move the gimbal manually through the UI.
+  \item \textbf{Expected Output:} Preview in the UI updates fluidly (target $\geq$15fps) and displays current pan/tilt angles.
+  \item \textbf{Test Case Derivation:} The system should allow the camera operator to see the current pan/tilt angles and HDMI output in real-time.
+  \item \textbf{How Test Will Be Performed:} Move the gimbal manually, and visually verify the preview in the UI updates fluidly and displays the current pan/tilt angles.
+\end{itemize}
 
-        Input:
+\subsubsection*{test-network-disconnect: Network Disconnect While Viewing UI}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; preview and HDMI output active.
+  \item \textbf{Input:} Disconnect the system from the network for 30s; reconnect.
+  \item \textbf{Expected Output:} The system keeps functioning as normal without network; UI show a clear error message; upon reconnection, the UI session restores automatically within 5s without reboot; no data loss or crash.
+  \item \textbf{Test Case Derivation:} The system need to be resilient against transient network failures in field conditions.
+  \item \textbf{How Test Will Be Performed:} Manually disconnect and connect the system from the network; observe the UI for error messages.
+\end{itemize}
 
-        Output: \wss{The expected result for the given inputs. Output is not how you
-          are going to return the results of the test. The output is the expected
-          result.}
+\subsubsection{Area of Testing: Recording}
 
-        Test Case Derivation: \wss{Justify the expected value given in the Output
-          field}
+\subsubsection*{test-recording: Start and Stop Recording}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; sufficient disk space.
+  \item \textbf{Input:} Press "Start Recording", wait 10s, then press "Stop Recording".
+  \item \textbf{Expected Output:} A 10 second 1080p60 video file is created and saved to the disk.
+  \item \textbf{Test Case Derivation:} The system should be able to start and stop recording.
+  \item \textbf{How Test Will Be Performed:} Press "Start Recording", wait 10s, then press "Stop Recording".
+\end{itemize}
 
-        How test will be performed:
+\subsubsection*{test-disk-full: Disk Full Behavior During Recording}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; storage nearly full (simulate by filling disk leaving $<1$min recording capacity).
+  \item \textbf{Input:} Start recording and allow disk to fill.
+  \item \textbf{Expected Output:} UI show a clear "Storage Full" alert; current recording is stopped and the file is saved to the disk; no crash.
+  \item \textbf{Test Case Derivation:} The system should be able to handle storage exhaustion gracefully.
+  \item \textbf{How Test Will Be Performed:} Fill the disk with data until it is nearly full; start recording; observe the UI for the "Storage Full" alert; check the disk for the saved file.
+\end{itemize}
 
-  \item{test-id2\\}
+\subsubsection*{test-manage-recordings: List and Download Recordings}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} At least two prior recordings exist.
+  \item \textbf{Input:} Open recordings list; download the latest file and an older file; delete a small test clip.
+  \item \textbf{Expected Output:} List shows correct entries (name, timestamp, duration); downloads succeed; delete removes the selected item only.
+  \item \textbf{Test Case Derivation:} The system should be able to list, delete, and download recordings.
+  \item \textbf{How Test Will Be Performed:} Open the recordings list; download the latest file and an older file; delete a small test clip; check the list for the correct entries; check the disk for the saved files.
+\end{itemize}
 
-        Control: Manual versus Automatic
+\subsubsection{Area of Testing: Tracking}
 
-        Initial State:
+\subsubsection*{test-manual-control: Manual Gimbal Control in Idle}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input:} Issue manual pan and tilt commands via UI.
+  \item \textbf{Expected Output:} The gimbal follows commands smoothly.
+  \item \textbf{Test Case Derivation:} The operator should be able to manually control the gimbal in idle state.
+  \item \textbf{How Test Will Be Performed:} Issue manual pan and tilt commands via UI; observe the gimbal movement.
+\end{itemize}
 
-        Input:
+\subsubsection*{test-transition-to-tracking: Transition to Tracking When Rocket Detected}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input:} Arm the system via UI, and waving a model rocket in front of the camera.
+  \item \textbf{Expected Output:} The system transitions to tracking state as soon as the rocket is detected; the UI shows the system is in tracking state
+  \item \textbf{Test Case Derivation:} The system should be able to transition to tracking state when a rocket is detected.
+  \item \textbf{How Test Will Be Performed:} Arm the system via UI, and waving a model rocket in front of the camera; observe the UI for the system to transition to tracking state.
+\end{itemize}
 
-        Output: \wss{The expected result for the given inputs}
+\subsubsection*{test-tracking: Keep Rocket in Frame While Tracking}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; tracking state; preview and HDMI output active.
+  \item \textbf{Input:} Continue waving the model rocket in front of the camera.
+  \item \textbf{Expected Output:} Gimbal should continuously adjust its position to keep the rocket in the frame for the duration of the test.
+  \item \textbf{Test Case Derivation:} The system should be able to keep the rocket in the frame while tracking.
+  \item \textbf{How Test Will Be Performed:} Wave the model rocket in front of the camera; observe the gimbal movement; observe the preview in the UI.
+\end{itemize}
 
-        Test Case Derivation: \wss{Justify the expected value given in the Output
-          field}
+\subsubsection*{test-return-to-idle: Return to Idle When Rocket is Lost}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; tracking state; preview and HDMI output active.
+  \item \textbf{Input:} Occlude the model rocket.
+  \item \textbf{Expected Output:} Within 2s of sustained loss, system transitions to idle state; ceases autonomous gimbal commands; UI indicates "target lost".
+  \item \textbf{Test Case Derivation:} The system should be able to return to idle state when the rocket is lost.
+  \item \textbf{How Test Will Be Performed:} Occlude the model rocket; observe the UI for the system to transition to idle state.
+\end{itemize}
 
-        How test will be performed:
+\subsubsection*{test-exit-gimbal-range: Rocket Exits Gimbal Range}
+\begin{itemize}
+  \item \textbf{Control:} Manual
+  \item \textbf{Initial State:} System initialized; tracking state; preview and HDMI output active.
+  \item \textbf{Input:} Move the model rocket outside of the gimbal's range of motion.
+  \item \textbf{Expected Output:} The gimbal moves until it reaches its mechanical limit, then stops moving further; no errors or warnings are presented to the user; system remains responsive.
+  \item \textbf{Test Case Derivation:} The system must safely handle objects that leave the gimbal's range without faulting or reporting spurious errors.
+  \item \textbf{How Test Will Be Performed:} Move the model rocket outside of the gimbal's range of motion; observe the gimbal reaches its mechanical end and stops; verify that no error messages appear in the UI and that all other system functions remain operational.
+\end{itemize}
 
-\end{enumerate}
+\subsubsection{Field Testing}
 
-\subsubsection{Area of Testing2}
+Field testing will be conducted by one of our clients. The client will be
+provided with the manual of the system and be in charge of operating the
+system. The field test will be conducted in a model rocket launch event
+outdoors. The client will go through all the use cases of the system listed in
+the SRS during the field test. The use cases includes manually controlling the
+gimbal, arming and disarming the system, starting and stopping recording, and
+tracking a model rocket.
 
-...
+Since the field test is conducted at an external event, the exact steps of the
+test will vary depending on the event. The development team will be present at
+the event to assist the client with the test.
+
+After the field test, the client will fill out a survey (Appendix 6.2) to
+evaluate the system. Additionally, the development team will review the logs to
+ensure the system operates as expected.
 
 \subsection{Tests for Nonfunctional Requirements}
 
@@ -320,46 +988,191 @@ This document ... \wss{provide an introductory blurb and roadmap of the
   How will they be done?  In cases like code (or document) walkthroughs, who will
   be involved? Be specific.}
 
-\subsubsection{Area of Testing1}
+\subsubsection{UI Walkthrough}
 
-\paragraph{Title for Test}
+The UI walkthrough will be conducted by the capstone team members themselves
+before the field test.
 
-\begin{enumerate}
+\subsubsection*{test-consistent-units: Consistent and Changeable Units}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; idle state; preview and HDMI output active.
+  \item \textbf{Input/Condition:} Go through the UI twice, once with metric units, once with imperial units.
+  \item \textbf{Output/Result:} The units are consistent and changeable.
+  \item \textbf{How Test Will Be Performed:} The capstone team members will go through the UI twice, once with metric units, once with imperial units; observe the units in the UI.
+\end{itemize}
 
-  \item{test-id1\\}
+\subsubsection*{test-bilingual-ui: Bilingual UI}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; language = English.
+  \item \textbf{Input/Condition:} Switch UI language to French and back; navigate all UI sections, dialogs, and toasts.
+  \item \textbf{Output/Result:} All visible strings/localized assets appear in the selected language; no truncation/overflow; no mixed-language strings; hotkeys remain functional; date/time/number formats localize correctly.
+  \item \textbf{How Test Will Be Performed:} Perform a complete UI walkthrough in French; capture screenshots of each page/dialog; switch back to English and repeat spot checks.
+\end{itemize}
 
-        Type: Functional, Dynamic, Manual, Static etc.
+\subsubsection*{test-immediate-ui-feedback: Immediate UI Feedback}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System idle; UI ready.
+  \item \textbf{Input/Condition:} Trigger representative actions: button press, toggle, menu selection, starting/stopping recording, arming/disarming, opening settings.
+  \item \textbf{Output/Result:} A visible confirmation (pressed state, spinner, toast, label change) appears within 0.2s for each action.
+  \item \textbf{How Test Will Be Performed:} Observe the UI while performing each action
+\end{itemize}
 
-        Initial State:
+\subsubsection*{test-visual-indicators: Rely on Visual Indicators}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; speakers muted or disconnected.
+  \item \textbf{Input/Condition:} Trigger statuses/alerts: armed, tracking, target lost, storage low/full, network disconnect, device error.
+  \item \textbf{Output/Result:} Every status/alert is presented visually (icons, colors, banners, toasts) without relying on sound; no action-critical info is audio-only.
+  \item \textbf{How Test Will Be Performed:} With audio disabled, induce each state/fault; verify a visible indicator appears and remains long enough to be noticed.
+\end{itemize}
 
-        Input/Condition:
+\subsubsection*{test-confirmation-prompts: Confirmation Prompts for Safety-Critical Actions}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System idle; gimbal powered.
+  \item \textbf{Input/Condition:} Attempt potentially hazardous actions: force home while tracking, hard stop, high-speed slew, firmware update during armed state, factory reset.
+  \item \textbf{Output/Result:} A blocking confirmation dialog appears for each action; dialog text states the specific risk and outcome; default action is “Cancel”; action proceeds only after explicit confirmation.
+  \item \textbf{How Test Will Be Performed:} Trigger each action; capture screenshots of the prompt; verify risk wording is specific (not generic); verify no motion/change occurs until “Confirm” is pressed.
+\end{itemize}
 
-        Output/Result:
+\subsubsection*{test-manual-idle-mode: Manual Idle Mode / Override}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System armed or tracking.
+  \item \textbf{Input/Condition:} Press “Idle” (or equivalent) control while tracking.
+  \item \textbf{Output/Result:} System transitions to idle within 1\,s; autonomous commands cease; manual controls become available; status clearly shows “Idle.”
+  \item \textbf{How Test Will Be Performed:} Enter tracking, then invoke manual idle; observe immediate cessation of gimbal motion; verify state banner change and manual jog controls responsiveness.
+\end{itemize}
 
-        How test will be performed:
+\subsubsection*{test-no-collection-pii: No Collection of PII}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; default configuration.
+  \item \textbf{Input/Condition:} Inspect all settings, logs, exported files, filenames/paths, and network-configurable fields.
+  \item \textbf{Output/Result:} No fields request or store personal identifiers (names, emails, phone numbers, precise home addresses, faces with identity tags); logs contain only technical data; telemetry excludes PII.
+  \item \textbf{How Test Will Be Performed:} Open each settings and log panel; download logs/recordings; inspect metadata (EXIF/JSON/CSV) for PII keys; verify any optional labels are device/session IDs, not personal data.
+\end{itemize}
 
-  \item{test-id2\\}
+\subsubsection*{test-color-vision-deficiency: Color-Vision Deficiency Accessibility}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized; all status indicators visible.
+  \item \textbf{Input/Condition:} Review all status/alert states (normal, armed, tracking, warning, error) and interactive controls (enabled/disabled) under simulated Protanopia/Deuteranopia/Tritanopia or printed CVD reference swatches.
+  \item \textbf{Output/Result:} Each state is distinguishable without relying on hue alone (uses shape, text labels, patterns, or contrast); contrast ratio \(\geq\) 4.5:1 for text/icons against background.
+  \item \textbf{How Test Will Be Performed:} Cycle UI through all states; verify distinct icon shapes/labels; optionally view via a CVD simulator; record pass/fail with screenshots; confirm tooltips/textual labels exist for each color state.
+\end{itemize}
 
-        Type: Functional, Dynamic, Manual, Static etc.
+\subsubsection{Code and Documentation Walkthrough}
 
-        Initial State:
+\subsubsection*{test-manual-arm-mode: Manual Arm Mode Only}
+\begin{itemize}
+  \item \textbf{Type:} Static
+  \item \textbf{Initial State:} N/A
+  \item \textbf{Input/Condition:} Inspect all state transition code and configuration defaults.
+  \item \textbf{Output/Result:} The system only enters armed mode when explicitly commanded by the user, never automatically.
+  \item \textbf{How Test Will Be Performed:} Review code for all references to the armed state, verify guards require user input.
+\end{itemize}
 
-        Input:
+\subsubsection*{test-gimbal-interface: Gimbal Interface Documentation Review}
+\begin{itemize}
+  \item \textbf{Type:} Static
+  \item \textbf{Initial State:} N/A
+  \item \textbf{Input/Condition:} Review the interface specification with the client, including command set, telemetry, timing, and safety notes.
+  \item \textbf{Output/Result:} The client confirms the interface documentation is complete, clear, and suitable for supporting multiple gimbal systems.
+  \item \textbf{How Test Will Be Performed:} Conduct a walkthrough meeting with the client, check all required topics against a prepared checklist.
+\end{itemize}
 
-        Output:
+\subsubsection{Error Handling and Logging}
 
-        How test will be performed:
+\subsubsection*{test-report-errors: Report All Errors to the User}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized and idle.
+  \item \textbf{Input/Condition:} Manually trigger hardware, communication, and software faults.
+  \item \textbf{Output/Result:} Each error generates a visible and descriptive message on the user interface.
+  \item \textbf{How Test Will Be Performed:} Disconnect devices, kill processes, and simulate faults while observing the UI for clear error reporting.
+\end{itemize}
 
-\end{enumerate}
+\subsubsection*{test-stop-immediately: Stop Immediately on Unrecoverable Error}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System operating in tracking mode.
+  \item \textbf{Input/Condition:} Introduce a fatal condition such as gimbal communication loss or corrupted control process.
+  \item \textbf{Output/Result:} The system immediately stops all automated operations and transitions to a safe idle state.
+  \item \textbf{How Test Will Be Performed:} Disconnect the gimbal or crash the tracking process, verify that motion stops and the system displays a clear unrecoverable error message.
+\end{itemize}
 
-\subsubsection{Area of Testing2}
+\subsubsection*{test-validate-commands: Validate All Commands}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System idle.
+  \item \textbf{Input/Condition:} Enter invalid or out-of-range user commands through the UI or API.
+  \item \textbf{Output/Result:} The system rejects invalid commands and displays a validation error without sending them to the gimbal.
+  \item \textbf{How Test Will Be Performed:} Attempt to send commands beyond gimbal limits or in unsupported formats and confirm that they are blocked with clear feedback.
+\end{itemize}
 
-...
+\subsubsection*{test-log-operations: Log All Operations}
+\begin{itemize}
+  \item \textbf{Type:} Manual
+  \item \textbf{Initial State:} System initialized and user logged in.
+  \item \textbf{Input/Condition:} Perform a series of user operations such as arming, tracking, and recording.
+  \item \textbf{Output/Result:} Each action is logged with a timestamp and operation details in the system log.
+  \item \textbf{How Test Will Be Performed:} After the field test, review the log file to confirm all actions and timestamps are recorded accurately.
+\end{itemize}
+
+\subsubsection{Field Testing}
+
+\subsubsection*{test-user-survey: User Survey}
+\begin{itemize}
+  \item \textbf{Type:} Static
+  \item \textbf{Initial State:} N/A
+  \item \textbf{Input/Condition:} N/A
+  \item \textbf{Output/Result:} Completed user survey.
+  \item \textbf{How Test Will Be Performed:} After the field test, the client fills out the survey and returns it to the development team.
+\end{itemize}
 
 \subsection{Traceability Between Test Cases and Requirements}
 
 \wss{Provide a table that shows which test cases are supporting which
   requirements.}
+
+\begin{tabularx}{\textwidth}{p{5cm}X}
+  \toprule {\bf Test ID}       & {\bf Requirements}                                                                                \\
+  \midrule
+  test-aquire-frame            & FR-1, SLR-2                                                                                       \\
+  test-disconnect-camera       & FR-1                                                                                              \\
+  test-hdmi-output             & FR-8, FR-9, INT-1, SLR-3                                                                          \\
+  test-disconnect-hdmi         & FR-8                                                                                              \\
+  test-preview-real-time       & FR-10                                                                                             \\
+  test-network-disconnect      & FR-10                                                                                             \\
+  test-recording               & FR-11                                                                                             \\
+  test-disk-full               & FR-11                                                                                             \\
+  test-manage-recordings       & FR-12                                                                                             \\
+  test-manual-control          & FR-2, FR-6                                                                                        \\
+  test-transition-to-tracking  & FR-3, FR-4                                                                                        \\
+  test-tracking                & FR-2, FR-3, FR-7                                                                                  \\
+  test-return-to-idle          & FR-5                                                                                              \\
+  test-exit-gimbal-range       & FR-2, FR-7                                                                                        \\
+  test-consistent-units        & EZ-1, PI-1                                                                                        \\
+  test-bilingual-ui            & PI-2                                                                                              \\
+  test-immediate-ui-feedback   & EZ-2                                                                                              \\
+  test-visual-indicators       & EZ-3                                                                                              \\
+  test-confirmation-prompts    & EZ-4, UPR-3                                                                                       \\
+  test-manual-idle-mode        & SCR-1                                                                                             \\
+  test-no-collection-pii       & LR-1                                                                                              \\
+  test-color-vision-deficiency & AR-1                                                                                              \\
+  test-manual-arm-mode         & SCR-4                                                                                             \\
+  test-gimbal-interface        & INT-2                                                                                             \\
+  test-report-errors           & RFR-1                                                                                             \\
+  test-stop-immediately        & RFR-2                                                                                             \\
+  test-validate-commands       & IR-1                                                                                              \\
+  test-log-operations          & AUR-1                                                                                             \\
+  test-user-survey             & AR-1, AR-2, SR-1, LR-1, UPR-1, UPR-2, PAR-1, SLR-1, RFR-5, CR-1, CR-2, SCR-2, SCR-3, RFR-3, EPE-1 \\
+  \bottomrule
+\end{tabularx}
 
 \section{Unit Test Description}
 
@@ -503,9 +1316,49 @@ This is where you can place additional information.
 The definition of the test cases will call for SYMBOLIC\_CONSTANTS. Their
 values are defined in this section for easy maintenance.
 
-\subsection{Usability Survey Questions?}
+\subsection{User Survey Questions}
 
 \wss{This is a section that would be appropriate for some projects.}
+
+Please answer each question based on your experience during the field test. For
+questions rated on a scale, circle the number that best reflects your opinion:
+1 = Strongly Disagree, 2 = Disagree, 3 = Neutral, 4 = Agree, 5 = Strongly
+Agree.
+
+\subsubsection*{User Interface}
+
+\begin{enumerate}
+  \item The interface was readable and easy to see outdoors. \hfill (1 2 3 4 5)
+  \item The interface looked professional and well-designed. \hfill (1 2 3 4 5)
+  \item The important information was immediately visible on the screen. \hfill (1 2 3
+        4 5)
+  \item No unnecessary or confusing information was shown. \hfill (1 2 3 4 5)
+  \item The system was easy to learn and operate after a short time. \hfill (1 2 3 4 5)
+  \item The terms and labels used in the interface were clear and understandable.
+        \hfill (1 2 3 4 5)
+\end{enumerate}
+
+\subsubsection*{System Performance}
+
+\begin{enumerate}
+  \item The tracking footage was stable and smooth. \hfill (1 2 3 4 5)
+  \item The tracking system maintained lock on the rocket reliably. \hfill (1 2 3 4 5)
+  \item The system operated as expected without major errors. \hfill (1 2 3 4 5)
+  \item Once armed, the system operated fully autonomously. \hfill (1 2 3 4 5)
+  \item I was able to fully operate and monitor the system remotely. \hfill (1 2 3 4 5)
+\end{enumerate}
+
+\subsubsection*{User Experience and Feedback}
+
+\begin{enumerate}
+  \item Were any colors, symbols, or content elements disrespectful or inappropriate to
+        you?\\ \textit{(Please describe if applicable)}\\[1em]
+        \makebox[0.95\textwidth]{\hrulefill}\\[0.5em]
+        \makebox[0.95\textwidth]{\hrulefill}
+  \item What improvements would you suggest for future versions of RoCam?\\[1em]
+        \makebox[0.95\textwidth]{\hrulefill}\\[0.5em]
+        \makebox[0.95\textwidth]{\hrulefill}
+\end{enumerate}
 
 \newpage{}
 \section*{Appendix --- Reflection}
@@ -530,6 +1383,87 @@ the graduate attribute of Lifelong Learning.
         what are at least two approaches to acquiring the knowledge or mastering the
         skill? Of the identified approaches, which will each team member pursue, and
         why did they make this choice?
+\end{enumerate}
+
+\subsection*{Jianqing Liu}
+\begin{enumerate}
+  \item \textbf{What went well:}
+        I was responsible for the Part~4 of this deliverable, focusing on all the system tests. I think it
+        was really easy to come up with all the test cases because We already completed the SRS.
+
+  \item \textbf{Pain points and resolution:}
+        I think some of the test cases are very verbose. For some of the tests, how test will be performed
+        is just the same as the input and output condition of the test case.
+\end{enumerate}
+
+\subsection*{Mike Chen}
+\begin{enumerate}
+  \item \textbf{What went well:}
+        I contributed primarily to Part~3 of this deliverable, focusing on the verification and validation plan
+        and the automation tools section. The structure and clarity of this part improved substantially after
+        integrating peer and supervisor feedback. I ensured that each verification activity was directly tied
+        to the SRS and our test framework.
+
+  \item \textbf{Pain points and resolution:}
+        I initially faced several issues with GitHub CI configuration—some commits overwrote teammates’
+        work and caused LaTeX compilation failures. I resolved these by restoring the affected commits,
+        redesigning the YAML workflows, and setting up branch protection rules. Revisions based on
+        feedback also required extensive reformatting to achieve consistency across sections.
+
+  \item \textbf{Knowledge and skills to acquire:}
+        I plan to improve my skills in CI/CD automation and verification planning, particularly integrating
+        automated builds, test execution, and documentation generation through GitHub Actions.
+
+  \item \textbf{Approaches to acquire skills:}
+        I will (1) study advanced GitHub Actions pipelines from open-source projects and (2) create a
+        smaller test repository to simulate multi-stage verification workflows. I selected the second
+        approach because it provides hands-on experience with merge control, build automation, and
+        verification feedback integration.
+\end{enumerate}
+
+\subsection*{Frank}
+\begin{enumerate}
+  \item \textbf{What went well:}
+        I contributed to both Part~2 and Part~3 of the deliverable, ensuring that the design and verification
+        sections were fully aligned with the SRS. My work focused on refining the test structure, verifying
+        requirement traceability, and improving the flow between verification items and their
+        corresponding system requirements.
+
+  \item \textbf{Pain points and resolution:}
+        The main challenge was maintaining consistent terminology and depth of explanation between
+        sections written by different team members. To resolve this, I reviewed the SRS and cross-checked
+        every requirement reference to ensure correctness and coherence across parts.
+
+  \item \textbf{Knowledge and skills to acquire:}
+        I plan to strengthen my knowledge of requirements traceability and automated testing frameworks,
+        particularly Jest and Playwright, to improve coverage and maintain consistency with system goals.
+
+  \item \textbf{Approaches to acquire skills:}
+        I will (1) review documentation on structured traceability mapping and (2) develop example UI
+        and integration tests that link directly to specific SRS requirements. I chose the second approach
+        because applying traceability in practice will reinforce both documentation and test alignment.
+\end{enumerate}
+
+\subsection*{Xiaotian Lou}
+\begin{enumerate}
+  \item \textbf{What went well:}
+        I focused mainly on Part~2 of the deliverable, organizing the SRS and design verification sections.
+        The verification checklists and phase structure improved document readability and made the review
+        process more systematic.
+
+  \item \textbf{Pain points and resolution:}
+        The primary difficulty was harmonizing writing styles and section formatting across contributors.
+        I standardized tables, checklists, and layout conventions to produce a consistent and professional
+        presentation.
+
+  \item \textbf{Knowledge and skills to acquire:}
+        I aim to gain more experience in formal verification documentation and structured validation
+        reporting to improve the traceability and completeness of future deliverables.
+
+  \item \textbf{Approaches to acquire skills:}
+        I will (1) study professional verification and validation templates from engineering projects and
+        (2) apply checklist-based verification methods in upcoming development stages. I selected the
+        first approach to strengthen my understanding of documentation standards and best practices.
 \end{enumerate}
 
 \end{document}
