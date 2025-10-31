@@ -292,3 +292,5 @@ ultralytics/
 #ignore temperary latex
 temp.tex
 temp.pdf
+
+.idea/
