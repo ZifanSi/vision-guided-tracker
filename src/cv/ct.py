@@ -242,23 +242,104 @@ class GimbalSerial:
         tilt = struct.unpack("<f", resp[0:4])[0]
         pan = struct.unpack("<f", resp[4:8])[0]
         return tilt, pan
+import math
+import time
 
+def tap_rhythm(
+    dev: GimbalSerial,
+    pattern,
+    bpm: float = 120.0,
+    center_tilt: float = 0.0,
+    center_pan: float = 0.0,
+    amp_deg: float = 0.6,
+    tap_freq_hz: float = 6.0,
+    axis: str = "tilt",
+    accel_ramp_s: float = 0.08,
+):
+    """
+    用小振幅+低频来“打节拍”。不产生音高，只表达时值（节奏）。
 
-# Example usage
+    pattern: 列表，元素是 (beats, pause_beats) 或 beats（单位=拍）
+             例如：[1,1,2, 1,1,2] 或 [(1,0.5),(0.5,0.5),(2,1)]
+             每个元素会按 tap_freq_hz 抖动指定时长，随后可选静止 pause。
+    bpm:     速度；1 拍 = 60/bpm 秒
+    axis:    'tilt' or 'pan' 选择在哪个轴上抖动
+    """
+    assert axis in ("tilt", "pan")
+    sec_per_beat = 60.0 / bpm
+
+    def clamp_angle(a):  # 保险：大角度中心位不被轻微漂走
+        return max(min(a, 179.0), -179.0)
+
+    center_tilt_c = clamp_angle(center_tilt)
+    center_pan_c  = clamp_angle(center_pan)
+
+    def one_burst(duration_s: float):
+        # 先做个小的线性跃迁，避免“砸车”
+        start = time.monotonic()
+        end   = start + duration_s
+        # 简单幅度包络（起止都淡入淡出）
+        def envelope(t0, t1, t):
+            # 0→1→0 的三角包络
+            if t <= t0: return 0.0
+            if t >= t1: return 0.0
+            mid = (t0 + t1) * 0.5
+            if t <= mid:
+                return (t - t0) / (mid - t0 + 1e-6)
+            else:
+                return (t1 - t) / (t1 - mid + 1e-6)
+
+        # 目标发送周期（别太快，免得把串口/控制环刷爆）
+        send_dt = max(1.0 / (tap_freq_hz * 8.0), 0.01)  # ~每个周期取8个采样，至少10ms
+        phase = 0.0
+        while True:
+            now = time.monotonic()
+            if now >= end:
+                break
+            # 方波比正弦更“硬”，但正弦更温和；这里用正弦
+            env = envelope(start, end, now)
+            angle = amp_deg * env * math.sin(2 * math.pi * tap_freq_hz * (now - start) + phase)
+            if axis == "tilt":
+                dev.move_deg(center_tilt_c + angle, center_pan_c)
+            else:
+                dev.move_deg(center_tilt_c, center_pan_c + angle)
+            time.sleep(send_dt)
+
+        # 回到中心位
+        dev.move_deg(center_tilt_c, center_pan_c)
+
+    # 统一把 pattern 变成 (beats, pause_beats)
+    norm = []
+    for item in pattern:
+        if isinstance(item, tuple):
+            norm.append(item)
+        else:
+            norm.append((float(item), 0.0))
+
+    for beats, pause_beats in norm:
+        play_s  = max(0.0, float(beats) * sec_per_beat)
+        pause_s = max(0.0, float(pause_beats) * sec_per_beat)
+        # 起止加一个很短的淡入淡出，让机械更舒服
+        burst_time = play_s
+        if burst_time > 0:
+            one_burst(burst_time)
+        if pause_s > 0:
+            time.sleep(pause_s)
 if __name__ == "__main__":
     with GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.5) as dev:
-        import time
+        # 先把灯关了
+        dev.arm_led(False); dev.status_led(False)
 
-        for _ in range(2):  # Blink 10 times
-            dev.arm_led(True)
-            dev.status_led(False)
-            time.sleep(0.5)
-            dev.arm_led(False)
-            dev.status_led(True)
-            time.sleep(0.5)
-
-        dev.move_deg(90.0, 0.0)
-        time.sleep(1)
-        dev.move_deg(-90.0, 0.0)
-        time.sleep(1)
-        dev.move_deg(0.0, 0.0)
+        # “小星星”节奏（只保留时值；4/4 拍，bpm=100）
+        # |1 1  1 1  1 1  | 2 2  2 2  2 2 |
+        pattern = [0.5, 0.5,  0.5, 0.5,  0.5, 0.5,
+                   1.0, 1.0,  0.5, 0.5,  0.5, 0.5]
+        tap_rhythm(
+            dev,
+            pattern=pattern,
+            bpm=100,
+            center_tilt=0.0, center_pan=0.0,
+            amp_deg=0.6,       # 建议 0.3°～1.0° 起步
+            tap_freq_hz=6.0,   # 3–8 Hz 体验较好；再高会被控制环抑制
+            axis="tilt",       # 也可 "pan"
+        )

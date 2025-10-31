@@ -71,7 +71,7 @@ class LatestFrameGrabber:
 grabber = LatestFrameGrabber(cap).start()
 
 # 加载模型（可换成你的权重）
-model = YOLO("weights/yolo12n")  # 或 "yolov8n.pt"
+model = YOLO("weights/small.pt")  # 或 "yolov8n.pt"
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
