@@ -28,3 +28,18 @@ TOP LEFT: Main camera feed (nothing else)
 BOTTOM RIGHT: gimbal/control pad (arm / dearm,left,up,right,down)
 TOP RIGHT: (blank)
 BOTTOM Left:(blank)
+
+# 
+CODE structure
+src\react-app\src\layouts\TwoByTwoGrid.js
+src\react-app\src\components\GimbalPad.js
+src\react-app\src\components\GimbalStatus.js
+src\react-app\src\components\VideoPane.js
+
+src\react-app\src\layouts\TwoByTwoGrid.js
+src\react-app\src\lib\gimbalClient.js
+
+src\react-app\src\styles\layout.css
+src\react-app\src\styles\theme.css
+
+src\react-app\src\App.js
