@@ -293,4 +293,7 @@ ultralytics/
 temp.tex
 temp.pdf
 
-config/
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
