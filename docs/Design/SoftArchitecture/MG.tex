@@ -94,13 +94,14 @@ This section records information for easy reference.
 
 \section{Introduction}
 
-Decomposing a system into modules is a commonly accepted approach to developing
-software. A module is a work assignment for a programmer or programming
-team~\citep{ParnasEtAl1984}. We advocate a decomposition based on the principle
-of information hiding~\citep{Parnas1972a}. This principle supports design for
-change, because the ``secrets'' that each module hides represent likely future
-changes. Design for change is valuable in SC, where modifications are frequent,
-especially during initial development as the solution space is explored.
+Decomposing a system into modules awa is a commonly accepted approach to
+developing software. A module is a work assignment for a programmer or
+programming team~\citep{ParnasEtAl1984}. We advocate a decomposition based on
+the principle of information hiding~\citep{Parnas1972a}. This principle
+supports design for change, because the ``secrets'' that each module hides
+represent likely future changes. Design for change is valuable in SC, where
+modifications are frequent, especially during initial development as the
+solution space is explored.
 
 Our design follows the rules layed out by \citet{ParnasEtAl1984}, as follows:
 \begin{itemize}
@@ -157,11 +158,8 @@ require changing the one module that hides the associated decision. The
 approach adapted here is called design for change.
 
 \begin{description}
-  \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-        hardware on which the software is running.
-  \item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-        initial input data.
-  \item ...
+  \item[\refstepcounter{acnum} \actheacnum \label{acCV}:] The computer vision model. Frequent changes to the vision model might be required to adapt the system to new deployment envirouments.
+  \item[\refstepcounter{acnum} \actheacnum \label{acUI}:] The user interface. The user interface may need to be updated based on the feedback of our customers during the field test.
 \end{description}
 
 \wss{Anticipated changes relate to changes that would be made in requirements,
@@ -178,9 +176,9 @@ will potentially need to be modified. Hence, it is not intended that these
 decisions will be changed.
 
 \begin{description}
-  \item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
-        (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-  \item ...
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucHW}:] The hardware platform. The system relys hardware acceleration for running the computer vision model, encoding, and video output. Changing the hardware platform may require refactoring all the related algorithms.
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucRocket}:] The tracked object. The system is designed to track only rockets. We are able to optimize the performance of the system based on deterministic movement patterns of a rocket. Changing the tracked object to something other than a rocket voids this optimization.
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucRemote}:] Fundamental changes to the use case. The system is designed to be operated remotely by a human operator.
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
@@ -191,34 +189,36 @@ below, which are leaves in the hierarchy tree, are the modules that will
 actually be implemented.
 
 \begin{description}
-  \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-  \item ...
+  \item [\refstepcounter{mnum} \mthemnum \label{mJetson}:] Jetson Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mGimbal}:] Gimbal Abstraction Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mCV}:] Computer Vision Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mTrack}:] Tracking Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mVideo}:] Output Video Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mRecord}:] Recording Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mState}:] State Management Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mAPI}:] API Gateway Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mUI}:] UI Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mPreview}:] Preview Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mManual}:] Manual Control Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mRecordMng}:] Recording Management Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mConfig}:] Configuration Module
 \end{description}
 
 \begin{table}[h!]
   \centering
   \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
     \toprule
-    \textbf{Level 1}                                      & \textbf{Level 2} \\
+    \textbf{Level 1} & \textbf{Level 2}          \\
     \midrule
 
-    {Hardware-Hiding Module}                              & ~                \\
+    Jetson Module    & Gimbal Abstraction Module \\ & Computer Vision Module \\  &
+    Tracking Module                              \\ & Output Video Module \\ & Recording Module \\  & State
+    Management Module                            \\ & API Gateway Module \\
+
     \midrule
 
-    \multirow{7}{0.3\textwidth}{Behaviour-Hiding Module}  & ?                \\
-                                                          & ?                \\
-                                                          & ?                \\
-                                                          & ?                \\
-                                                          & ?                \\
-                                                          & ?                \\
-                                                          & ?                \\
-                                                          & ?                \\
-    \midrule
-
-    \multirow{3}{0.3\textwidth}{Software Decision Module} & {?}              \\
-                                                          & ?                \\
-                                                          & ?                \\
-    \bottomrule
+    UI Module        & Preview Module            \\ & Manual Control Module \\  & Recording Management
+    Module                                       \\ & Configuration Module\\ \bottomrule
 
   \end{tabular}
   \caption{Module Hierarchy}
@@ -254,56 +254,112 @@ Only the leaf modules in the hierarchy have to be implemented. If a dash
 (\emph{--}) is shown, this means that the module is not a leaf and will not
 have to be implemented.
 
-\subsection{Hardware Hiding Modules (\mref{mHH})}
+\subsection{Jetson Module (\mref{mJetson})}
+
+The jetson module includes all the code that will be running on the jetson.
+
+\subsubsection{Gimbal Abstraction Module (\mref{mGimbal})}
 
 \begin{description}
-  \item[Secrets:]The data structure and algorithm used to implement the virtual
-        hardware.
-  \item[Services:]Serves as a virtual hardware used by the rest of the system. This
-        module provides the interface between the hardware and the software. So, the
-        system can use it to display outputs or to accept inputs.
-  \item[Implemented By:] OS
+  \item[Secrets:] The communication protocol of the gimbal
+  \item[Services:] controls the gimbal and get information from the gimbal
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
 \end{description}
 
-\subsection{Behaviour-Hiding Module}
+\subsubsection{Computer Vision Module (\mref{mCV})}
 
 \begin{description}
-  \item[Secrets:]The contents of the required behaviours.
-  \item[Services:]Includes programs that provide externally visible behaviour of the
-        system as specified in the software requirements specification (SRS) documents.
-        This module serves as a communication layer between the hardware-hiding module
-        and the software decision module. The programs in this module will need to
-        change if there are changes in the SRS.
-  \item[Implemented By:] --
+  \item[Secrets:] The computer vision algorithms
+  \item[Services:] Detects rockets from the camera feed in real time.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Input Format Module (\mref{mInput})}
+\subsubsection{Tracking Module (\mref{mTrack})}
 
 \begin{description}
-  \item[Secrets:]The format and structure of the input data.
-  \item[Services:]Converts the input data into the data structure used by the input
-        parameters module.
-  \item[Implemented By:] [Your Program Name Here]
-  \item[Type of Module:] [Record, Library, Abstract Object, or Abstract Data Type]
-        [Information to include for leaf modules in the decomposition by secrets tree.]
+  \item[Secrets:] The tracking algorithms
+  \item[Services:] Calculates the angle of the gimbal to keep the rocket in the frame.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Etc.}
-
-\subsection{Software Decision Module}
+\subsubsection{Output Video Module (\mref{mVideo})}
 
 \begin{description}
-  \item[Secrets:] The design decision based on mathematical theorems, physical facts,
-        or programming considerations. The secrets of this module are \emph{not}
-        described in the SRS.
-  \item[Services:] Includes data structure and algorithms used in the system that do
-        not provide direct interaction with the user.
-        % Changes in these modules are more likely to be motivated by a desire to
-        % improve performance than by externally imposed changes.
-  \item[Implemented By:] --
+  \item[Secrets:] The algorithm to efficiently compose the video feed
+  \item[Services:] Outputs the video feed to the display with camera feed and information overlay.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Etc.}
+\subsubsection{Recording Module (\mref{mRecord})}
+
+\begin{description}
+  \item[Secrets:] The algorithm to encode the video feed and log files/
+  \item[Services:] Records the video feed and log files to the disk.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
+\end{description}
+
+\subsubsection{State Management Module (\mref{mState})}
+
+\begin{description}
+  \item[Secrets:] The data structure to store the state of the system
+  \item[Services:] Manages the state transitions of the system.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Record
+\end{description}
+
+\subsubsection{API Gateway Module (\mref{mAPI})}
+
+\begin{description}
+  \item[Secrets:] The API endpoints and their corresponding logic.
+  \item[Services:] Provides the API endpoints for the UI.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
+\end{description}
+
+\subsection{UI Module (\mref{mUI})}
+
+The UI module includes all the code that will be used for the operator to interact with the system.
+
+\subsubsection{Preview Module (\mref{mPreview})}
+
+\begin{description}
+  \item[Secrets:] How to retrieve and display the video feed from the API Gateway.
+  \item[Services:] Displays preview of the video feed to the user.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Manual Control Module (\mref{mManual})}
+
+\begin{description}
+  \item[Secrets:] Intuitive user interface for manual control, and how to send manual control commands to the API Gateway.
+  \item[Services:] Allows the operator to control the gimbal manually via a user interface.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Recording Management Module (\mref{mRecordMng})}
+
+\begin{description}
+  \item[Secrets:] How to list, delete, and download the recorded videos and log files.
+  \item[Services:] Allows the operator to list, delete, and download the recorded videos and log files.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Configuration Module (\mref{mConfig})}
+
+\begin{description}
+  \item[Secrets:] The UI for configuring the system.
+  \item[Services:] Allows the operator to configure the system via a user interface.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Library
+\end{description}
 
 \section{Traceability Matrix} \label{SecTM}
 
@@ -318,7 +374,7 @@ requirements and between the modules and the anticipated changes.
     \toprule
     \textbf{Req.} & \textbf{Modules}                                                                           \\
     \midrule
-    R1            & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}                                 \\
+    R1            & \mref{mJetson}, \mref{mInput}, \mref{mParams}, \mref{mControl}                                 \\
     R2            & \mref{mInput}, \mref{mParams}                                                              \\
     R3            & \mref{mVerify}                                                                             \\
     R4            & \mref{mOutput}, \mref{mControl}                                                            \\
