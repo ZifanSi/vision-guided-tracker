@@ -1,16 +1,15 @@
+# src/backend/api.py
 # pip install flask flask-cors
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal, Optional, Dict
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import threading, queue, time, logging
+import threading, queue, logging
 
 # ========================= hardware =========================
 class FakeHardwareAdapter:
-    """
-    @pega
-    """
+    """@pega"""
     AZ_MIN, AZ_MAX = -180.0, 180.0
     EL_MIN, EL_MAX =  -45.0,  90.0
 
@@ -27,17 +26,15 @@ class FakeHardwareAdapter:
     def move_to(self, az: float, el: float) -> None:
         with self._lock:
             az, el = self._clamp(az, el)
-            # TODO:
             self._az, self._el = az, el
-        # time.sleep(0.005)
 
     def nudge(self, direction: Literal["up","down","left","right"], step_deg: float) -> None:
         with self._lock:
             az, el = self._az, self._el
-            if direction == "left":  az -= step_deg
+            if direction == "left":   az -= step_deg
             elif direction == "right": az += step_deg
-            elif direction == "up":    el += step_deg
-            elif direction == "down":  el -= step_deg
+            elif direction == "up":     el += step_deg
+            elif direction == "down":   el -= step_deg
             self._az, self._el = self._clamp(az, el)
 
     def angles(self) -> tuple[float, float]:
@@ -89,7 +86,7 @@ class Controller(threading.Thread):
 
 # ========================= Flask =========================
 app = Flask(__name__)
-CORS(app)  # deve
+CORS(app)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 HW = FakeHardwareAdapter()
@@ -153,6 +150,4 @@ def _404(_):
 def _405(_):
     return jsonify({"ok": False, "error": "method not allowed"}), 405
 
-if __name__ == "__main__":
-    # dev
-    app.run(host="127.0.0.1", port=5000, debug=True)
+# NOTE: no app.run() here. The runner lives in server.py
