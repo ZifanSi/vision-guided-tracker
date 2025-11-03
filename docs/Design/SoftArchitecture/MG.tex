@@ -372,24 +372,39 @@ This section shows two traceability matrices: between the modules and the
 requirements and between the modules and the anticipated changes.
 
 % the table should use mref, the requirements should be named, use something
-% like fref
+
+% M1: Jetson Module (\mref{mJetson})
+% M2: Gimbal Abstraction Module (\mref{mGimbal})
+% M3: Computer Vision Module (\mref{mCV})
+% M4: Tracking Module (\mref{mTrack})
+% M5: Output Video Module (\mref{mVideo})
+% M6: Recording Module (\mref{mRecord})
+% M7: State Management Module (\mref{mState})
+% M8: API Gateway Module (\mref{mAPI})
+% M9: UI Module (\mref{mUI})
+% M10: Preview Module (\mref{mPreview})
+% M11: Manual Control Module (\mref{mManual})
+% M12: Recording Management Module (\mref{mRecordMng})
+% M13: Configuration Module (\mref{mConfig})
+
 \begin{table}[H]
   \centering
   \begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
     \toprule
     \textbf{Req.} & \textbf{Modules}                                                                           \\
     \midrule
-    R1            & \mref{mJetson}, \mref{mInput}, \mref{mParams}, \mref{mControl}                             \\
-    R2            & \mref{mInput}, \mref{mParams}                                                              \\
-    R3            & \mref{mVerify}                                                                             \\
-    R4            & \mref{mOutput}, \mref{mControl}                                                            \\
-    R5            & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot} \\
-    R6            & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot} \\
-    R7            & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}               \\
-    R8            & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}               \\
-    R9            & \mref{mVerifyOut}                                                                          \\
-    R10           & \mref{mOutput}, \mref{mODEs}, \mref{mControl}                                              \\
-    R11           & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}                              \\
+    FR-1 & \mref{mJetson}, \mref{mOutputVideo} \mref{mCV} \\
+    FR-2 & \mref{mGimbalAbstraction}, \mref{mTracking}, \mref{mManualControl}, \mref{mAPIGateway} \\
+    FR-3 & \mref{mComputerVision}, \mref{mJetson} \\
+    FR-4 & \mref{mStateManagement}, \mref{mComputerVision}, \mref{mTracking} \\
+    FR-5 & \mref{mStateManagement}, \mref{mComputerVision}, \mref{mTracking} \\
+    FR-6 & \mref{mManualControl}, \mref{mAPIGateway}, \mref{mGimbalAbstraction}, \mref{mStateManagement} \\
+    FR-7 & \mref{mTracking}, \mref{mComputerVision}, \mref{mGimbalAbstraction}, \mref{mStateManagement} \\
+    FR-8 & \mref{mOutputVideo}, \mref{mJetson} \\
+    FR-9 & \mref{mOutputVideo}, \mref{mGimbalAbstraction} \\
+    FR-10 & \mref{mPreview}, \mref{mUI}, \mref{mStateManagement}, \mref{mAPIGateway} \\
+    FR-11 & \mref{mRecording}, \mref{mRecordingManagement}, \mref{mAPIGateway}, \mref{mUI} \\
+    FR-12 & \mref{mRecordingManagement}, \mref{mAPIGateway}, \mref{mRecording}, \mref{mUI} \\    
     \bottomrule
   \end{tabular}
   \caption{Trace Between Requirements and Modules}
