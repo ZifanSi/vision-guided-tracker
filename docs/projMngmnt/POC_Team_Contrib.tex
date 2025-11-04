@@ -183,10 +183,10 @@ target is re-acquired.
   \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the counts can be provided here.  For
-  instance, if a team member has more commits to unmerged branches, these numbers
-  can be provided here.  If multiple people contribute to a commit, git allows for
-  multi-author commits.}
+\noindent\textit{Notes.} Commit counts reflect merges to the \texttt{main} branch only. During the POC period, Shike Chen and Xiaotian Lou focused on model R\&D and large-scale training/ablation (e.g., DINO and YOLO variants). Much of this work involved exploratory code, training scripts, and logs that reside in experimental/backup branches and on the university H100 “Grace” cluster rather than the repository’s \texttt{main}; as a result, their commit totals under-represent effort. We trained YOLO weights for $>30$ hours and accumulated substantial debugging/tuning experience across software, hardware, and environment layers.
+
+We therefore interpret the raw commit distribution with caution. When accounting for model R\&D and training conducted outside \texttt{main}, the overall contribution across team members is roughly balanced. Reproducible training scripts and experiment summaries will be upstreamed in subsequent PRs.
+
 
 \section{Issue Tracker}
 
