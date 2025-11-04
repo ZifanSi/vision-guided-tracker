@@ -203,7 +203,8 @@ target is re-acquired.
 
 \section{CICD}
 
-We use GitHub Actions with four workflows that cover documentation, firmware, and the operator UI.
+We use GitHub Actions with four workflows that cover documentation, firmware,
+and the operator UI.
 
 \paragraph{build-tex (push to \texttt{main}, \texttt{docs/**}, or manual)}
 Compiles LaTeX with TeX~Live~2025 on Ubuntu and commits the built PDFs back to the repository.
@@ -220,18 +221,18 @@ Builds the embedded firmware with Cargo on Ubuntu and uploads the resulting bina
 The job also enforces Rust source formatting via \texttt{cargo fmt --check}.
 
 \paragraph{react-ci (push/PR for the React app)}
-Builds and smoke-tests the operator UI on Node~20. Dependencies are installed with \texttt{npm ci};
-a lightweight \texttt{ci:smoke} runs on every change. Unit tests and production build currently run in
-\emph{best-effort} mode (non-blocking), and any build artifacts are uploaded when present.
+Builds and smoke-tests the operator UI on Node~20. Dependencies are installed
+with \texttt{npm ci}; a lightweight \texttt{ci:smoke} runs on every change.
+Unit tests and production build currently run in \emph{best-effort} mode
+(non-blocking), and any build artifacts are uploaded when present.
 
 \paragraph{Near-term roadmap (to be enforced via branch protection)}
 \begin{itemize}
   \item \textbf{Formatting gates:} add \texttt{black --check} for Python sources and \texttt{prettier --check} for the React codebase. If formatting is not clean, the PR will fail and be blocked from merging.
   \item \textbf{Cross-platform test matrix:} add a Python test job that runs the full unit test suite (15 tests) on
-  \{\texttt{ubuntu-latest}, \texttt{macos-latest}, \texttt{windows-latest}\} $\times$
-  Python \{3.9, 3.10, 3.11, 3.12, 3.13\}. The job will install dependencies and execute the tests; failures will block merges.
+        \{\texttt{ubuntu-latest}, \texttt{macos-latest}, \texttt{windows-latest}\} $\times$
+        Python \{3.9, 3.10, 3.11, 3.12, 3.13\}. The job will install dependencies and execute the tests; failures will block merges.
 \end{itemize}
-
 
 \section{Team Charter Trigger Items}
 
