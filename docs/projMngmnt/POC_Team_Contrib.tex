@@ -26,7 +26,35 @@ and the POC demo.
 
 \section{Demo Plans}
 
-\wss{What will you be demonstrating}
+We will present an end-to-end proof-of-concept for \progname{} (“RoCam”),
+spanning video acquisition, real-time target detection/tracking, closed-loop
+gimbal control, and the operator UI. During the demo, a Jetson ingests a live
+720p camera feed; an on-device preview window on the Jetson displays the stream
+together with key telemetry (FPS, end-to-end latency, gimbal angles/commands)
+and overlays (bounding box and confidence). The YOLO-series tracker outputs the
+target location; with a PID controller we issue smoothed follow commands so the
+target remains near the frame center. When the printed rocket drifts away from
+center, the gimbal moves the camera and continues tracking. The demo includes
+one manual takeover and one autonomous tracking segment to demonstrate the
+implemented core functionality.
+
+We will verify three quantitative metrics: (1) real-time performance, with
+end-to-end latency of approximately 100--500\,ms; (2) stability, where for at
+least 10\,s of continuous tracking the target center remains within $\pm 15\%$
+of the frame center; and (3) closed-loop accuracy, with gimbal pointing error
+not exceeding $3^\circ$--$5^\circ$. We will also record and display the
+processing frame rate (targeting $\geq 15$\,FPS). After the demo we will submit
+an evidence package including screen recordings/videos, UI screenshots with
+overlays, and time-stamped logs (FPS, latency, angles, commands) for
+reproducibility and verification.
+
+The demo environment is a Jetson Orin with a custom PCB and a custom gimbal;
+the target is a printed rocket image. We connect to the Jetson over SSH to
+launch the programs. For degradation/fallback, when poor lighting or weak
+texture reduces detection confidence, we lower the detection threshold (and, if
+needed, relax smoothing) to maintain tracking; the operator can temporarily
+take manual control and the system will resume closed-loop tracking when the
+target is re-acquired.
 
 \section{Team Meeting Attendance}
 
@@ -41,12 +69,11 @@ and the POC demo.
     \toprule
     \textbf{Student} & \textbf{Meetings} \\
     \midrule
-    Total            & Num               \\
-    Name 1           & Num               \\
-    Name 2           & Num               \\
-    Name 3           & Num               \\
-    Name 4           & Num               \\
-    Name 5           & Num               \\
+    Total            & 17                \\
+    Xiaotian Lou     & 17                \\
+    Zifan Si         & 17                \\
+    Jianqing Liu     & 17                \\
+    Shike Chen       & 17                \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -62,7 +89,7 @@ and the POC demo.
   team.  If there is no supervisor, there will usually be meetings with
   stakeholders (potential users) that can serve a similar purpose.}
 
-\noindent \textbf{Supervisor's Name: } [fill in this information]
+\noindent \textbf{Supervisor's Name: } Sirouspour, Shahin
 
 \begin{table}[H]
   \centering
@@ -70,12 +97,11 @@ and the POC demo.
     \toprule
     \textbf{Student} & \textbf{Meetings} \\
     \midrule
-    Total            & Num               \\
-    Name 1           & Num               \\
-    Name 2           & Num               \\
-    Name 3           & Num               \\
-    Name 4           & Num               \\
-    Name 5           & Num               \\
+    Total            & 3                 \\
+    Xiaotian Lou     & 3                 \\
+    Zifan Si         & 3                 \\
+    Jianqing Liu     & 3                 \\
+    Shike Chen       & 3                 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -100,12 +126,11 @@ and the POC demo.
     \toprule
     \textbf{Student} & \textbf{Lectures} \\
     \midrule
-    Total            & Num               \\
-    Name 1           & Num               \\
-    Name 2           & Num               \\
-    Name 3           & Num               \\
-    Name 4           & Num               \\
-    Name 5           & Num               \\
+    Total            & 14                \\
+    Xiaotian Lou     & 8                 \\
+    Zifan Si         & 6                 \\
+    Jianqing Liu     & 5.5               \\
+    Shike Chen       & 5                 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -117,7 +142,7 @@ and the POC demo.
 \wss{For each team member how many of the informal document discussion meetings
   with the TA were attended over the time period of interest.}
 
-\noindent \textbf{TA's Name: } [fill in this information]
+\noindent \textbf{TA's Name: } Tanya Djavaherpour
 
 \begin{table}[H]
   \centering
@@ -125,12 +150,11 @@ and the POC demo.
     \toprule
     \textbf{Student} & \textbf{Lectures} \\
     \midrule
-    Total            & Num               \\
-    Name 1           & Num               \\
-    Name 2           & Num               \\
-    Name 3           & Num               \\
-    Name 4           & Num               \\
-    Name 5           & Num               \\
+    Total            & 3                 \\
+    Xiaotian Lou     & 3                 \\
+    Zifan Si         & 3                 \\
+    Jianqing Liu     & 3                 \\
+    Shike Chen       & 3                 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -150,20 +174,21 @@ and the POC demo.
     \toprule
     \textbf{Student} & \textbf{Commits} & \textbf{Percent} \\
     \midrule
-    Total            & Num              & 100\%            \\
-    Name 1           & Num              & \%               \\
-    Name 2           & Num              & \%               \\
-    Name 3           & Num              & \%               \\
-    Name 4           & Num              & \%               \\
-    Name 5           & Num              & \%               \\
+    Total            & 280              & 100\%            \\
+    Xiaotian Lou     & 67               & 23.9\%           \\
+    Zifan Si         & 88               & 31.4\%           \\
+    Jianqing Liu     & 100              & 35.7\%           \\
+    Shike Chen       & 25               & 8.9\%            \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the counts can be provided here.  For
-  instance, if a team member has more commits to unmerged branches, these numbers
-  can be provided here.  If multiple people contribute to a commit, git allows for
-  multi-author commits.}
+\noindent\textit{Notes.} Commit counts reflect merges to the \texttt{main} branch only. During the POC period, Shike Chen and Xiaotian Lou focused on model R\&D and large-scale training/ablation (e.g., DINO and YOLO variants). Much of this work involved exploratory code, training scripts, and logs that reside in experimental/backup branches and on the university H100 “Grace” cluster rather than the repository’s \texttt{main}; as a result, their commit totals under-represent effort. We trained YOLO weights for $>30$ hours and accumulated substantial debugging/tuning experience across software, hardware, and environment layers.
+
+We therefore interpret the raw commit distribution with caution. When
+accounting for model R\&D and training conducted outside \texttt{main}, the
+overall contribution across team members is roughly balanced. Reproducible
+training scripts and experiment summaries will be upstreamed in subsequent PRs.
 
 \section{Issue Tracker}
 
@@ -177,36 +202,91 @@ and the POC demo.
     \toprule
     \textbf{Student} & \textbf{Authored (O+C)} & \textbf{Assigned (C only)} \\
     \midrule
-    Name 1           & Num                     & Num                        \\
-    Name 2           & Num                     & Num                        \\
-    Name 3           & Num                     & Num                        \\
-    Name 4           & Num                     & Num                        \\
-    Name 5           & Num                     & Num                        \\
+    Xiaotian Lou     & 17                      & 10                         \\
+    Zifan Si         & 13                      & 16                         \\
+    Jianqing Liu     & 46                      & 20                         \\
+    Shike Chen       & 2                       & 6                          \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the counts can be provided here.}
+\noindent\textit{Notes.}
+\begin{itemize}
+  \item \textbf{Counting rule:} “Authored (O+C)” counts issues opened by a member (open or closed). “Assigned (C only)” counts issues where the member was the assignee at closure.
+  \item \textbf{Role-based workflow:} During the POC period, Jianqing Liu (project manager, “Pega”) centrally opened, assigned, and closed most issues based on team decisions captured in meeting notes; hence his “Authored” count is higher.
+  \item \textbf{Credit vs.\ logistics:} Centralized opening/closing is administrative. Actual implementation credit is reflected in commits, PRs, and code reviews; an issue can have multiple contributors beyond the final assignee.
+  \item \textbf{Assignment semantics:} Ownership may change during an issue’s lifetime; we attribute “Assigned (C only)” to the final assignee at closure to represent delivery responsibility.
+\end{itemize}
 
 \section{CICD}
 
-\wss{Say how CICD will be used in your project}
+We use GitHub Actions with four workflows that cover documentation, firmware,
+and the operator UI.
+
+\paragraph{build-tex (push to \texttt{main}, \texttt{docs/**}, or manual)}
+Compiles LaTeX with TeX~Live~2025 on Ubuntu and commits the built PDFs back to the repository.
+The job runs \texttt{make -B} under \texttt{docs/} and then auto-commits any updated \texttt{.pdf} files
+(\texttt{contents: write}).
+
+\paragraph{check-tex (pull requests touching \texttt{docs/**})}
+Validates that the LaTeX compiles on PRs, uploads any changed PDFs as an artifact, then formats all
+\texttt{.tex} sources with \texttt{latexindent} (80-column wrapping) and commits the formatting changes.
+This keeps the documentation reproducible and consistently formatted.
+
+\paragraph{firmware-ci (push/PR under \texttt{src/pcb-firmware/**})}
+Builds the embedded firmware with Cargo on Ubuntu and uploads the resulting binary as an artifact.
+The job also enforces Rust source formatting via \texttt{cargo fmt --check}.
+
+\paragraph{react-ci (push/PR for the React app)}
+Builds and smoke-tests the operator UI on Node~20. Dependencies are installed
+with \texttt{npm ci}; a lightweight \texttt{ci:smoke} runs on every change.
+Unit tests and production build currently run in \emph{best-effort} mode
+(non-blocking), and any build artifacts are uploaded when present.
+
+\paragraph{Near-term roadmap (to be enforced via branch protection)}
+\begin{itemize}
+  \item \textbf{Formatting gates:} add \texttt{black --check} for Python sources and \texttt{prettier --check} for the React codebase. If formatting is not clean, the PR will fail and be blocked from merging.
+  \item \textbf{Cross-platform test matrix:} add a Python test job that runs the full unit test suite (15 tests) on
+        \{\texttt{ubuntu-latest}, \texttt{macos-latest}, \texttt{windows-latest}\} $\times$
+        Python \{3.9, 3.10, 3.11, 3.12, 3.13\}. The job will install dependencies and execute the tests; failures will block merges.
+\end{itemize}
 
 \section{Team Charter Trigger Items}
 
-\wss{Provide a summary of the quantified triggers identified in the team's
-  charter.}
+\subsection*{Quantified Triggers (per Team Charter)}
+\begin{itemize}
+  \item \textbf{Meeting cadence \& attendance:} weekly team meetings; prior notice required for any absence; target attendance $\geq$85\%.
+  \item \textbf{Preparation \& quality:} come to meetings with concise updates, blockers, and options; maintain decision logs and lightweight RACI notes.
+  \item \textbf{PR/issue hygiene:} every task has a GitHub issue with an owner and estimate; all code changes go through PRs that reference an issue; no direct pushes to \texttt{main}.
+  \item \textbf{Review SLA \& CI gates:} at least one reviewer approval; address review comments within 7 days (unless a different SLA is agreed); CI must be green (docs build, firmware build, UI smoke).
+  \item \textbf{Documentation standards:} LaTeX compiles reproducibly on CI; PDFs are published on \texttt{main}; \texttt{latexindent} enforces consistent formatting on PRs.
+  \item \textbf{Runtime KPIs (demo readiness):} track end-to-end latency (p50/p95), FPS, target re-acquisition time, crash-free session rate, and UI task success; for the POC demo we target $\sim$100--500\,ms latency, $\geq$15\,FPS, and $\leq$2\,s re-acquisition.
+  \item \textbf{Underperformance trigger:} if a member underdelivers for $>$3 weeks, initiate pairing/guardrails and, if needed, escalate to TA/instructor.
+\end{itemize}
 
-\wss{Provide a list of any violations of the triggers.  If the team wishes, the
-  violations can be summarized on aggregate, instead of naming specific team
-  members.}
+\subsection*{Violations Observed During the POC Period}
+None observed. All members met the charter triggers: weekly meetings were held
+with advance notice for any conflicts; PRs referenced issues and passed CI;
+review comments were addressed within the 7-day SLA; documentation built
+reproducibly; runtime KPIs were recorded for the demo.
 
-\wss{Provide a plan to address the violations.  This could include revising the
-  triggers, if they are found to be too weak, strong or ambiguous.}
+\subsection*{Plan to Sustain Compliance}
+\begin{itemize}
+  \item Keep branch protection (no direct pushes to \texttt{main}; $\geq$1 review; CI
+        required).
+  \item Promote formatting to required checks: \texttt{black --check} (Python) and
+        \texttt{prettier --check} (React).
+  \item Add a cross-platform Python test matrix (Ubuntu/macOS/Windows;
+        Python~3.9--3.13) as a required status check.
+  \item Use a meeting-issue template (owner, ETA, blockers) and maintain the decision
+        log to preserve cadence and traceability.
+  \item Clarify KPI thresholds for upcoming milestones and monitor p50/p95 latency,
+        FPS, and re-acquisition time on each demo run.
+\end{itemize}
 
 \section{Additional Productivity Metrics}
 
 \wss{If your team has additional metrics of productivity, please feel free to
   add them to this report.}
-
+At this time, we have no additional productivity metrics to report.
 \end{document}
