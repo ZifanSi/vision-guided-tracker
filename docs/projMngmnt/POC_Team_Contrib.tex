@@ -26,7 +26,17 @@ and the POC demo.
 
 \section{Demo Plans}
 
-We will present an end-to-end proof-of-concept for \progname{} (“RoCam”), spanning video acquisition, real-time target detection/tracking, closed-loop gimbal control, and the operator UI. During the demo, a Jetson ingests a live 720p camera feed; an on-device preview window on the Jetson displays the stream together with key telemetry (FPS, end-to-end latency, gimbal angles/commands) and overlays (bounding box and confidence). The YOLO-series tracker outputs the target location; with a PID controller we issue smoothed follow commands so the target remains near the frame center. When the printed rocket drifts away from center, the gimbal moves the camera and continues tracking. The demo includes one manual takeover and one autonomous tracking segment to demonstrate the implemented core functionality.
+We will present an end-to-end proof-of-concept for \progname{} (“RoCam”),
+spanning video acquisition, real-time target detection/tracking, closed-loop
+gimbal control, and the operator UI. During the demo, a Jetson ingests a live
+720p camera feed; an on-device preview window on the Jetson displays the stream
+together with key telemetry (FPS, end-to-end latency, gimbal angles/commands)
+and overlays (bounding box and confidence). The YOLO-series tracker outputs the
+target location; with a PID controller we issue smoothed follow commands so the
+target remains near the frame center. When the printed rocket drifts away from
+center, the gimbal moves the camera and continues tracking. The demo includes
+one manual takeover and one autonomous tracking segment to demonstrate the
+implemented core functionality.
 
 We will verify three quantitative metrics: (1) real-time performance, with
 end-to-end latency of approximately 100--500\,ms; (2) stability, where for at
@@ -247,17 +257,24 @@ Unit tests and production build currently run in \emph{best-effort} mode
 \end{itemize}
 
 \subsection*{Violations Observed During the POC Period}
-None observed. All members met the charter triggers: weekly meetings were held with advance notice for any conflicts; PRs referenced issues and passed CI; review comments were addressed within the 7-day SLA; documentation built reproducibly; runtime KPIs were recorded for the demo.
+None observed. All members met the charter triggers: weekly meetings were held
+with advance notice for any conflicts; PRs referenced issues and passed CI;
+review comments were addressed within the 7-day SLA; documentation built
+reproducibly; runtime KPIs were recorded for the demo.
 
 \subsection*{Plan to Sustain Compliance}
 \begin{itemize}
-  \item Keep branch protection (no direct pushes to \texttt{main}; $\geq$1 review; CI required).
-  \item Promote formatting to required checks: \texttt{black --check} (Python) and \texttt{prettier --check} (React).
-  \item Add a cross-platform Python test matrix (Ubuntu/macOS/Windows; Python~3.9--3.13) as a required status check.
-  \item Use a meeting-issue template (owner, ETA, blockers) and maintain the decision log to preserve cadence and traceability.
-  \item Clarify KPI thresholds for upcoming milestones and monitor p50/p95 latency, FPS, and re-acquisition time on each demo run.
+  \item Keep branch protection (no direct pushes to \texttt{main}; $\geq$1 review; CI
+        required).
+  \item Promote formatting to required checks: \texttt{black --check} (Python) and
+        \texttt{prettier --check} (React).
+  \item Add a cross-platform Python test matrix (Ubuntu/macOS/Windows;
+        Python~3.9--3.13) as a required status check.
+  \item Use a meeting-issue template (owner, ETA, blockers) and maintain the decision
+        log to preserve cadence and traceability.
+  \item Clarify KPI thresholds for upcoming milestones and monitor p50/p95 latency,
+        FPS, and re-acquisition time on each demo run.
 \end{itemize}
-
 
 \section{Additional Productivity Metrics}
 
