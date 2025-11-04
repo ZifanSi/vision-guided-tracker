@@ -373,25 +373,24 @@ requirements and between the modules and the anticipated changes.
 
 % the table should use mref, the requirements should be named, use something
 
-
 \begin{table}[H]
   \centering
   \begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
     \toprule
     \textbf{Req.} & \textbf{Modules}                                                                           \\
     \midrule
-    FR-1 & \mref{mJetson}, \mref{mVideo}, \mref{mCV} \\
-    FR-2 & \mref{mGimbal}, \mref{mTrack}, \mref{mManual}, \mref{mAPI} \\
-    FR-3 & \mref{mCV}, \mref{mJetson} \\
-    FR-4 & \mref{mState}, \mref{mGimbal}, \mref{mCV} \\
-    FR-5 & \mref{mState}, \mref{mCV}, \mref{mTrack} \\
-    FR-6 & \mref{mManual}, \mref{mAPI}, \mref{mGimbal}, \mref{mState} \\
-    FR-7 & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mState} \\
-    FR-8 & \mref{mVideo}, \mref{mJetson}, \mref{mAPI}, \mref{mUI}, \mref{mPreview} \\
-    FR-9 & \mref{mVideo}, \mref{mGimbal}, \mref{mUI}, \mref{mAPI}, \mref{mPreview} \\
-    FR-10 & \mref{mPreview}, \mref{mUI}, \mref{mState}, \mref{mAPI}, \mref{mVideo} \\
-    FR-11 & \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mUI}, \mref{mPreview}, \mref{mVideo} \\
-    FR-12 & \mref{mRecordMng}, \mref{mAPI}, \mref{mRecord}, \mref{mUI},  \\    
+    FR-1          & \mref{mJetson}, \mref{mVideo}, \mref{mCV}                                                  \\
+    FR-2          & \mref{mGimbal}, \mref{mTrack}, \mref{mManual}, \mref{mAPI}                                 \\
+    FR-3          & \mref{mCV}, \mref{mJetson}                                                                 \\
+    FR-4          & \mref{mState}, \mref{mGimbal}, \mref{mCV}                                                  \\
+    FR-5          & \mref{mState}, \mref{mCV}, \mref{mTrack}                                                   \\
+    FR-6          & \mref{mManual}, \mref{mAPI}, \mref{mGimbal}, \mref{mState}                                 \\
+    FR-7          & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mState}                                   \\
+    FR-8          & \mref{mVideo}, \mref{mJetson}, \mref{mAPI}, \mref{mUI}, \mref{mPreview}                    \\
+    FR-9          & \mref{mVideo}, \mref{mGimbal}, \mref{mUI}, \mref{mAPI}, \mref{mPreview}                    \\
+    FR-10         & \mref{mPreview}, \mref{mUI}, \mref{mState}, \mref{mAPI}, \mref{mVideo}                     \\
+    FR-11         & \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mUI}, \mref{mPreview}, \mref{mVideo} \\
+    FR-12         & \mref{mRecordMng}, \mref{mAPI}, \mref{mRecord}, \mref{mUI},                                \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Functional Requirements and Modules}
@@ -412,16 +411,15 @@ requirements and between the modules and the anticipated changes.
 % M12: Recording Management Module (\mref{mRecordMng})
 % M13: Configuration Module (\mref{mConfig})
 
-
 \begin{table}[H]
   \centering
   \begin{tabular}{p{0.15\textwidth} p{0.75\textwidth}}
     \toprule
-    \textbf{Req.} & \textbf{Modules} \\
+    \textbf{Req.} & \textbf{Modules}                               \\
     \midrule
-    AR-1 & \mref{mUI},  \mref{mRecordMng}, \mref{mConfig} \\
-    AR-2 & \mref{mUI},  \mref{mRecordMng} \\
-    SR-1 & \mref{mUI}, \mref{mConfig} \\
+    AR-1          & \mref{mUI},  \mref{mRecordMng}, \mref{mConfig} \\
+    AR-2          & \mref{mUI},  \mref{mRecordMng}                 \\
+    SR-1          & \mref{mUI}, \mref{mConfig}                     \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Appearance and Style Requirements and Modules}
@@ -432,19 +430,19 @@ requirements and between the modules and the anticipated changes.
   \centering
   \begin{tabular}{p{0.15\textwidth} p{0.75\textwidth}}
     \toprule
-    \textbf{Req.} & \textbf{Modules} \\
+    \textbf{Req.} & \textbf{Modules}                                               \\
     \midrule
-    UHR-EZ-1 & \mref{mUI} \\
-    UHR-EZ-2 & \mref{mUI}, \mref{mAPI} \\
-    UHR-EZ-3 & \mref{mUI},  \mref{mAPI}, \mref{mConfig} \\
-    UHR-EZ-4 & \mref{mUI},  \mref{mConfig}, \mref{mAPI}, \mref{mState} \\
-    UHR-PI-1 & \mref{mUI}, \mref{mConfig}, \mref{mPreview}, \mref{mRecordMng} \\
-    UHR-PI-2 & \mref{mUI}, \mref{mConfig} \\
-    UHR-LR-1 & \mref{mUI} \\
-    UHR-UPR-1 & \mref{mUI} \\
-    UHR-UPR-2 & \mref{mUI}, \mref{mAPI}\\
-    UHR-UPR-3 & \mref{mUI} \\
-    UHR-AR-1 & \mref{mUI},  \mref{mState}, \mref{mAPI} \\
+    UHR-EZ-1      & \mref{mUI}                                                     \\
+    UHR-EZ-2      & \mref{mUI}, \mref{mAPI}                                        \\
+    UHR-EZ-3      & \mref{mUI},  \mref{mAPI}, \mref{mConfig}                       \\
+    UHR-EZ-4      & \mref{mUI},  \mref{mConfig}, \mref{mAPI}, \mref{mState}        \\
+    UHR-PI-1      & \mref{mUI}, \mref{mConfig}, \mref{mPreview}, \mref{mRecordMng} \\
+    UHR-PI-2      & \mref{mUI}, \mref{mConfig}                                     \\
+    UHR-LR-1      & \mref{mUI}                                                     \\
+    UHR-UPR-1     & \mref{mUI}                                                     \\
+    UHR-UPR-2     & \mref{mUI}, \mref{mAPI}                                        \\
+    UHR-UPR-3     & \mref{mUI}                                                     \\
+    UHR-AR-1      & \mref{mUI},  \mref{mState}, \mref{mAPI}                        \\
     \bottomrule
   \end{tabular}
   \caption{Trace Usability and Humanity Requirements and Modules}
@@ -469,39 +467,38 @@ requirements and between the modules and the anticipated changes.
   \centering
   \begin{tabular}{p{0.18\textwidth} p{0.72\textwidth}}
     \toprule
-    \textbf{Req.} & \textbf{Modules} \\
+    \textbf{Req.} & \textbf{Modules}                                                                      \\
     \midrule
-    PR-SLR-1 & \mref{mJetson}, \mref{mCV}, \mref{mTrack}, \mref{mGimbal}, \mref{mState} \\
-    PR-SLR-2 & \mref{mJetson}, \mref{mCV}, \mref{mVideo}, \mref{mTrack} \\
-    PR-SLR-3 & \mref{mVideo}, \mref{mJetson}, \mref{mAPI} \\
-    PR-SCR-1 & \mref{mUI}, \mref{mManual}, \mref{mState}, \mref{mAPI}, \mref{mGimbal} \\
-    PR-SCR-2 & \mref{mTrack}, \mref{mState}, \mref{mCV}, \mref{mGimbal}, \mref{mJetson} \\
-    PR-SCR-3 & \mref{mUI}, \mref{mAPI}, \mref{mState}, \mref{mJetson} \\
-    PR-SCR-4 & \mref{mUI}, \mref{mState}, \mref{mAPI}, \mref{mGimbal} \\
-    PR-PAR-1 & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mVideo}, \mref{mAPI}, \mref{mJetson} \\
-    PR-RFR-1 & \mref{mUI}, \mref{mAPI}, \mref{mState} \\
-    PR-RFR-2 & \mref{mState}, \mref{mTrack}, \mref{mGimbal}, \mref{mAPI} \\
-    PR-RFR-3 & \mref{mJetson}, \mref{mAPI}, \mref{mUI}, \mref{mState}, \mref{mJetson} \\
-    PR-RFR-4 & \mref{mTrack}, \mref{mCV}, \mref{mState}, \mref{mGimbal}, \mref{mJetson} \\
-    PR-RFR-5 & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mState} \\
-    PR-CR-1  & \mref{mRecord}, \mref{mRecordMng}, \mref{mJetson} \\
+    PR-SLR-1      & \mref{mJetson}, \mref{mCV}, \mref{mTrack}, \mref{mGimbal}, \mref{mState}              \\
+    PR-SLR-2      & \mref{mJetson}, \mref{mCV}, \mref{mVideo}, \mref{mTrack}                              \\
+    PR-SLR-3      & \mref{mVideo}, \mref{mJetson}, \mref{mAPI}                                            \\
+    PR-SCR-1      & \mref{mUI}, \mref{mManual}, \mref{mState}, \mref{mAPI}, \mref{mGimbal}                \\
+    PR-SCR-2      & \mref{mTrack}, \mref{mState}, \mref{mCV}, \mref{mGimbal}, \mref{mJetson}              \\
+    PR-SCR-3      & \mref{mUI}, \mref{mAPI}, \mref{mState}, \mref{mJetson}                                \\
+    PR-SCR-4      & \mref{mUI}, \mref{mState}, \mref{mAPI}, \mref{mGimbal}                                \\
+    PR-PAR-1      & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mVideo}, \mref{mAPI}, \mref{mJetson} \\
+    PR-RFR-1      & \mref{mUI}, \mref{mAPI}, \mref{mState}                                                \\
+    PR-RFR-2      & \mref{mState}, \mref{mTrack}, \mref{mGimbal}, \mref{mAPI}                             \\
+    PR-RFR-3      & \mref{mJetson}, \mref{mAPI}, \mref{mUI}, \mref{mState}, \mref{mJetson}                \\
+    PR-RFR-4      & \mref{mTrack}, \mref{mCV}, \mref{mState}, \mref{mGimbal}, \mref{mJetson}              \\
+    PR-RFR-5      & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mState}                              \\
+    PR-CR-1       & \mref{mRecord}, \mref{mRecordMng}, \mref{mJetson}                                     \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Performance Requirements and Modules}
   \label{TblPerformanceModules}
 \end{table}
 
-
 \begin{table}[H]
   \centering
   \begin{tabular}{p{0.18\textwidth} p{0.72\textwidth}}
     \toprule
-    \textbf{Req.} & \textbf{Modules} \\
+    \textbf{Req.} & \textbf{Modules}                                  \\
     \midrule
-    OER-EPE-1 & \mref{mJetson}, \mref{mGimbal}\\
-    OER-INT-1 & \mref{mVideo}, \mref{mJetson} \\
-    OER-INT-2 & \mref{mGimbal}, \mref{mAPI}, \mref{mJetson} \\
-    OER-RR-1 & \mref{mRecord}, \mref{mRecordMng}, \mref{mJetson} \\
+    OER-EPE-1     & \mref{mJetson}, \mref{mGimbal}                    \\
+    OER-INT-1     & \mref{mVideo}, \mref{mJetson}                     \\
+    OER-INT-2     & \mref{mGimbal}, \mref{mAPI}, \mref{mJetson}       \\
+    OER-RR-1      & \mref{mRecord}, \mref{mRecordMng}, \mref{mJetson} \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Operational and Environmental Requirements and Modules}
@@ -512,10 +509,10 @@ requirements and between the modules and the anticipated changes.
   \centering
   \begin{tabular}{p{0.18\textwidth} p{0.72\textwidth}}
     \toprule
-    \textbf{Req.} & \textbf{Modules} \\
+    \textbf{Req.} & \textbf{Modules}                                                                                      \\
     \midrule
-    SEC-IR-1  & \mref{mUI}, \mref{mManual}, \mref{mAPI}, \mref{mState}, \mref{mGimbal}, \mref{mJetson}, \mref{mTrack} \\
-    SEC-AUR-1 & \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mState}, \mref{mUI} \\
+    SEC-IR-1      & \mref{mUI}, \mref{mManual}, \mref{mAPI}, \mref{mState}, \mref{mGimbal}, \mref{mJetson}, \mref{mTrack} \\
+    SEC-AUR-1     & \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mState}, \mref{mUI}                             \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Security Requirements and Modules}
@@ -526,10 +523,10 @@ requirements and between the modules and the anticipated changes.
   \centering
   \begin{tabular}{p{0.18\textwidth} p{0.72\textwidth}}
     \toprule
-    \textbf{Req.} & \textbf{Modules}                                                                           \\
+    \textbf{Req.} & \textbf{Modules}                            \\
     \midrule
-    CUL-CR-1 & \mref{mUI}, \mref{mPreview}, \mref{mConfig} \\
-    CUL-CR-2 & \mref{mUI}, \mref{mPreview}, \mref{mConfig} \\
+    CUL-CR-1      & \mref{mUI}, \mref{mPreview}, \mref{mConfig} \\
+    CUL-CR-2      & \mref{mUI}, \mref{mPreview}, \mref{mConfig} \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Cultural Requirements and Modules}
@@ -540,16 +537,14 @@ requirements and between the modules and the anticipated changes.
   \centering
   \begin{tabular}{p{0.18\textwidth} p{0.72\textwidth}}
     \toprule
-    \textbf{Req.} & \textbf{Modules} \\
+    \textbf{Req.} & \textbf{Modules}                                                           \\
     \midrule
-    COM-LR-1 & \mref{mUI}, \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mJetson} \\
+    COM-LR-1      & \mref{mUI}, \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mJetson} \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Compliance Requirements and Modules}
   \label{TblComplianceModules}
 \end{table}
-
-
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
