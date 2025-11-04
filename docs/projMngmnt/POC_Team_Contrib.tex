@@ -26,7 +26,6 @@ and the POC demo.
 
 \section{Demo Plans}
 
-\wss{What will you be demonstrating}
 We will present an end-to-end proof-of-concept for \progname{} (“RoCam”), spanning video acquisition, real-time target detection/tracking, closed-loop gimbal control, and the operator UI. During the demo, a Jetson ingests a live 720p camera feed; an on-device preview window on the Jetson displays the stream together with key telemetry (FPS, end-to-end latency, gimbal angles/commands) and overlays (bounding box and confidence). The YOLO-series tracker outputs the target location; with a PID controller we issue smoothed follow commands so the target remains near the frame center. When the printed rocket drifts away from center, the gimbal moves the camera and continues tracking. The demo includes one manual takeover and one autonomous tracking segment to demonstrate the implemented core functionality.
 
 We will verify three quantitative metrics: (1) real-time performance, with
