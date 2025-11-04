@@ -236,15 +236,29 @@ Unit tests and production build currently run in \emph{best-effort} mode
 
 \section{Team Charter Trigger Items}
 
-\wss{Provide a summary of the quantified triggers identified in the team's
-  charter.}
+\subsection*{Quantified Triggers (per Team Charter)}
+\begin{itemize}
+  \item \textbf{Meeting cadence \& attendance:} weekly team meetings; prior notice required for any absence; target attendance $\geq$85\%.
+  \item \textbf{Preparation \& quality:} come to meetings with concise updates, blockers, and options; maintain decision logs and lightweight RACI notes.
+  \item \textbf{PR/issue hygiene:} every task has a GitHub issue with an owner and estimate; all code changes go through PRs that reference an issue; no direct pushes to \texttt{main}.
+  \item \textbf{Review SLA \& CI gates:} at least one reviewer approval; address review comments within 7 days (unless a different SLA is agreed); CI must be green (docs build, firmware build, UI smoke).
+  \item \textbf{Documentation standards:} LaTeX compiles reproducibly on CI; PDFs are published on \texttt{main}; \texttt{latexindent} enforces consistent formatting on PRs.
+  \item \textbf{Runtime KPIs (demo readiness):} track end-to-end latency (p50/p95), FPS, target re-acquisition time, crash-free session rate, and UI task success; for the POC demo we target $\sim$100--500\,ms latency, $\geq$15\,FPS, and $\leq$2\,s re-acquisition.
+  \item \textbf{Underperformance trigger:} if a member underdelivers for $>$3 weeks, initiate pairing/guardrails and, if needed, escalate to TA/instructor.
+\end{itemize}
 
-\wss{Provide a list of any violations of the triggers.  If the team wishes, the
-  violations can be summarized on aggregate, instead of naming specific team
-  members.}
+\subsection*{Violations Observed During the POC Period}
+None observed. All members met the charter triggers: weekly meetings were held with advance notice for any conflicts; PRs referenced issues and passed CI; review comments were addressed within the 7-day SLA; documentation built reproducibly; runtime KPIs were recorded for the demo.
 
-\wss{Provide a plan to address the violations.  This could include revising the
-  triggers, if they are found to be too weak, strong or ambiguous.}
+\subsection*{Plan to Sustain Compliance}
+\begin{itemize}
+  \item Keep branch protection (no direct pushes to \texttt{main}; $\geq$1 review; CI required).
+  \item Promote formatting to required checks: \texttt{black --check} (Python) and \texttt{prettier --check} (React).
+  \item Add a cross-platform Python test matrix (Ubuntu/macOS/Windows; Python~3.9--3.13) as a required status check.
+  \item Use a meeting-issue template (owner, ETA, blockers) and maintain the decision log to preserve cadence and traceability.
+  \item Clarify KPI thresholds for upcoming milestones and monitor p50/p95 latency, FPS, and re-acquisition time on each demo run.
+\end{itemize}
+
 
 \section{Additional Productivity Metrics}
 
