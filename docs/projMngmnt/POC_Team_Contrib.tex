@@ -29,10 +29,23 @@ and the POC demo.
 \wss{What will you be demonstrating}
 We will present an end-to-end proof-of-concept for \progname{} (“RoCam”), spanning video acquisition, real-time target detection/tracking, closed-loop gimbal control, and the operator UI. During the demo, a Jetson ingests a live 720p camera feed; an on-device preview window on the Jetson displays the stream together with key telemetry (FPS, end-to-end latency, gimbal angles/commands) and overlays (bounding box and confidence). The YOLO-series tracker outputs the target location; with a PID controller we issue smoothed follow commands so the target remains near the frame center. When the printed rocket drifts away from center, the gimbal moves the camera and continues tracking. The demo includes one manual takeover and one autonomous tracking segment to demonstrate the implemented core functionality.
 
-We will verify three quantitative metrics: (1) real-time performance, with end-to-end latency of approximately 100--500\,ms; (2) stability, where for at least 10\,s of continuous tracking the target center remains within $\pm 15\%$ of the frame center; and (3) closed-loop accuracy, with gimbal pointing error not exceeding $3^\circ$--$5^\circ$. We will also record and display the processing frame rate (targeting $\geq 15$\,FPS). After the demo we will submit an evidence package including screen recordings/videos, UI screenshots with overlays, and time-stamped logs (FPS, latency, angles, commands) for reproducibility and verification.
+We will verify three quantitative metrics: (1) real-time performance, with
+end-to-end latency of approximately 100--500\,ms; (2) stability, where for at
+least 10\,s of continuous tracking the target center remains within $\pm 15\%$
+of the frame center; and (3) closed-loop accuracy, with gimbal pointing error
+not exceeding $3^\circ$--$5^\circ$. We will also record and display the
+processing frame rate (targeting $\geq 15$\,FPS). After the demo we will submit
+an evidence package including screen recordings/videos, UI screenshots with
+overlays, and time-stamped logs (FPS, latency, angles, commands) for
+reproducibility and verification.
 
-The demo environment is a Jetson Orin with a custom PCB and a custom gimbal; the target is a printed rocket image. We connect to the Jetson over SSH to launch the programs. For degradation/fallback, when poor lighting or weak texture reduces detection confidence, we lower the detection threshold (and, if needed, relax smoothing) to maintain tracking; the operator can temporarily take manual control and the system will resume closed-loop tracking when the target is re-acquired.
-
+The demo environment is a Jetson Orin with a custom PCB and a custom gimbal;
+the target is a printed rocket image. We connect to the Jetson over SSH to
+launch the programs. For degradation/fallback, when poor lighting or weak
+texture reduces detection confidence, we lower the detection threshold (and, if
+needed, relax smoothing) to maintain tracking; the operator can temporarily
+take manual control and the system will resume closed-loop tracking when the
+target is re-acquired.
 
 \section{Team Meeting Attendance}
 
