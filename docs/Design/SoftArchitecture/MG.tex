@@ -559,6 +559,20 @@ Each level of the hierarchy offers a testable and usable subset of the system,
 and modules in the higher level of the hierarchy are essentially simpler
 because they use modules from the lower levels.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{../../../assets/backend-cv-UHG.png} % path to your image
+  \caption{Use hierarchy among backend modules}
+  \label{fig:backend-UHG}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{../../../assets/frontend.png} % path to your image
+  \caption{Use hierarchy among frontend modules}
+  \label{fig:frontend-UHG}
+\end{figure}
+
 \wss{The uses relation is not a data flow diagram.  In the code there will often
   be an import statement in module A when it directly uses module B.  Module B
   provides the services that module A needs.  The code for module A needs to be
