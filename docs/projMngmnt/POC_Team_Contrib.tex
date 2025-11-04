@@ -198,7 +198,13 @@ target is re-acquired.
   \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the counts can be provided here.}
+\noindent\textit{Notes.}
+\begin{itemize}
+  \item \textbf{Counting rule:} “Authored (O+C)” counts issues opened by a member (open or closed). “Assigned (C only)” counts issues where the member was the assignee at closure.
+  \item \textbf{Role-based workflow:} During the POC period, Jianqing Liu (project manager, “Pega”) centrally opened, assigned, and closed most issues based on team decisions captured in meeting notes; hence his “Authored” count is higher.
+  \item \textbf{Credit vs.\ logistics:} Centralized opening/closing is administrative. Actual implementation credit is reflected in commits, PRs, and code reviews; an issue can have multiple contributors beyond the final assignee.
+  \item \textbf{Assignment semantics:} Ownership may change during an issue’s lifetime; we attribute “Assigned (C only)” to the final assignee at closure to represent delivery responsibility.
+\end{itemize}
 
 \section{CICD}
 
