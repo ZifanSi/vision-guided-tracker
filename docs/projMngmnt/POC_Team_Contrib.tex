@@ -243,6 +243,14 @@ with \texttt{npm ci}; a lightweight \texttt{ci:smoke} runs on every change.
 Unit tests and production build currently run in \emph{best-effort} mode
 (non-blocking), and any build artifacts are uploaded when present.
 
+By POC close, we will deliver substantially deeper, React-focused UI tests (components, hooks, interactions) if we finish full stack intergration. 
+\begin{itemize}
+  \item \textbf{Component tests} with React Testing Library + Jest/Vitest: role-based queries (no test-ids), user interactions via \texttt{@testing-library/user-event}, keyboard/focus flows, and accessibility checks with \texttt{jest-axe}.
+  \item \textbf{State \& hooks} coverage: test reducers, Context providers, and custom hooks (e.g., \texttt{useGimbal}, \texttt{useVideo}) using \texttt{@testing-library/react} and \texttt{@testing-library/react-hooks}; assert stable re-renders and memoization (\texttt{React.memo}, \texttt{useCallback}, \texttt{useMemo}).
+  \item \textbf{Coverage gates}: enforce \(\ge\)80\% lines/branches on UI packages; coverage upload and \texttt{--coverageReporters} in CI; mark unit+integration jobs as \emph{required}.
+  \item \textbf{Linting/consistency}: \texttt{eslint} with \texttt{eslint-plugin-react} and \texttt{eslint-plugin-jsx-a11y}; \texttt{prettier --check} as a required gate.
+\end{itemize}
+
 \paragraph{Near-term roadmap (to be enforced via branch protection)}
 \begin{itemize}
   \item \textbf{Formatting gates:} add \texttt{black --check} for Python sources and \texttt{prettier --check} for the React codebase. If formatting is not clean, the PR will fail and be blocked from merging.
