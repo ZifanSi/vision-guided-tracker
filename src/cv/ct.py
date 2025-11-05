@@ -326,20 +326,8 @@ def tap_rhythm(
         if pause_s > 0:
             time.sleep(pause_s)
 if __name__ == "__main__":
+    # gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.5)
     with GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.5) as dev:
         # 先把灯关了
-        dev.arm_led(False); dev.status_led(False)
-
-        # “小星星”节奏（只保留时值；4/4 拍，bpm=100）
-        # |1 1  1 1  1 1  | 2 2  2 2  2 2 |
-        pattern = [0.5, 0.5,  0.5, 0.5,  0.5, 0.5,
-                   1.0, 1.0,  0.5, 0.5,  0.5, 0.5]
-        tap_rhythm(
-            dev,
-            pattern=pattern,
-            bpm=100,
-            center_tilt=0.0, center_pan=0.0,
-            amp_deg=0.6,       # 建议 0.3°～1.0° 起步
-            tap_freq_hz=6.0,   # 3–8 Hz 体验较好；再高会被控制环抑制
-            axis="tilt",       # 也可 "pan"
-        )
+        dev.arm_led(True); dev.status_led(True)
+        dev.move_deg(0, 0)
