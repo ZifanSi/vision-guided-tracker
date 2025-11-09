@@ -24,8 +24,8 @@ export default function App() {
   // map GimbalPad commands → hook functions, injecting stepDeg for movement
   const onCommand = useCallback(
     (cmd) => {
-      if (cmd === "arm") return arm();
-      if (cmd === "disarm") return disarm();
+      if (cmd === "manual" || cmd === "arm") return arm();
+      if (cmd === "auto"   || cmd === "disarm") return disarm();
       if (["up", "down", "left", "right"].includes(cmd)) {
         return nudge(cmd, stepDeg);
       }
