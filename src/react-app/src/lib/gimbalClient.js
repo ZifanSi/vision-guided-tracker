@@ -85,7 +85,7 @@ export function useGimbal({ pollMs = 1000 } = {}) {
     }
   }, []);
 
-  const nudge = useCallback(async (direction, step = 0.5) => {
+  const nudge = useCallback(async (direction, step = 30) => {
     setBusy(true);
     try {
       const s = await move(direction, step);
