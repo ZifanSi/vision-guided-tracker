@@ -60,3 +60,15 @@
   color: #111;
   border-color: transparent;
 }
+
+.nav{
+  display:flex; align-items:center; gap:16px;
+  padding:10px 16px; border-bottom:1px solid var(--line);
+  background:var(--surface); color:var(--text);
+}
+.nav__brand{ font-weight:700; letter-spacing:.2px; margin-right:8px; }
+.nav__links{ display:flex; gap:12px; }
+.nav__link{ color:var(--text-dim); text-decoration:none; padding:6px 10px; border-radius:8px; }
+.nav__link:hover{ color:var(--text); background:rgba(255,255,255,.05); }
+.nav__link--active{ color:var(--text); outline:1px solid var(--accent); outline-offset:-1px; }
+
