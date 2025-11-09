@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /** Base URL for Flask (override with Vite env) */
-const BASE = import.meta?.env?.VITE_API_BASE || "http://127.0.0.1:5000";
-
+const BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:5000";
 /* --------------------- raw API calls --------------------- */
 async function getStatus() {
   const r = await fetch(`${BASE}/api/status`);
@@ -86,7 +85,7 @@ export function useGimbal({ pollMs = 1000 } = {}) {
     }
   }, []);
 
-  const nudge = useCallback(async (direction, step = 0.5) => {
+  const nudge = useCallback(async (direction, step = 15) => {
     setBusy(true);
     try {
       const s = await move(direction, step);

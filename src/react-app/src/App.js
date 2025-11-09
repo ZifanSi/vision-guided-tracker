@@ -82,6 +82,25 @@ function useGimbalInline() {
 
 /* -------- app with nav + routes; default = /controller -------- */
 export default function App() {
+  // use the hook, but grab arm/disarm/nudge so we can apply custom step
+  const { mode, angles, busy, lastError, arm, disarm, nudge } = useGimbal({ pollMs: 1000 });
+
+  // frontend-only UI state
+  const [stepDeg, setStepDeg] = useState(15); // sensitivity for nudges (degrees per tap)
+  const [zoom, setZoom] = useState(1.0);       // UI-only zoom level
+
+  // map GimbalPad commands → hook functions, injecting stepDeg for movement
+  const onCommand = useCallback(
+    (cmd) => {
+      if (cmd === "manual" || cmd === "arm") return arm();
+      if (cmd === "auto"   || cmd === "disarm") return disarm();
+      if (["up", "down", "left", "right"].includes(cmd)) {
+        return nudge(cmd, stepDeg);
+      }
+    },
+    [arm, disarm, nudge, stepDeg]
+  );
+
   return (
     <BrowserRouter>
       <div className="app">
