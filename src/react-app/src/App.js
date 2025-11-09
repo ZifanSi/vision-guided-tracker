@@ -8,7 +8,7 @@ import VideosPage from "./pages/VideosPage";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 /* -------- inline API (no gimbalClient) -------- */
-const BASE = import.meta?.env?.VITE_API_BASE || "http://127.0.0.1:5000";
+const BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:5000";
 
 async function apiGetStatus() {
   const r = await fetch(`${BASE}/api/status`);
