@@ -1,5 +1,6 @@
 <p align="center" width="100%">
-   <img width="33%" src="./assets/logo/red.png">
+   <img width="33%" src="./assets/logo/red.png"><br/>
+   <img width="28%" src="img/prototype.png" alt="Prototype">
 </p>
 
 <h1 align="center">
