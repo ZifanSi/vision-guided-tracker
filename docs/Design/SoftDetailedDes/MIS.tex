@@ -710,13 +710,16 @@ None
   \item transition:
         \begin{enumerate}
           \item Set the armed state variable to true.
-          \item Start a loop in the background, which does the following until the armed state variable is set to false:
-          \begin{enumerate}
-            \item Call "get\_frame" from the Computer Vision Module.
-            \item Call "get\_rocket\_location" from the Computer Vision Module.
-            \item Call "step" from the Tracking Module to adjust the gimbal to keep the rocket in the center of the frame.
-            \item Call "output\_frame" from the Output Video Module to display the frame on the screen.
-          \end{enumerate}
+          \item Start a loop in the background, which does the following until the armed state
+                variable is set to false:
+                \begin{enumerate}
+                  \item Call "get\_frame" from the Computer Vision Module.
+                  \item Call "get\_rocket\_location" from the Computer Vision Module.
+                  \item Call "step" from the Tracking Module to adjust the gimbal to keep the rocket in
+                        the center of the frame.
+                  \item Call "output\_frame" from the Output Video Module to display the frame on the
+                        screen.
+                \end{enumerate}
         \end{enumerate}
   \item output: None
   \item exception: None
@@ -731,7 +734,8 @@ None
 
 \noindent manual\_control(direction):
 \begin{itemize}
-  \item transition: adjusts the gimbal to the given direction if the armed state variable is false
+  \item transition: adjusts the gimbal to the given direction if the armed state
+        variable is false
   \item output: None
   \item exception: None
 \end{itemize}
@@ -811,7 +815,8 @@ None
 
 \noindent start\_server():
 \begin{itemize}
-  \item transition: starts the api server and listens for requests from the web interface.
+  \item transition: starts the api server and listens for requests from the web
+        interface.
   \item output: None
   \item exception: None
 \end{itemize}
@@ -882,7 +887,6 @@ None
   exceptions, but for practical purposes assumptions are sometimes appropriate.}
 
 \subsubsection{Access Routine Semantics}
-
 
 \wss{A module without environment variables or state variables is unlikely to
   have a state transition.  In this case a state transition can only occur if
