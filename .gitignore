@@ -281,7 +281,8 @@ TSWLatexianTemp*
 
 data/
 ultralytics/
-*.mp4
+# ignore video files
+# *.mp4
 *.pythontex
 *.pth 
 /runs
