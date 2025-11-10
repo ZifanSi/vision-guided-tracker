@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import Literal, Optional, Dict
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import threading, queue, logging, os
+import threading, queue, logging, os, time
 
 # ====== 尝试导入真实硬件（串口） ======
 try:
@@ -13,8 +13,13 @@ try:
 except Exception:
     GimbalSerial = None  # 导入失败时稍后回退到 Fake
 
-# 是否严格要求串口ACK（0=不严格，1=严格）
+# 行为开关（保持你现有 env 变量）
 ACK_STRICT = os.getenv("GIMBAL_ACK_STRICT", "1") == "1"
+PORT       = os.getenv("GIMBAL_PORT", "/dev/ttyTHS1")
+BAUD       = int(os.getenv("GIMBAL_BAUD", "115200"))
+TIMEOUT    = float(os.getenv("GIMBAL_TIMEOUT", "0.5"))
+# 后台量角频率上限（防止疯狂测量），单位秒
+MEASURE_COOLDOWN = float(os.getenv("GIMBAL_MEASURE_COOLDOWN", "0.08"))  # 80ms
 
 # ========================= hardware adapters =========================
 class FakeHardwareAdapter:
@@ -25,7 +30,7 @@ class FakeHardwareAdapter:
     def __init__(self) -> None:
         self._az = 0.0
         self._el = 0.0
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
 
     def _clamp(self, az: float, el: float) -> tuple[float, float]:
         az = max(self.AZ_MIN, min(self.AZ_MAX, az))
@@ -52,6 +57,9 @@ class FakeHardwareAdapter:
         with self._lock:
             return self._az, self._el
 
+    def refresh(self) -> None:
+        return
+
 
 class GimbalHardwareAdapter:
     """
@@ -64,43 +72,37 @@ class GimbalHardwareAdapter:
     def __init__(self, port: str, baud: int = 115200, timeout: float = 0.5):
         if GimbalSerial is None:
             raise RuntimeError("GimbalSerial not available")
-        # 用可重入锁，避免 nudge 内部再调 move_to / measure 造成死锁
         self._lock = threading.RLock()
         self.dev = GimbalSerial(port=port, baudrate=baud, timeout=timeout)
-        # 初始化角度缓存
+
+        # 角度缓存
+        self._el, self._az = 0.0, 0.0
         try:
-            tilt, pan = self.dev.measure_deg()  # (el, az)
+            tilt, pan = self.dev.measure_deg()
             self._el, self._az = float(tilt), float(pan)
         except Exception:
-            self._el, self._az = 0.0, 0.0
+            pass
+
+        # 异步量角控制
+        self._measure_guard = threading.Lock()
+        self._measure_pending = False
+        self._last_measure_ts = 0.0
 
     def _clamp(self, az: float, el: float) -> tuple[float, float]:
         az = max(self.AZ_MIN, min(self.AZ_MAX, float(az)))
         el = max(self.EL_MIN, min(self.EL_MAX, float(el)))
         return az, el
 
-    def _measure_and_update(self, az_cmd: float, el_cmd: float, tag: str):
-        """发指令后立即测一次；失败则用指令角度作为缓存"""
-        try:
-            tilt, pan = self.dev.measure_deg()
-            self._el, self._az = float(tilt), float(pan)
-            logging.info(
-                f"[gimbal] {tag} measured -> az={self._az:.2f} el={self._el:.2f} "
-                f"(cmd az={az_cmd:.2f} el={el_cmd:.2f})"
-            )
-        except Exception as e:
-            self._az, self._el = az_cmd, el_cmd
-            logging.warning(
-                f"[gimbal] {tag} measure failed, use cmd -> az={az_cmd:.2f} el={el_cmd:.2f} ({e})"
-            )
-
+    # —— 改动点 1：移动命令仅发指令 + 更新缓存；不阻塞等量角 ——
     def move_to(self, az: float, el: float) -> None:
         with self._lock:
             az, el = self._clamp(az, el)
             ok = self.dev.move_deg(el, az)   # (tilt=el, pan=az)
             if ACK_STRICT and not ok:
                 raise RuntimeError("move_deg NACK/timeout")
-            self._measure_and_update(az, el, tag="move_to")
+            self._az, self._el = az, el
+            logging.info(f"[gimbal] move_to cmd -> az={az:.2f} el={el:.2f}")
+            self._kick_measure_async("move_to", az, el)
 
     def nudge(self, direction: Literal["up","down","left","right"], step_deg: float) -> None:
         with self._lock:
@@ -113,16 +115,47 @@ class GimbalHardwareAdapter:
             ok = self.dev.move_deg(el, az)
             if ACK_STRICT and not ok:
                 raise RuntimeError("move_deg NACK/timeout")
-            self._measure_and_update(az, el, tag=f"nudge/{direction}")
+            self._az, self._el = az, el
+            logging.info(f"[gimbal] nudge/{direction} cmd -> az={az:.2f} el={el:.2f} (step={step_deg})")
+            self._kick_measure_async(f"nudge/{direction}", az, el)
 
+    # —— 改动点 2：/api/status 不做串口 I/O，只回缓存 ——
     def angles(self) -> tuple[float, float]:
         with self._lock:
-            try:
-                tilt, pan = self.dev.measure_deg()
-                self._el, self._az = float(tilt), float(pan)
-            except Exception:
-                pass
             return self._az, self._el
+
+    # —— 改动点 3：一次性“后台量角”，并做冷却去抖，避免高频争用串口 ——
+    def _kick_measure_async(self, tag: str, az_cmd: float, el_cmd: float):
+        now = time.time()
+        if (now - self._last_measure_ts) < MEASURE_COOLDOWN:
+            return
+        # 避免并发启动多个测量
+        with self._measure_guard:
+            if self._measure_pending:
+                return
+            self._measure_pending = True
+
+        def worker():
+            try:
+                with self._lock:
+                    try:
+                        tilt, pan = self.dev.measure_deg()
+                        self._el, self._az = float(tilt), float(pan)
+                        logging.info(f"[gimbal] {tag} measured -> az={self._az:.2f} el={self._el:.2f} "
+                                     f"(cmd az={az_cmd:.2f} el={el_cmd:.2f})")
+                    except Exception as e:
+                        # 测量失败不阻塞主流程，留缓存
+                        logging.warning(f"[gimbal] {tag} measure failed, keep cache (cmd az={az_cmd:.2f}, el={el_cmd:.2f}): {e}")
+            finally:
+                self._last_measure_ts = time.time()
+                with self._measure_guard:
+                    self._measure_pending = False
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def refresh(self) -> None:
+        # 供需要时主动刷新；当前实现不在 /api/status 里使用
+        self._kick_measure_async("refresh", self._az, self._el)
 
 
 def build_hw():
@@ -134,12 +167,9 @@ def build_hw():
       GIMBAL_TIMEOUT=0.5
       GIMBAL_ACK_STRICT=0/1
     """
-    port = os.getenv("GIMBAL_PORT", "/dev/ttyTHS1")
-    baud = int(os.getenv("GIMBAL_BAUD", "115200"))
-    timeout = float(os.getenv("GIMBAL_TIMEOUT", "0.5"))
     try:
-        logging.info(f"[gimbal] init real device: port={port} baud={baud} timeout={timeout} ack_strict={ACK_STRICT}")
-        return GimbalHardwareAdapter(port, baud, timeout)
+        logging.info(f"[gimbal] init real device: port={PORT} baud={BAUD} timeout={TIMEOUT} ack_strict={ACK_STRICT}")
+        return GimbalHardwareAdapter(PORT, BAUD, TIMEOUT)
     except Exception as e:
         logging.exception(f"[gimbal] init real device failed, fallback to Fake: {e}")
         return FakeHardwareAdapter()
@@ -213,11 +243,11 @@ def bad_request(msg: str):
 
 @app.get("/api/status")
 def status():
+    # 只读缓存，不做串口 I/O
     return ok()
 
 @app.post("/api/mode")
 def set_mode():
-    # 兼容 JSON 和查询串：/api/mode?mode=manual（可减少预检）
     data = request.get_json(silent=True) or {}
     mode = request.args.get("mode") or data.get("mode")
     if mode not in ("manual", "auto"):
