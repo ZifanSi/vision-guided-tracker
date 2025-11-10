@@ -33,6 +33,7 @@ class FakeHardwareAdapter:
         with self._lock:
             az, el = self._clamp(az, el)
             self._az, self._el = az, el
+            logging.info(f"[gimbal][FAKE] angles -> az={self._az:.2f}°, el={self._el:.2f}° (move_to)")
 
     def nudge(self, direction: Literal["up","down","left","right"], step_deg: float) -> None:
         with self._lock:
@@ -42,6 +43,10 @@ class FakeHardwareAdapter:
             elif direction == "up":       el += step_deg
             elif direction == "down":     el -= step_deg
             self._az, self._el = self._clamp(az, el)
+            logging.info(
+                f"[gimbal][FAKE] nudge {direction} step={step_deg:.2f} -> "
+                f"az={self._az:.2f}°, el={self._el:.2f}°"
+            )
 
     def angles(self) -> tuple[float, float]:
         with self._lock:
@@ -78,8 +83,11 @@ class GimbalHardwareAdapter:
         with self._lock:
             az, el = self._clamp(az, el)
             # 串口协议：(tilt=el, pan=az)
-            self.dev.move_deg(el, az)   # 由异常表示失败，不做布尔判断
+            ok = self.dev.move_deg(el, az)        # 检查 ACK
+            if not ok:
+                raise RuntimeError("move_deg NACK/timeout")
             self._az, self._el = az, el
+            logging.info(f"[gimbal] angles -> az={self._az:.2f}°, el={self._el:.2f}° (move_to)")
 
     def nudge(self, direction: Literal["up","down","left","right"], step_deg: float) -> None:
         with self._lock:
@@ -89,8 +97,14 @@ class GimbalHardwareAdapter:
             elif direction == "up":       el += step_deg
             elif direction == "down":     el -= step_deg
             az, el = self._clamp(az, el)
-            self.dev.move_deg(el, az)   # 直接下发，避免再次上锁
+            ok = self.dev.move_deg(el, az)        # 检查 ACK
+            if not ok:
+                raise RuntimeError("move_deg NACK/timeout")
             self._az, self._el = az, el
+            logging.info(
+                f"[gimbal] nudge {direction} step={step_deg:.2f} -> "
+                f"az={self._az:.2f}°, el={self._el:.2f}°"
+            )
 
     def angles(self) -> tuple[float, float]:
         with self._lock:
@@ -146,6 +160,7 @@ class Controller(threading.Thread):
                     if mode not in ("manual", "auto"):
                         raise ValueError("mode must be 'manual' or 'auto'")
                     self.state.mode = mode  # type: ignore[attr-defined]
+                    logging.info(f"[gimbal] mode -> {mode}")
 
                 elif cmd.kind == "MOVE":
                     if self.state.mode != "manual":
