@@ -247,5 +247,7 @@ if __name__ == "__main__":
     # gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.5)
     with GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.5) as dev:
         # 先把灯关了
-        dev.arm_led(True); dev.status_led(True)
-        dev.move_deg(0, 0)
+        # dev.arm_led(True); dev.status_led(True)
+        # dev.move_deg(0, 0)
+        tilt, pan = dev.measure_deg()
+        print("tilt =", tilt, "deg;  pan =", pan, "deg")
