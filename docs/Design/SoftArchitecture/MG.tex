@@ -177,7 +177,7 @@ decisions will be changed.
 
 \begin{description}
   \item[\refstepcounter{ucnum} \uctheucnum \label{ucHW}:] The hardware platform. The system relys hardware acceleration for running the computer vision model, encoding, and video output. Changing the hardware platform may require refactoring all the related algorithms.
-  \item[\refstepcounter{ucnum} \uctheucnum \label{ucRocket}:] The tracked object. The system is designed to track only rockets. We are able to optimize the performance of the system based on deterministic movement patterns of a rocket. Changing the tracked object to something other than a rocket voids this optimization.
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucRocket}:] The tracked object. The system is designed to track only rockets. We are able to optimize the performance of the system based on deterministic movement patterns of a rocket. Changing the tracked object to something other than a rocket invalidates this optimization.
   \item[\refstepcounter{ucnum} \uctheucnum \label{ucRemote}:] Fundamental changes to the use case. The system is designed to be operated remotely by a human operator.
 \end{description}
 
@@ -256,7 +256,7 @@ have to be implemented.
 
 \subsection{Jetson Module (\mref{mJetson})}
 
-The jetson module includes all the code that will be running on the jetson.
+The jetson module contains all the code that runs on the Nvidia Jetson.
 
 \subsubsection{Gimbal Abstraction Module (\mref{mGimbal})}
 
@@ -324,8 +324,8 @@ The jetson module includes all the code that will be running on the jetson.
 
 \subsection{UI Module (\mref{mUI})}
 
-The UI module includes all the code that will be used for the operator to
-interact with the system.
+The UI module contains all the code that the operator uses to interact with the
+system via the web interface.
 
 \subsubsection{Preview Module (\mref{mPreview})}
 
@@ -432,36 +432,22 @@ requirements and between the modules and the anticipated changes.
     \toprule
     \textbf{Req.} & \textbf{Modules}                                               \\
     \midrule
-    UHR-EZ-1      & \mref{mUI}                                                     \\
-    UHR-EZ-2      & \mref{mUI}, \mref{mAPI}                                        \\
-    UHR-EZ-3      & \mref{mUI},  \mref{mAPI}, \mref{mConfig}                       \\
-    UHR-EZ-4      & \mref{mUI},  \mref{mConfig}, \mref{mAPI}, \mref{mState}        \\
-    UHR-PI-1      & \mref{mUI}, \mref{mConfig}, \mref{mPreview}, \mref{mRecordMng} \\
-    UHR-PI-2      & \mref{mUI}, \mref{mConfig}                                     \\
-    UHR-LR-1      & \mref{mUI}                                                     \\
-    UHR-UPR-1     & \mref{mUI}                                                     \\
-    UHR-UPR-2     & \mref{mUI}, \mref{mAPI}                                        \\
-    UHR-UPR-3     & \mref{mUI}                                                     \\
-    UHR-AR-1      & \mref{mUI},  \mref{mState}, \mref{mAPI}                        \\
+    EZ-1          & \mref{mUI}                                                     \\
+    EZ-2          & \mref{mUI}, \mref{mAPI}                                        \\
+    EZ-3          & \mref{mUI},  \mref{mAPI}, \mref{mConfig}                       \\
+    EZ-4          & \mref{mUI},  \mref{mConfig}, \mref{mAPI}, \mref{mState}        \\
+    PI-1          & \mref{mUI}, \mref{mConfig}, \mref{mPreview}, \mref{mRecordMng} \\
+    PI-2          & \mref{mUI}, \mref{mConfig}                                     \\
+    LR-1          & \mref{mUI}                                                     \\
+    UPR-1         & \mref{mUI}                                                     \\
+    UPR-2         & \mref{mUI}, \mref{mAPI}                                        \\
+    UPR-3         & \mref{mUI}                                                     \\
+    AR-1          & \mref{mUI},  \mref{mState}, \mref{mAPI}                        \\
     \bottomrule
   \end{tabular}
   \caption{Trace Usability and Humanity Requirements and Modules}
   \label{TblUsabilityModules}
 \end{table}
-
-% M1: Jetson Module (\mref{mJetson})
-% M2: Gimbal Abstraction Module (\mref{mGimbal})
-% M3: Computer Vision Module (\mref{mCV})
-% M4: Tracking Module (\mref{mTrack})
-% M5: Output Video Module (\mref{mVideo}) 
-% M6: Recording Module (\mref{mRecord})
-% M7: State Management Module (\mref{mState})
-% M8: API Gateway Module (\mref{mAPI})
-% M9: UI Module (\mref{mUI})
-% M10: Preview Module (\mref{mPreview})
-% M11: Manual Control Module (\mref{mManual})
-% M12: Recording Management Module (\mref{mRecordMng})
-% M13: Configuration Module (\mref{mConfig})
 
 \begin{table}[H]
   \centering
@@ -469,20 +455,20 @@ requirements and between the modules and the anticipated changes.
     \toprule
     \textbf{Req.} & \textbf{Modules}                                                                      \\
     \midrule
-    PR-SLR-1      & \mref{mJetson}, \mref{mCV}, \mref{mTrack}, \mref{mGimbal}, \mref{mState}              \\
-    PR-SLR-2      & \mref{mJetson}, \mref{mCV}, \mref{mVideo}, \mref{mTrack}                              \\
-    PR-SLR-3      & \mref{mVideo}, \mref{mJetson}, \mref{mAPI}                                            \\
-    PR-SCR-1      & \mref{mUI}, \mref{mManual}, \mref{mState}, \mref{mAPI}, \mref{mGimbal}                \\
-    PR-SCR-2      & \mref{mTrack}, \mref{mState}, \mref{mCV}, \mref{mGimbal}, \mref{mJetson}              \\
-    PR-SCR-3      & \mref{mUI}, \mref{mAPI}, \mref{mState}, \mref{mJetson}                                \\
-    PR-SCR-4      & \mref{mUI}, \mref{mState}, \mref{mAPI}, \mref{mGimbal}                                \\
-    PR-PAR-1      & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mVideo}, \mref{mAPI}, \mref{mJetson} \\
-    PR-RFR-1      & \mref{mUI}, \mref{mAPI}, \mref{mState}                                                \\
-    PR-RFR-2      & \mref{mState}, \mref{mTrack}, \mref{mGimbal}, \mref{mAPI}                             \\
-    PR-RFR-3      & \mref{mJetson}, \mref{mAPI}, \mref{mUI}, \mref{mState}, \mref{mJetson}                \\
-    PR-RFR-4      & \mref{mTrack}, \mref{mCV}, \mref{mState}, \mref{mGimbal}, \mref{mJetson}              \\
-    PR-RFR-5      & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mState}                              \\
-    PR-CR-1       & \mref{mRecord}, \mref{mRecordMng}, \mref{mJetson}                                     \\
+    SLR-1         & \mref{mJetson}, \mref{mCV}, \mref{mTrack}, \mref{mGimbal}, \mref{mState}              \\
+    SLR-2         & \mref{mJetson}, \mref{mCV}, \mref{mVideo}, \mref{mTrack}                              \\
+    SLR-3         & \mref{mVideo}, \mref{mJetson}, \mref{mAPI}                                            \\
+    SCR-1         & \mref{mUI}, \mref{mManual}, \mref{mState}, \mref{mAPI}, \mref{mGimbal}                \\
+    SCR-2         & \mref{mTrack}, \mref{mState}, \mref{mCV}, \mref{mGimbal}, \mref{mJetson}              \\
+    SCR-3         & \mref{mUI}, \mref{mAPI}, \mref{mState}, \mref{mJetson}                                \\
+    SCR-4         & \mref{mUI}, \mref{mState}, \mref{mAPI}, \mref{mGimbal}                                \\
+    PAR-1         & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mVideo}, \mref{mAPI}, \mref{mJetson} \\
+    RFR-1         & \mref{mUI}, \mref{mAPI}, \mref{mState}                                                \\
+    RFR-2         & \mref{mState}, \mref{mTrack}, \mref{mGimbal}, \mref{mAPI}                             \\
+    RFR-3         & \mref{mJetson}, \mref{mAPI}, \mref{mUI}, \mref{mState}, \mref{mJetson}                \\
+    RFR-4         & \mref{mTrack}, \mref{mCV}, \mref{mState}, \mref{mGimbal}, \mref{mJetson}              \\
+    RFR-5         & \mref{mTrack}, \mref{mCV}, \mref{mGimbal}, \mref{mState}                              \\
+    CR-1          & \mref{mRecord}, \mref{mRecordMng}, \mref{mJetson}                                     \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Performance Requirements and Modules}
@@ -495,10 +481,10 @@ requirements and between the modules and the anticipated changes.
     \toprule
     \textbf{Req.} & \textbf{Modules}                                  \\
     \midrule
-    OER-EPE-1     & \mref{mJetson}, \mref{mGimbal}                    \\
-    OER-INT-1     & \mref{mVideo}, \mref{mJetson}                     \\
-    OER-INT-2     & \mref{mGimbal}, \mref{mAPI}, \mref{mJetson}       \\
-    OER-RR-1      & \mref{mRecord}, \mref{mRecordMng}, \mref{mJetson} \\
+    EPE-1         & \mref{mJetson}, \mref{mGimbal}                    \\
+    INT-1         & \mref{mVideo}, \mref{mJetson}                     \\
+    INT-2         & \mref{mGimbal}, \mref{mAPI}, \mref{mJetson}       \\
+    RR-1          & \mref{mRecord}, \mref{mRecordMng}, \mref{mJetson} \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Operational and Environmental Requirements and Modules}
@@ -511,8 +497,8 @@ requirements and between the modules and the anticipated changes.
     \toprule
     \textbf{Req.} & \textbf{Modules}                                                                                      \\
     \midrule
-    SEC-IR-1      & \mref{mUI}, \mref{mManual}, \mref{mAPI}, \mref{mState}, \mref{mGimbal}, \mref{mJetson}, \mref{mTrack} \\
-    SEC-AUR-1     & \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mState}, \mref{mUI}                             \\
+    IR-1          & \mref{mUI}, \mref{mManual}, \mref{mAPI}, \mref{mState}, \mref{mGimbal}, \mref{mJetson}, \mref{mTrack} \\
+    AUR-1         & \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mState}, \mref{mUI}                             \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Security Requirements and Modules}
@@ -525,8 +511,8 @@ requirements and between the modules and the anticipated changes.
     \toprule
     \textbf{Req.} & \textbf{Modules}                            \\
     \midrule
-    CUL-CR-1      & \mref{mUI}, \mref{mPreview}, \mref{mConfig} \\
-    CUL-CR-2      & \mref{mUI}, \mref{mPreview}, \mref{mConfig} \\
+    CR-1          & \mref{mUI}, \mref{mPreview}, \mref{mConfig} \\
+    CR-2          & \mref{mUI}, \mref{mPreview}, \mref{mConfig} \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Cultural Requirements and Modules}
@@ -539,7 +525,7 @@ requirements and between the modules and the anticipated changes.
     \toprule
     \textbf{Req.} & \textbf{Modules}                                                           \\
     \midrule
-    COM-LR-1      & \mref{mUI}, \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mJetson} \\
+    LR-1          & \mref{mUI}, \mref{mRecord}, \mref{mRecordMng}, \mref{mAPI}, \mref{mJetson} \\
     \bottomrule
   \end{tabular}
   \caption{Trace Between Compliance Requirements and Modules}
@@ -559,20 +545,6 @@ Each level of the hierarchy offers a testable and usable subset of the system,
 and modules in the higher level of the hierarchy are essentially simpler
 because they use modules from the lower levels.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.7\textwidth]{../../../assets/backend-cv-UHG.png} % path to your image
-  \caption{Use hierarchy among backend modules}
-  \label{fig:backend-UHG}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.7\textwidth]{../../../assets/frontend.png} % path to your image
-  \caption{Use hierarchy among frontend modules}
-  \label{fig:frontend-UHG}
-\end{figure}
-
 \wss{The uses relation is not a data flow diagram.  In the code there will often
   be an import statement in module A when it directly uses module B.  Module B
   provides the services that module A needs.  The code for module A needs to be
@@ -584,7 +556,7 @@ because they use modules from the lower levels.
 
 \begin{figure}[H]
   \centering
-  %\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+  \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../../Images/module_use_hierarchy.png}
   \caption{Use hierarchy among modules}
   \label{FigUH}
 \end{figure}

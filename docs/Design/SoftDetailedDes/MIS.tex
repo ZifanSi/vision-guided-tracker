@@ -169,9 +169,13 @@ Gimbal
 
 \subsection{Uses}
 
+This module does not use any other modules.
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+This module does not have any exported constants.
 
 \subsubsection{Exported Access Programs}
 
@@ -219,11 +223,32 @@ Gimbal
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent move\_deg(tilt: f32, pan: f32):
 \begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
+  \item transition: sends the tilt and pan angles to the gimbal
+  \item output: None
+  \item exception: gimbalCommunicationError
+\end{itemize}
+
+\noindent measure\_deg():
+\begin{itemize}
+  \item transition: retrieves the tilt and pan angle measurements from the gimbal
+  \item output: (tilt: f32, pan: f32)
+  \item exception: gimbalCommunicationError
+\end{itemize}
+
+\noindent control\_arm\_led(enabled: bool):
+\begin{itemize}
+  \item transition: controls the arm LED on the gimbal
+  \item output: None
+  \item exception: gimbalCommunicationError
+\end{itemize}
+
+\noindent control\_status\_led(enabled: bool):
+\begin{itemize}
+  \item transition: controls the status LED on the gimbal
+  \item output: None
+  \item exception: gimbalCommunicationError
 \end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
@@ -255,18 +280,27 @@ CV
 
 \subsection{Uses}
 
+This module does not use any other modules.
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item WIDTH: width of the video feed (in pixels)
+  \item HEIGHT: height of the video feed (in pixels)
+\end{itemize}
 
 \subsubsection{Exported Access Programs}
 
 \begin{center}
   \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
     \hline
-    \textbf{Name}         & \textbf{In}    & \textbf{Out} & \textbf{Exceptions}        \\
+    \textbf{Name}         & \textbf{In} & \textbf{Out}   & \textbf{Exceptions}        \\
     \hline
-    get\_rocket\_location & x: f32, y: f32 & -            & noRocketFound, cameraError \\
+    get\_frame            & -           & frame          & cameraError                \\
+    \hline
+    get\_rocket\_location & frame       & x: f32, y: f32 & noRocketFound, cameraError \\
     \hline
   \end{tabular}
 \end{center}
@@ -277,6 +311,7 @@ CV
 
 \begin{itemize}
   \item computer vision model
+  \item presistent connection to the camera sensor
 \end{itemize}
 
 \wss{Not all modules will have state variables.  State variables give the module
@@ -299,11 +334,18 @@ CV
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent get\_frame():
 \begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
+  \item transition: retrieves a frame from the camera sensor
+  \item output: frame
+  \item exception: cameraError
+\end{itemize}
+
+\noindent get\_rocket\_location(frame):
+\begin{itemize}
+  \item transition: analyzes the frame to find the rocket
+  \item output: (x: f32, y: f32)
+  \item exception: noRocketFound, cameraError
 \end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
@@ -335,9 +377,14 @@ Tracking
 
 \subsection{Uses}
 
+This module uses the Computer Vision Module (\ref{mCV}) and the Gimbal
+Abstraction Module (\ref{mGimbal}).
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+This module does not have any exported constants.
 
 \subsubsection{Exported Access Programs}
 
@@ -346,7 +393,7 @@ Tracking
     \hline
     \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
     \hline
-    run           & -           & -            & -                   \\
+    step          & -           & -            & -                   \\
     \hline
   \end{tabular}
 \end{center}
@@ -377,11 +424,17 @@ None
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent step():
 \begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
+  \item transition:
+        \begin{enumerate}
+          \item Retrieve the current gimbal angle from the Gimbal Abstraction Module.
+          \item Get the location of the rocket from the Computer Vision Module.
+          \item Calculate the desired gimbal angle using the PID algorithm.
+          \item Send the desired gimbal angle to the Gimbal Abstraction Module.
+        \end{enumerate}
+  \item output: None
+  \item exception: None
 \end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
@@ -424,7 +477,7 @@ videoOut
     \hline
     \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
     \hline
-    main          & -           & -            & outputDeviceError   \\
+    output\_frame & states      & -            & outputDeviceError   \\
     \hline
   \end{tabular}
 \end{center}
@@ -440,7 +493,7 @@ None
 
 \subsubsection{Environment Variables}
 
-None
+This module displays the frame on the screen connected to the Jetson.
 
 \wss{This section is not necessary for all modules.  Its purpose is to capture
   when the module has external interaction with the environment, such as for a
@@ -453,11 +506,18 @@ None
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent output\_frame(states):
 \begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
+  \item transition:
+        \begin{enumerate}
+          \item Retrieve the frame from the Computer Vision Module.
+          \item Retrieve the location of the rocket from the Computer Vision Module.
+          \item Crop the frame so the rocket is in the center of the frame.
+          \item Overlay the states on the cropped frame.
+          \item Display the cropped frame on the screen connected to the Jetson.
+        \end{enumerate}
+  \item output: None
+  \item exception: outputDeviceError
 \end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
@@ -498,11 +558,15 @@ recording
 \begin{center}
   \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
     \hline
-    \textbf{Name}    & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+    \textbf{Name}     & \textbf{In}      & \textbf{Out}                & \textbf{Exceptions} \\
     \hline
-    start\_recording & -           & -            & recordingError      \\
+    start\_recording  & -                & -                           & recordingError      \\
     \hline
-    stop\_recording  & -           & -            & recordingError      \\
+    stop\_recording   & -                & -                           & recordingError      \\
+    \hline
+    list\_recordings  & -                & recordings: list[Recording] &                     \\
+    \hline
+    delete\_recording & recordingId: str & -                           &                     \\
     \hline
   \end{tabular}
 \end{center}
@@ -520,7 +584,7 @@ recording
 
 \subsubsection{Environment Variables}
 
-None
+This module interacts with the file system to record the video and log files.
 
 \wss{This section is not necessary for all modules.  Its purpose is to capture
   when the module has external interaction with the environment, such as for a
@@ -533,11 +597,32 @@ None
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent start\_recording():
 \begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
+  \item transition: starts recording the video and log files
+  \item output: None
+  \item exception: recordingError
+\end{itemize}
+
+\noindent stop\_recording():
+\begin{itemize}
+  \item transition: stops recording the video and log files
+  \item output: None
+  \item exception: recordingError
+\end{itemize}
+
+\noindent list\_recordings():
+\begin{itemize}
+  \item transition: retrieves the list of recordings from the file system
+  \item output: recordings: list[Recording]
+  \item exception: None
+\end{itemize}
+
+\noindent delete\_recording(recordingId: str):
+\begin{itemize}
+  \item transition: deletes the recording from the file system
+  \item output: None
+  \item exception: None
 \end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
@@ -569,9 +654,14 @@ stateManagement
 
 \subsection{Uses}
 
+This module uses the Recording Module (\ref{mRecording}), Tracking Module
+(\ref{mTracking}), and Output Video Module (\ref{mOutputVideo}).
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+This module does not have any exported constants.
 
 \subsubsection{Exported Access Programs}
 
@@ -615,11 +705,35 @@ None
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent arm():
 \begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
+  \item transition:
+        \begin{enumerate}
+          \item Set the armed state variable to true.
+          \item Start a loop in the background, which does the following until the armed state variable is set to false:
+          \begin{enumerate}
+            \item Call "get\_frame" from the Computer Vision Module.
+            \item Call "get\_rocket\_location" from the Computer Vision Module.
+            \item Call "step" from the Tracking Module to adjust the gimbal to keep the rocket in the center of the frame.
+            \item Call "output\_frame" from the Output Video Module to display the frame on the screen.
+          \end{enumerate}
+        \end{enumerate}
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\noindent disarm():
+\begin{itemize}
+  \item transition: sets the armed state variable to false
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\noindent manual\_control(direction):
+\begin{itemize}
+  \item transition: adjusts the gimbal to the given direction if the armed state variable is false
+  \item output: None
+  \item exception: None
 \end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
@@ -651,18 +765,22 @@ apiGateway
 
 \subsection{Uses}
 
+This module uses the State Management Module (\ref{mStateManagement}) .
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+This module does not have any exported constants.
 
 \subsubsection{Exported Access Programs}
 
 \begin{center}
   \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
     \hline
-    \textbf{Name}        & \textbf{In}         & \textbf{Out}        & \textbf{Exceptions}      \\
+    \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
     \hline
-    start\_server            & - & -                   & - \\
+    start\_server & -           & -            & -                   \\
     \hline
   \end{tabular}
 \end{center}
@@ -691,11 +809,11 @@ None
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent start\_server():
 \begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
+  \item transition: starts the api server and listens for requests from the web interface.
+  \item output: None
+  \item exception: None
 \end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
@@ -727,9 +845,13 @@ preview
 
 \subsection{Uses}
 
+This module uses the API Gateway Module (\ref{mAPI}).
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+This module does not have any exported constants.
 
 \subsubsection{Exported Access Programs}
 
@@ -761,12 +883,6 @@ None
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
-\begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
-\end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
   have a state transition.  In this case a state transition can only occur if
@@ -797,9 +913,13 @@ manualControl
 
 \subsection{Uses}
 
+This module uses the State Management Module (\ref{mStateManagement}).
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+This module does not have any exported constants.
 
 \subsubsection{Exported Access Programs}
 
@@ -831,13 +951,6 @@ None
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
-\begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
-\end{itemize}
-
 \wss{A module without environment variables or state variables is unlikely to
   have a state transition.  In this case a state transition can only occur if
   the module is changing the state of another module.}
@@ -866,9 +979,13 @@ recordingManagement
 
 \subsection{Uses}
 
+This module uses the Recording Module (\ref{mRecording}).
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+This module does not have any exported constants.
 
 \subsubsection{Exported Access Programs}
 
@@ -902,13 +1019,6 @@ This module does not have any exported access programs
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
-\begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
-\end{itemize}
-
 \wss{A module without environment variables or state variables is unlikely to
   have a state transition.  In this case a state transition can only occur if
   the module is changing the state of another module.}
@@ -937,9 +1047,13 @@ configuration
 
 \subsection{Uses}
 
+This module uses the Recording Management Module (\ref{mRecordingManagement}).
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+This module does not have any exported constants.
 
 \subsubsection{Exported Access Programs}
 
@@ -972,13 +1086,6 @@ This module does not have any exported access programs
   exceptions, but for practical purposes assumptions are sometimes appropriate.}
 
 \subsubsection{Access Routine Semantics}
-
-\noindent \wss{accessProg}():
-\begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
-\end{itemize}
 
 \wss{A module without environment variables or state variables is unlikely to
   have a state transition.  In this case a state transition can only occur if
