@@ -7,15 +7,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import threading, queue, logging, os
 
-# ====== 真实硬件（串口） ======
+# ====== 尝试导入真实硬件（串口） ======
 try:
-    from Gimbal import GimbalSerial  # 同目录下的 Gimbal.py
+    from Gimbal import GimbalSerial  # 与本文件同目录的 Gimbal.py
 except Exception:
-    GimbalSerial = None  # 若导入失败，稍后直接走 Fake
+    GimbalSerial = None  # 导入失败时稍后回退到 Fake
 
 # ========================= hardware adapters =========================
 class FakeHardwareAdapter:
-    """纯软件假设备，作为兜底"""
+    """纯软件假设备（兜底）"""
     AZ_MIN, AZ_MAX = -180.0, 180.0
     EL_MIN, EL_MAX =  -45.0,  90.0
 
@@ -50,19 +50,19 @@ class FakeHardwareAdapter:
 
 class GimbalHardwareAdapter:
     """
-    真实云台适配：把 UI 的 (az, el) ↔ 串口的 (pan, tilt) 做映射
+    真实云台适配：UI 的 (az, el) ↔ 串口的 (pan, tilt)
     GimbalSerial.move_deg(tilt, pan) / measure_deg() -> (tilt, pan)
     """
-    # 如有物理限位，按实机改下面四个值
     AZ_MIN, AZ_MAX = -180.0, 180.0
     EL_MIN, EL_MAX =  -45.0,  90.0
 
     def __init__(self, port: str, baud: int = 115200, timeout: float = 0.5):
         if GimbalSerial is None:
             raise RuntimeError("GimbalSerial not available")
-        self._lock = threading.Lock()
+        # 用可重入锁，避免 nudge 内部再调 move_to 导致死锁
+        self._lock = threading.RLock()
         self.dev = GimbalSerial(port=port, baudrate=baud, timeout=timeout)
-        # 初始化一次角度缓存
+        # 初始化角度缓存
         try:
             tilt, pan = self.dev.measure_deg()  # (el, az)
             self._el, self._az = float(tilt), float(pan)
@@ -77,10 +77,8 @@ class GimbalHardwareAdapter:
     def move_to(self, az: float, el: float) -> None:
         with self._lock:
             az, el = self._clamp(az, el)
-            # 串口是 (tilt=el, pan=az)
-            ok = self.dev.move_deg(el, az)
-            if not ok:
-                raise RuntimeError("move_deg NACK/timeout")
+            # 串口协议：(tilt=el, pan=az)
+            self.dev.move_deg(el, az)   # 由异常表示失败，不做布尔判断
             self._az, self._el = az, el
 
     def nudge(self, direction: Literal["up","down","left","right"], step_deg: float) -> None:
@@ -90,10 +88,11 @@ class GimbalHardwareAdapter:
             elif direction == "right":  az += step_deg
             elif direction == "up":       el += step_deg
             elif direction == "down":     el -= step_deg
-            self.move_to(az, el)  # 复用绝对移动
+            az, el = self._clamp(az, el)
+            self.dev.move_deg(el, az)   # 直接下发，避免再次上锁
+            self._az, self._el = az, el
 
     def angles(self) -> tuple[float, float]:
-        # 优先读真值；失败就返回缓存，不影响接口
         with self._lock:
             try:
                 tilt, pan = self.dev.measure_deg()
@@ -106,8 +105,8 @@ class GimbalHardwareAdapter:
 def build_hw():
     """
     优先尝试真实串口；失败自动回退 Fake。
-    使用环境变量可配置：
-      GIMBAL_PORT=/dev/ttyTHS1 or /dev/ttyUSB0
+    环境变量：
+      GIMBAL_PORT=/dev/ttyTHS1 或 /dev/ttyUSB0
       GIMBAL_BAUD=115200
       GIMBAL_TIMEOUT=0.5
     """
@@ -161,13 +160,14 @@ class Controller(threading.Thread):
 
                 self.state.last_error = None
             except Exception as e:
+                logging.exception("Controller command failed: %s", e)
                 self.state.last_error = str(e)
             finally:
                 self.q.task_done()
 
 # ========================= Flask =========================
 app = Flask(__name__)
-CORS(app)  # 开发期放开；生产建议只允许你的前端域
+CORS(app)  # 开发期放开；生产建议收紧到你的前端域名
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 HW = build_hw()
@@ -192,7 +192,7 @@ def status():
 
 @app.post("/api/mode")
 def set_mode():
-    # 兼容 JSON 与查询串：/api/mode?mode=manual （可减少 CORS 预检）
+    # 兼容 JSON 和查询串：/api/mode?mode=manual（可减少预检）
     data = request.get_json(silent=True) or {}
     mode = request.args.get("mode") or data.get("mode")
     if mode not in ("manual", "auto"):
@@ -232,4 +232,6 @@ def _404(_):
 def _405(_):
     return jsonify({"ok": False, "error": "method not allowed"}), 405
 
-# NOTE: 不在本文件 app.run()；启动见 server.py
+if __name__ == "__main__":
+    # 本地单机调试；部署用 server.py 以 0.0.0.0 启动
+    app.run(host="127.0.0.1", port=5000, debug=True)
