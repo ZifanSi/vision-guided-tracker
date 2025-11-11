@@ -208,21 +208,45 @@ understand how to use the system.
 
 \section*{Appendix --- Reflection}
 
-Our team collaborated effectively on this deliverable, maintaining clear
-communication and giving constructive feedback to improve each section. The
-writing process went smoothly overall, and adding the “Performance Objectives”
-section helped clarify what we meant by high performance and made our project
-goals more specific. Some challenges arose, such as defining what “high
-performance” should mean for our system and deciding how complex the
-implementation should be, but we discussed these issues together and reached a
-clear, realistic definition supported by measurable goals. Learning to write in
-\LaTeX{} and follow the template format also took time, but sharing examples
-and helping one another fixed most formatting issues quickly. As the main
-editor, keeping everyone’s updates synchronized before the deadline was
-difficult, so we set small internal deadlines and used GitHub to track edits
-efficiently. Overall, the team worked cohesively, divided tasks fairly, and
-refined the document through supervisor and TA feedback to produce a clear and
-well-organized final version.
+\subsection*{Team Reflection (Q1--Q3)}
+\begin{enumerate}
+  \item What went well while writing this deliverable?
+  \item What pain points did you experience during this deliverable, and how did you resolve them?
+  \item How did you and your team adjust the scope of your goals to ensure they are suitable for a Capstone project (not overly ambitious but also of appropriate complexity for a senior design project)?
+\end{enumerate}
+
+\paragraph{Team Summary}
+Our team collaborated effectively on this deliverable, maintaining clear communication and giving constructive feedback to improve each section. The writing process went smoothly overall, and adding the ``Performance Objectives'' section helped clarify what we meant by ``high performance'' and made our project goals more specific. Some challenges arose, such as defining what ``high performance'' should mean for our system and deciding how complex the implementation should be, but we discussed these issues together and reached a clear, realistic definition supported by measurable goals. Learning to write in \LaTeX{} and follow the template format also took time, but sharing examples and helping one another fixed most formatting issues quickly. As the main editor, keeping everyone’s updates synchronized before the deadline was difficult, so we set small internal deadlines and used GitHub to track edits efficiently. Overall, the team worked cohesively, divided tasks fairly, and refined the document through supervisor and TA feedback to produce a clear and well-structured document.
+
+\subsection*{Individual Reflections}
+
+\subsubsection*{\color{blue}{Jianqing Liu from hardware}}
+\begin{enumerate}
+  \item \textbf{Q1 (What went well?):} I drafted most sections and kept edits moving fast by sharing early versions and asking for quick comments. Section~1.1 (\emph{Problem}) improved a lot after I rewrote it with simpler words and a short example of why manual tracking fails. Adding the \emph{Performance Objectives} made our goals clearer to non-rocket readers. The team gave focused feedback, and I merged changes the same day to keep one clean version. Using Git branches for small edits avoided merge conflicts.
+  \item \textbf{Q2 (Pain points \& resolution):} Defining “high performance” was hard because it could mean many things. We listed what the operator actually needs in the field (smooth video, low delay, stable tracking) and turned that into numbers (60\,fps, $<$120\,ms latency, $\le 1.5^\circ$ error). I also struggled with LaTeX formatting at first; setting up a simple compile script and a small style guide fixed most issues. When we disagreed on the environment constraints, we asked a TA to confirm what is realistic for a capstone. After that, writing went smoother.
+  \item \textbf{Q3 (Scope adjustment):} I pushed to keep the core hardware simple: a two-axis gimbal with encoders and a stable mount. We moved custom PCB work and advanced sensors to “Extras” so our main goal stays on time. We agreed to prove value with one camera, one tracker, and clean video first. That plan still shows strong engineering work but avoids risky detours. If we finish early, we can add the extra hardware later.
+\end{enumerate}
+
+\subsubsection*{\color{blue}{Xiaotian Lou from QA}}
+\begin{enumerate}
+  \item \textbf{Q1 (What went well?):} Clear task ownership and short check-ins helped us finish drafts without last-minute rush. I focused on quality: making sure terms were consistent and each claim matched the numbers in the objectives. We kept a simple checklist for each section (goal, assumptions, metric, test), which reduced back-and-forth. Getting a faculty advisor early also helped us avoid unrealistic promises. Overall, our writing became more direct and easy to read.
+  \item \textbf{Q2 (Pain points \& resolution):} LaTeX slowed us down at first, especially tables and references. I set up a minimal template, editor plugins, and a compile command so anyone could build the PDF the same way. Some sections were vague (e.g., “robustness”), so I ran short working sessions to turn them into testable statements (temperature, wind, glare). I also added a quick pass for grammar and formatting to keep the tone consistent. These steps made the document feel unified.
+  \item \textbf{Q3 (Scope adjustment):} From a QA view, success must be testable. I proposed acceptance tests tied to each metric: lock percentage during ascent, glass-to-glass latency, and reacquire time. We added operating bounds to avoid undefined cases in testing (e.g., temperature range, wind limit). I recommended deferring multi-target tracking and night IR, since they would add many new tests. This keeps the test plan realistic and still rigorous.
+\end{enumerate}
+
+\subsubsection*{\color{blue}{Shike Chen from CV}}
+\begin{enumerate}
+  \item \textbf{Q1 (What went well?):} Team alignment made the outline simple, which helped me describe the vision pipeline clearly. We agreed to start with a reliable detector and clean data path before trying advanced models. I wrote short explanations of bbox, centroid, and control loop so the reader can follow without CV background. The link between CV output and gimbal command is now easy to see. Early diagrams and plain words reduced later rewrites.
+  \item \textbf{Q2 (Pain points \& resolution):} “High performance” meant different things to us at first. I translated CV needs into numbers: minimum fps, acceptable delay from frame to command, and how much jitter is okay. We added a small telemetry log requirement so we can verify results after a test. I also simplified the wording in the CV section to avoid heavy jargon. That made reviews faster and less confusing.
+  \item \textbf{Q3 (Scope adjustment):} To keep work realistic, I suggested we focus on a single-rocket day-time tracker with good reacquire, instead of multi-target or long-range RF links. We fixed baseline targets (60\,fps, $<$120\,ms latency, $\le 1.5^\circ$ error) and kept model choice flexible as long as it meets those numbers. Hard features like night scenes or strong smoke are now future work. This plan lets us deliver a strong demo and solid data first.
+\end{enumerate}
+
+\subsubsection*{\color{blue}{Zifan Si from software}}
+\begin{enumerate}
+  \item \textbf{Q1 (What went well?):} Separating the “why” (motivation) from the “how” (design) made the writing clearer. I tied software pieces to user needs: live preview, start/stop, reacquire, and clear errors. Linking each feature to a metric or acceptance test kept the document consistent. I also helped set up a simple folder structure and a build script so teammates could update the PDF easily. Small, frequent commits kept everyone in sync.
+  \item \textbf{Q2 (Pain points \& resolution):} Balancing ambition with field limits was hard. I proposed explicit operating bounds (temperature, wind, sun angle) and a reacquire target so the scope is realistic. We wrote down latency sources (capture, processing, encode, UI) to keep the end-to-end delay under control. LaTeX details took time, but shared examples and a short style guide fixed most issues. After that, edits were faster and more consistent.
+  \item \textbf{Q3 (Scope adjustment):} I recommended keeping the core deliverable to autonomous tracking plus stabilized recording with a simple operator UI. More advanced items—custom control PCB, complex RF, or multi-target—were moved to Extras. We also agreed to log key timings and states so we can prove performance. This plan keeps risk low while still leaving room for stretch goals if time allows.
+\end{enumerate}
 
 \bibliographystyle{plainnat}
 \bibliography{../../refs/References}
