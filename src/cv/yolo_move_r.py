@@ -5,7 +5,7 @@ from ultralytics import YOLO
 import threading
 from collections import deque as _deque
 
-from src.cv.ct import GimbalSerial
+from src.backend.Gimbal import GimbalSerial
 
 # 把窗口显示到 Jetson 本地屏幕
 os.environ.setdefault("DISPLAY", ":0")
