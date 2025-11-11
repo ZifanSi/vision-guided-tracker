@@ -110,38 +110,27 @@ automatically follow model rockets during flight for clear mid-air observation.
 
 \subsubsection*{Direct Stakeholders}
 \begin{enumerate}
-  \item \textbf{McMaster Rocketry Team}: The primary end users who will deploy
-        the system during launches. They rely on accurate real-time tracking to analyze
-        staging events, parachute deployment, and overall flight performance.
+  \item \textbf{McMaster Rocketry Team}: The main users of the system. They bring the system to the launch site, set up the tripod and gimbal, connect power, and check that the camera and encoders work. They open the UI, choose manual or auto tracking, and start or stop recording. During the flight, they watch the live preview and status, and they can ask the system to reacquire the rocket if it is lost. After the flight, they save the video and logs and use them to review staging, parachute events, and overall flight performance. They also perform basic maintenance, such as charging batteries, tightening mounts, and updating the software when needed.
 
-  \item \textbf{Faculty Supervisor}: Provides technical guidance, project
-        oversight, and mentorship. Dr.~Shahin Sirouspour serves in this role, ensuring
-        that the project aligns with academic standards, engineering best practices,
-        and capstone deliverable expectations.
-
+  \item \textbf{Faculty Supervisor (direct, limited use)}: The supervisor is part of the McMaster Rocketry Team and will use the system in a few clear ways that support safety and quality, below are how they will specifically interact with the system:
+        \begin{itemize}
+          \item Before launch: Open the dashboard and read the simple pre-flight checklist. Confirm sensors show healthy, encoders are zeroed, storage has enough space, time is synchronized, and batteries are above the required level. Give an “OK to arm” in the UI so the team can proceed.
+          \item During the launch window: Keep the dashboard open to monitor live status, tracking lock, reacquisition attempts, dropped frames, and any warnings. If there is a safety concern or the system behaves poorly, press Hold or Abort and tell the team to pause.
+          \item After flight: Use the export button to save the video and telemetry logs to the shared folder. Mark key moments such as boost, apogee, parachute deployment, and landing. Add short notes about any issues seen during the run so the team can fix them.
+          \item Maintenance and follow-up: Review error logs and calibration results after field tests. Approve simple fixes, request a short re-test if needed, and sign off that the system is ready for the next launch.
+        \end{itemize}
 \end{enumerate}
 
 \subsubsection*{Indirect Stakeholders}
 \begin{enumerate}
-  \item \textbf{Aerospace Engineers and Researchers}: Benefit from
-        high-quality flight footage to validate models, improve rocket
-        designs, and support experimental research.
-
-  \item \textbf{Event Organizers and Safety Officers}: Rely on
-        reliable tracking for live monitoring of rocket flights,
-        particularly for confirming parachute deployment and safe
-        recovery during launch events.
-
-  \item \textbf{Engineering and Robotics Community}: May adapt the
-        system’s design principles for other domains requiring precise
-        tracking of fast-moving objects, such as UAV navigation, sports
-        analytics, or autonomous robotics.
-
-  \item \textbf{Potential Commercial and Industrial Users}: Could
-        adopt the system for broader applications in surveillance,
-        wildlife monitoring, or industrial inspections where real-time
-        vision-guided tracking is valuable.
+  \item \textbf{Aerospace Engineers and Researchers}: Use the recorded video and telemetry to validate models, tune simulations, and improve rocket and recovery designs. They may request specific camera angles, overlays, or data formats to match their analysis tools.
+  \item \textbf{Event Organizers and Safety Officers}: Rely on clear tracking and status to confirm safe flight and recovery. They may ask the team to show live status, prove that the system is armed only when allowed, and keep an audit of warnings and holds.
+  \item \textbf{Engineering and Robotics Community}: Reuse design ideas such as the two-axis gimbal, the simple operator UI, the acceptance tests, and the logging format. They may adapt the approach for UAV tracking, sports analysis, or robot vision demos.
+  \item \textbf{Potential Commercial and Industrial Users}: Apply the system to tasks that need real-time, vision-guided tracking, such as site inspection, wildlife monitoring, or basic perimeter watch. They may care about reliability, battery life, and clear procedures for setup and export.
 \end{enumerate}
+
+
+
 
 \subsection{Deployment Environment}
 
