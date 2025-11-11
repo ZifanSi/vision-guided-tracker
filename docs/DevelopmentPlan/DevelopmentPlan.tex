@@ -286,28 +286,16 @@ to the actual code, so we don’t need extra tools that could complicate trackin
 
 \section{Proof-of-Concept Demonstration Plan}
 
-The following are the planned steps of the PoC:
+The following are the planned process of demonstrating the PoC:
 
 \begin{enumerate}
-  \item Acquire an initial image from a camera with a stationary target.
-  \item Activate the system's tracking mode. It will segment and detect multiple moving
-        objects in the image.
-        \begin{itemize}
-          \item Segmentation and moving-object detection will use computer vision techniques
-                such as background subtraction, contour detection, and optical flow analysis.
-          \item The computer vision model will be deployed on an
-                \href{https://developer.nvidia.com/embedded/jetson-nano-developer-kit}{NVIDIA
-                  Jetson Nano} for efficient real-time processing.
-
-        \end{itemize}
-  \item The user selects a stationary or moving object as the target.
-  \item As the target moves, the system keeps it centered in the image for smooth
-        tracking.
-        \begin{itemize}
-          \item The system will handle occlusion and temporary loss of the target.
-          \item The user can manually reselect the target if needed.
-          \item Real-time camera control will be implemented using an STM32 microcontroller.
-        \end{itemize}
+  \item Connect the Jetson to a display and power it on.
+  \item Demonstrate the realtime video output.
+  \item Open the web interface for operator control.
+  \item Demonstrate manual gimbal control in idle state.
+  \item Arm the system using the web interface.
+  \item Demonstrate the system autonomously controlling the gimbal in tracking state,
+        tracking a moving image of a rocket.
 \end{enumerate}
 
 The following is a list of primary risks to consider for the PoC:
@@ -333,13 +321,6 @@ The following is a list of primary risks to consider for the PoC:
 
   \item Integration of the frontend, backend, computer vision model, and
         microcontroller may be more difficult than expected.
-        \begin{itemize}
-          \item If this occurs, we will consider using a more powerful integrated SBC such as
-                the \href{https://developer.nvidia.com/embedded/jetson-xavier-nx}{Jetson Xavier
-                  NX}, deploying selected components via cloud computation if network conditions
-                allow, or redesigning the control flow to reduce coupling and local processing
-                load.
-        \end{itemize}
 \end{enumerate}
 
 Other smaller risks to consider:
