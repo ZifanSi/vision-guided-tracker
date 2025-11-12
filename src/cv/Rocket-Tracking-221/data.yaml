@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['Rocket']
+
+roboflow:
+  workspace: qret
+  project: rocket-tracking-pduic
+  version: 22
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/qret/rocket-tracking-pduic/dataset/22
