@@ -23,65 +23,66 @@ export default function GimbalPad({ busy = false, onCommand, mode }) {
     }
   }
 
-  const padDisabled = busy || active !== "manual"; // optional UX
+  // pad only works in MANUAL mode
+  const padDisabled = busy || active !== "manual";
 
   return (
     <div className="dpad">
+      {/* mode buttons */}
       <div className="keys">
         <button
-        className="pill"
-        data-role="manual"
-        disabled={busy}
-        onClick={() => handle("manual")}
-        aria-pressed={active === "manual"}
+          className="pill"
+          data-role="manual"
+          disabled={busy}
+          onClick={() => handle("manual")}
+          aria-pressed={active === "manual"}
         >
-        MANUAL
+          MANUAL
         </button>
 
         <button
-        className="pill"
-        data-role="auto"
-        disabled={busy}
-        onClick={() => handle("auto")}
-        aria-pressed={active === "auto"}
+          className="pill"
+          data-role="auto"
+          disabled={busy}
+          onClick={() => handle("auto")}
+          aria-pressed={active === "auto"}
         >
-        AUTO
+          AUTO
         </button>
       </div>
 
-      <div className="dpad__pad" role="group" aria-label="Gimbal control pad">
+      {/* radial gimbal pad */}
+      <div
+        className="radial-pad"
+        role="group"
+        aria-label="Gimbal control pad"
+      >
         <button
-          className="dpad__btn up"
+          className="slice up"
           disabled={padDisabled}
           onClick={() => handle("up")}
           aria-label="Up"
-        >
-          ▲
-        </button>
+        />
         <button
-          className="dpad__btn down"
-          disabled={padDisabled}
-          onClick={() => handle("down")}
-          aria-label="Down"
-        >
-          ▼
-        </button>
-        <button
-          className="dpad__btn left"
-          disabled={padDisabled}
-          onClick={() => handle("left")}
-          aria-label="Left"
-        >
-          ◀
-        </button>
-        <button
-          className="dpad__btn right"
+          className="slice right"
           disabled={padDisabled}
           onClick={() => handle("right")}
           aria-label="Right"
-        >
-          ▶
-        </button>
+        />
+        <button
+          className="slice down"
+          disabled={padDisabled}
+          onClick={() => handle("down")}
+          aria-label="Down"
+        />
+        <button
+          className="slice left"
+          disabled={padDisabled}
+          onClick={() => handle("left")}
+          aria-label="Left"
+        />
+
+        <div className="center" />
       </div>
     </div>
   );
