@@ -12,18 +12,17 @@ import VideosPage from "./pages/VideosPage";
 
 export default function App() {
   return (
-    <div className="app">
-      <TwoByTwoGrid
-        topLeft={<VideoPane /* zoom={zoom} // pass to VideoPane when implemented */ />}
-        topRight={<GimbalStatus angles={angles} lastError={lastError} />}
-        bottomLeft={
-          <div style={{ display: "grid", gap: 12 }}>
-            <SensitivityControl value={stepDeg} onChange={setStepDeg} />
-            <ZoomControl value={zoom} onChange={setZoom} />
-          </div>
-        }
-        bottomRight={<GimbalPad busy={busy} mode={mode} onCommand={onCommand} />}
-      />
-    </div>
+    <BrowserRouter>
+      <div className="app">
+        <NavBar />
+        <div style={{ width: "100%", flex: 1 }}>
+          <Routes>
+            <Route path="/controller" element={<ControllerPage />} />
+            <Route path="/videos" element={<VideosPage />} />
+            <Route path="*" element={<Navigate to="/controller" replace />} />
+          </Routes>
+        </div>
+      </div>
+    </BrowserRouter>
   );
 }
