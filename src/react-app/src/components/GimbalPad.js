@@ -37,7 +37,7 @@ export default function GimbalPad({ busy = false, onCommand, mode }) {
           onClick={() => handle("manual")}
           aria-pressed={active === "manual"}
         >
-          MANUAL
+          IDLE
         </button>
 
         <button
@@ -47,7 +47,7 @@ export default function GimbalPad({ busy = false, onCommand, mode }) {
           onClick={() => handle("auto")}
           aria-pressed={active === "auto"}
         >
-          AUTO
+          ARMED
         </button>
       </div>
 
@@ -62,7 +62,8 @@ export default function GimbalPad({ busy = false, onCommand, mode }) {
           disabled={padDisabled}
           onClick={() => handle("up")}
           aria-label="Up"
-        />
+        >
+        </button>
         <button
           className="slice right"
           disabled={padDisabled}

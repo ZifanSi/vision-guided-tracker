@@ -10,14 +10,14 @@ export default function GimbalStatus({
   return (
     <div className={`gimbalStatus ${className}`}>
       <div className="statCard">
-        <div className="statLabel">horizontal angle</div>
+        <div className="statLabel">Pan Angle</div>
         <div className="statValue">
           {angles.az.toFixed(1)}°
         </div>
       </div>
 
       <div className="statCard">
-        <div className="statLabel">vertical angle</div>
+        <div className="statLabel">Tilt Angle</div>
         <div className="statValue">
           {angles.el.toFixed(1)}°
         </div>

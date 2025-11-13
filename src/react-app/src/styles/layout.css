@@ -72,3 +72,4 @@
 .nav__link:hover{ color:var(--text); background:rgba(255,255,255,.05); }
 .nav__link--active{ color:var(--text); outline:1px solid var(--accent); outline-offset:-1px; }
 
+.nav__brandImg{ height: 48px; }

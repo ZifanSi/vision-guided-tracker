@@ -6,7 +6,8 @@ import "../styles/VideoPane.css";
 export default function VideoPane() {
   return (
     <div className="videoPane">
-      <img src={redImage} alt="Camera preview" className="videoPaneImg" />
+        Preview video here
+      {/* <img src={redImage} alt="Camera preview" className="videoPaneImg" /> */}
     </div>
   );
 }

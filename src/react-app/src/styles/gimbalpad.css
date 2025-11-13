@@ -78,7 +78,7 @@
   height: 100%;
   border-radius: 50%;
   border: none;
-  background: color-mix(in srgb, var(--surface) 70%, #000 30%);
+  background: color-mix(in srgb, var(--surface) 70%, #7c7c7c 30%);
   cursor: pointer;
   transition: background 0.15s;
 }
