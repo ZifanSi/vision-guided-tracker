@@ -1,5 +1,4 @@
 // src/react-app/src/pages/ControllerPage.js
-
 import React, { useState, useCallback } from "react";
 import TwoByTwoGrid from "../layouts/TwoByTwoGrid";
 import VideoPane from "../components/VideoPane";
@@ -9,26 +8,17 @@ import SensitivityControl from "../components/SensitivityControl";
 import ZoomControl from "../components/ZoomControl";
 import { useGimbal } from "../lib/gimbalClient";
 
-// (You can delete Box if you're not using it anywhere)
-const Box = ({ children }) => (
-  <div className="blank" style={{ display: "grid", placeItems: "center", minHeight: 80 }}>
-    {children}
-  </div>
-);
-
 export default function ControllerPage() {
-  // use the hook, but grab arm/disarm/nudge so we can apply custom step
-  const { mode, angles, busy, lastError, arm, disarm, nudge } = useGimbal({ pollMs: 1000 });
+  const { mode, angles, busy, lastError, arm, disarm, nudge } =
+    useGimbal({ pollMs: 1000 });
 
-  // frontend-only UI state
-  const [stepDeg, setStepDeg] = useState(15); // sensitivity for nudges (degrees per tap)
-  const [zoom, setZoom] = useState(1.0);      // UI-only zoom level
+  const [stepDeg, setStepDeg] = useState(15);
+  const [zoom, setZoom] = useState(1.0);
 
-  // map GimbalPad commands → hook functions, injecting stepDeg for movement
   const onCommand = useCallback(
     (cmd) => {
       if (cmd === "manual" || cmd === "arm") return arm();
-      if (cmd === "auto"   || cmd === "disarm") return disarm();
+      if (cmd === "auto" || cmd === "disarm") return disarm();
       if (["up", "down", "left", "right"].includes(cmd)) {
         return nudge(cmd, stepDeg);
       }
@@ -37,9 +27,9 @@ export default function ControllerPage() {
   );
 
   return (
-    <div className="app">
+    <div className="grid-col-12">   {/* 👈 full-width content cell inside .container */}
       <TwoByTwoGrid
-        topLeft={<VideoPane /* zoom={zoom} // pass to VideoPane when implemented */ />}
+        topLeft={<VideoPane /* zoom={zoom} */ />}
         topRight={<GimbalStatus angles={angles} lastError={lastError} />}
         bottomLeft={
           <div style={{ display: "grid", gap: 12 }}>
@@ -47,7 +37,9 @@ export default function ControllerPage() {
             <ZoomControl value={zoom} onChange={setZoom} />
           </div>
         }
-        bottomRight={<GimbalPad busy={busy} mode={mode} onCommand={onCommand} />}
+        bottomRight={
+          <GimbalPad busy={busy} mode={mode} onCommand={onCommand} />
+        }
       />
     </div>
   );
