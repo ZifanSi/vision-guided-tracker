@@ -1,51 +1,28 @@
-import React, { useState, useCallback } from "react";
-import TwoByTwoGrid from "./layouts/TwoByTwoGrid";
-import VideoPane from "./components/VideoPane";
-import GimbalPad from "./components/GimbalPad";
-import GimbalStatus from "./components/GimbalStatus";
-import SensitivityControl from "./components/SensitivityControl";
-import ZoomControl from "./components/ZoomControl";
-import { useGimbal } from "./lib/gimbalClient";
+// src/react-app/src/App.js
 
-const Box = ({ children }) => (
-  <div className="blank" style={{ display: "grid", placeItems: "center", minHeight: 80 }}>
-    {children}
-  </div>
-);
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import "./styles/theme.css";
+import "./styles/layout.css";
+
+import NavBar from "./components/NavBar";
+import ControllerPage from "./pages/ControllerPage";
+import VideosPage from "./pages/VideosPage";
 
 export default function App() {
-  // use the hook, but grab arm/disarm/nudge so we can apply custom step
-  const { mode, angles, busy, lastError, arm, disarm, nudge } = useGimbal({ pollMs: 1000 });
-
-  // frontend-only UI state
-  const [stepDeg, setStepDeg] = useState(15); // sensitivity for nudges (degrees per tap)
-  const [zoom, setZoom] = useState(1.0);       // UI-only zoom level
-
-  // map GimbalPad commands → hook functions, injecting stepDeg for movement
-  const onCommand = useCallback(
-    (cmd) => {
-      if (cmd === "manual" || cmd === "arm") return arm();
-      if (cmd === "auto"   || cmd === "disarm") return disarm();
-      if (["up", "down", "left", "right"].includes(cmd)) {
-        return nudge(cmd, stepDeg);
-      }
-    },
-    [arm, disarm, nudge, stepDeg]
-  );
-
   return (
-    <div className="app">
-      <TwoByTwoGrid
-        topLeft={<VideoPane /* zoom={zoom} // pass to VideoPane when implemented */ />}
-        topRight={<GimbalStatus angles={angles} lastError={lastError} />}
-        bottomLeft={
-          <div style={{ display: "grid", gap: 12 }}>
-            <SensitivityControl value={stepDeg} onChange={setStepDeg} />
-            <ZoomControl value={zoom} onChange={setZoom} />
-          </div>
-        }
-        bottomRight={<GimbalPad busy={busy} mode={mode} onCommand={onCommand} />}
-      />
-    </div>
+    <BrowserRouter>
+      <div className="app">
+        <NavBar />
+        <div style={{ width: "100%", flex: 1 }}>
+          <Routes>
+            <Route path="/controller" element={<ControllerPage />} />
+            <Route path="/videos" element={<VideosPage />} />
+            <Route path="*" element={<Navigate to="/controller" replace />} />
+          </Routes>
+        </div>
+      </div>
+    </BrowserRouter>
   );
 }
