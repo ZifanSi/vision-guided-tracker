@@ -1,0 +1,62 @@
+.sliderBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text);
+  width: 260px;
+}
+
+.sliderTitle {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-bottom: 2px;
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sliderValue {
+  background: var(--surface3);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  border: 1px solid var(--line);
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--line);
+  outline: none;
+  border-radius: 10px;
+}
+
+/* Track fill */
+.slider::-webkit-slider-runnable-track {
+  height: 6px;
+  background: var(--line);
+  border-radius: 10px;
+}
+
+/* DJI-style orange thumb */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -5px;
+}
+
+.sliderTicks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: -6px;
+}
