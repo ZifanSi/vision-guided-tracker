@@ -70,7 +70,7 @@ class LatestFrameGrabber:
 grabber = LatestFrameGrabber(cap).start()
 
 # 加载模型（可换成你的权重）
-model = YOLO("weights/small.pt")  # 或 "yolov8n.pt"
+model = YOLO("weights/pega_11n_map95.pt")  # 或 "yolov8n.pt"
 model.to("cuda:0" if torch.cuda.is_available() else "cpu")  # 只在这里指定一次设备
 
 # —— 方案A：1秒窗口的吞吐FPS（最小改动） ——
@@ -98,7 +98,7 @@ try:
         # frame = cv2.cvtColor(frame, cv2.COLOR_YUV2BGR_UYVY)  # UYVY
 
         # 推理（不要再传 device 参数）
-        r = model(frame, imgsz=1088, conf=0.5, verbose=False)
+        r = model(frame, imgsz=1088, conf=0.5, verbose=False,iou=0.08)
 
         # ========== 新增：拿最高置信度框 ==========
         best_box_xyxy = None  # 默认没有目标
