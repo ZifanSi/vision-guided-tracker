@@ -1,14 +1,13 @@
 .twoByTwoGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 3fr 1fr;   /* 75% left, 25% right */
+  grid-template-rows: 1fr 1fr;      /* 50% top, 50% bottom */
   height: calc(100vh - 80px);
   gap: 20px;
-  background: #1f1f1f;        /* DJI-style dark grey */
-  padding: 20px;              /* matches the gap */
-  border-radius: 14px;        /* smooth rounded block */
+  background: #1f1f1f;
+  padding: 20px;
+  border-radius: 14px;
 }
-
 
 .cell {
   display: flex;
@@ -16,9 +15,7 @@
   justify-content: center;
   align-items: center;
 
-  background: var(--surface);     /* <--- lighter than background */
-  border-radius: 12px;            /* smooth rounded corners */
-  padding: 16px;                  /* spacing inside panel */
+  background: var(--surface);   /* lighter panel */
+  border-radius: 12px;
+  padding: 16px;
 }
-
-
