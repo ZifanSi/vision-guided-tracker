@@ -1,0 +1,14 @@
+.twoByTwoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* 2 columns */
+  grid-template-rows: 1fr 1fr;      /* 2 rows */
+  height: calc(100vh - 80px);       /* fill screen minus navbar */
+  gap: 20px;
+}
+
+.cell {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}

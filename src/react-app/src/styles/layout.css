@@ -72,3 +72,12 @@
 .nav__link:hover{ color:var(--text); background:rgba(255,255,255,.05); }
 .nav__link--active{ color:var(--text); outline:1px solid var(--accent); outline-offset:-1px; }
 
+.container {
+  width:100%;
+  max-width:1300px;
+  margin:24px auto;
+  padding:0 20px;
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:20px;
+}
