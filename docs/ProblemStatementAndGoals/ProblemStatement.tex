@@ -39,10 +39,10 @@
 
 \section{Problem Statement}
 The problem statement outlines the motivation and context behind our project,
-ROCAM (High Performance Vision-Guided Rocket Tracker). It defines the specific
+RoCam (High Performance Vision-Guided Rocket Tracker). It defines the specific
 engineering problem of achieving reliable, real-time visual tracking for
 small-scale model rockets using a gimbal-mounted optical camera system. It also
-identifies the inputs and outputs of ROCAM, such as live camera feeds, gimbal
+identifies the inputs and outputs of RoCam, such as live camera feeds, gimbal
 state data, and stabilized video streams, and states the performance objectives
 and key stakeholders involved in its development. The goal is to enable
 accurate mid-flight observation for analysis of staging and parachute
@@ -75,7 +75,7 @@ detection and continuous tracking much more difficult.
 
 Some commercial tracking systems exist \citep{AverTR3XX2021}, but they lack the
 speed and precision needed for small, fast-moving rockets. To address this gap,
-our project, ROCAM, aims to develop a real-time camera tracking system that can
+our project, RoCam, aims to develop a real-time camera tracking system that can
 automatically follow model rockets during flight for clear mid-air observation.
 
 \subsection{Inputs and Outputs}
@@ -114,10 +114,21 @@ automatically follow model rockets during flight for clear mid-air observation.
 
   \item \textbf{Faculty Supervisor (direct, limited use)}: The supervisor is part of the McMaster Rocketry Team and will use the system in a few clear ways that support safety and quality, below are how they will specifically interact with the system:
         \begin{itemize}
-          \item Before launch: Open the dashboard and read the simple pre-flight checklist. Confirm sensors show healthy, encoders are zeroed, storage has enough space, time is synchronized, and batteries are above the required level. Give an “OK to arm” in the UI so the team can proceed.
-          \item During the launch window: Keep the dashboard open to monitor live status, tracking lock, reacquisition attempts, dropped frames, and any warnings. If there is a safety concern or the system behaves poorly, press Hold or Abort and tell the team to pause.
-          \item After flight: Use the export button to save the video and telemetry logs to the shared folder. Mark key moments such as boost, apogee, parachute deployment, and landing. Add short notes about any issues seen during the run so the team can fix them.
-          \item Maintenance and follow-up: Review error logs and calibration results after field tests. Approve simple fixes, request a short re-test if needed, and sign off that the system is ready for the next launch.
+          \item Before launch: Open the dashboard and read the simple pre-flight checklist.
+                Confirm sensors show healthy, encoders are zeroed, storage has enough space,
+                time is synchronized, and batteries are above the required level. Give an “OK
+                to arm” in the UI so the team can proceed.
+          \item During the launch window: Keep the dashboard open to monitor live status,
+                tracking lock, reacquisition attempts, dropped frames, and any warnings. If
+                there is a safety concern or the system behaves poorly, press Hold or Abort and
+                tell the team to pause.
+          \item After flight: Use the export button to save the video and telemetry logs to the
+                shared folder. Mark key moments such as boost, apogee, parachute deployment,
+                and landing. Add short notes about any issues seen during the run so the team
+                can fix them.
+          \item Maintenance and follow-up: Review error logs and calibration results after
+                field tests. Approve simple fixes, request a short re-test if needed, and sign
+                off that the system is ready for the next launch.
         \end{itemize}
 \end{enumerate}
 
@@ -129,9 +140,6 @@ automatically follow model rockets during flight for clear mid-air observation.
   \item \textbf{Potential Commercial and Industrial Users}: Apply the system to tasks that need real-time, vision-guided tracking, such as site inspection, wildlife monitoring, or basic perimeter watch. They may care about reliability, battery life, and clear procedures for setup and export.
 \end{enumerate}
 
-
-
-
 \subsection{Deployment Environment}
 
 \begin{itemize}
@@ -142,14 +150,20 @@ automatically follow model rockets during flight for clear mid-air observation.
 
 \section{Goals}
 
-The goal of this project is to design and implement ROCAM, a real-time camera
+The goal of this project is to develop a software+hardware stack that is able
+to command a gimbal with a camera mounted on it to track and record model
+rocket launches.
+
+This system aims to provide insights into the flight performance by having high quality flight footage.
+
+The goal of this project is to design and implement RoCam, a real-time camera
 tracking system that automatically detects and follows small-scale model
-rockets during launch, ascent, and descent (apogee < 200 m). The system aims to
-maintain a stable visual lock on the rocket using a motorized gimbal, process a
-1080p 60 fps video feed in real time, and output both live and recorded
-stabilized footage. By meeting these goals, ROCAM will provide clear mid-flight
-visual data to support analysis of staging events, parachute deployment, and
-overall flight performance.
+rockets during launch, ascent, and descent (apogee $<$ 200 m). The system aims
+to maintain a stable visual lock on the rocket using a motorized gimbal,
+process a 1080p 60 fps video feed in real time, and output both live and
+recorded stabilized footage. By meeting these goals, RoCam will provide clear
+mid-flight visual data to support analysis of staging events, parachute
+deployment, and overall flight performance.
 
 \section{Stretch Goals}
 
@@ -163,7 +177,7 @@ overall flight performance.
 \end{itemize}
 
 \section{Extras}
-In addition to the core goals of ROCAM, our team plans to include a few
+In addition to the core goals of RoCam, our team plans to include a few
 value-added components that enhance the overall quality and usability of the
 system. These extras aim to demonstrate practical integration between hardware
 and software, improve accessibility for end users, and provide clearer insight
@@ -200,12 +214,29 @@ understand how to use the system.
 \subsection*{Team Reflection (Q1--Q3)}
 \begin{enumerate}
   \item What went well while writing this deliverable?
-  \item What pain points did you experience during this deliverable, and how did you resolve them?
-  \item How did you and your team adjust the scope of your goals to ensure they are suitable for a Capstone project (not overly ambitious but also of appropriate complexity for a senior design project)?
+  \item What pain points did you experience during this deliverable, and how did you
+        resolve them?
+  \item How did you and your team adjust the scope of your goals to ensure they are
+        suitable for a Capstone project (not overly ambitious but also of appropriate
+        complexity for a senior design project)?
 \end{enumerate}
 
 \paragraph{Team Summary}
-Our team collaborated effectively on this deliverable, maintaining clear communication and giving constructive feedback to improve each section. The writing process went smoothly overall, and adding the ``Performance Objectives'' section helped clarify what we meant by ``high performance'' and made our project goals more specific. Some challenges arose, such as defining what ``high performance'' should mean for our system and deciding how complex the implementation should be, but we discussed these issues together and reached a clear, realistic definition supported by measurable goals. Learning to write in \LaTeX{} and follow the template format also took time, but sharing examples and helping one another fixed most formatting issues quickly. As the main editor, keeping everyone’s updates synchronized before the deadline was difficult, so we set small internal deadlines and used GitHub to track edits efficiently. Overall, the team worked cohesively, divided tasks fairly, and refined the document through supervisor and TA feedback to produce a clear and well-structured document.
+Our team collaborated effectively on this deliverable, maintaining clear
+communication and giving constructive feedback to improve each section. The
+writing process went smoothly overall, and adding the ``Performance
+Objectives'' section helped clarify what we meant by ``high performance'' and
+made our project goals more specific. Some challenges arose, such as defining
+what ``high performance'' should mean for our system and deciding how complex
+the implementation should be, but we discussed these issues together and
+reached a clear, realistic definition supported by measurable goals. Learning
+to write in \LaTeX{} and follow the template format also took time, but sharing
+examples and helping one another fixed most formatting issues quickly. As the
+main editor, keeping everyone’s updates synchronized before the deadline was
+difficult, so we set small internal deadlines and used GitHub to track edits
+efficiently. Overall, the team worked cohesively, divided tasks fairly, and
+refined the document through supervisor and TA feedback to produce a clear and
+well-structured document.
 
 \subsection*{Individual Reflections}
 
