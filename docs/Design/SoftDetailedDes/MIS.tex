@@ -53,10 +53,9 @@ urlcolor=cyan          % color of external links
 \section{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-  \toprule {\bf Date} & {\bf Version} & {\bf Notes} \\
+  \toprule {\bf Date} & {\bf Version} & {\bf Notes}   \\
   \midrule
-  Date 1              & 1.0           & Notes       \\
-  Date 2              & 1.1           & Notes       \\
+  Nov. 10, 2025       & Rev -1        & Initial Draft \\
   \bottomrule
 \end{tabularx}
 
@@ -64,7 +63,9 @@ urlcolor=cyan          % color of external links
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
+See SRS Documentation at:
+
+\href{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/SRS/SRS.pdf}{https://github.com/ZifanSi/vision-guided-tracker/blob/main/docs/SRS/SRS.pdf}
 
 \wss{Also add any additional symbols, abbreviations or acronyms}
 
@@ -78,12 +79,13 @@ See SRS Documentation at \wss{give url}
 
 \section{Introduction}
 
-The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+The following document details the Module Interface Specifications for Rocam:
+High Performance Vision-Guided Rocket Tracker.
 
 Complementary documents include the System Requirement Specifications and
-Module Guide. The full documentation and implementation can be found at
-\url{...}. \wss{provide the url for your repo}
+Module Guide. The full documentation and implementation can be found at:
+
+\href{https://github.com/ZifanSi/vision-guided-tracker}{https://github.com/ZifanSi/vision-guided-tracker}
 
 \section{Notation}
 
@@ -131,25 +133,17 @@ project.
   \centering
   \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
     \toprule
-    \textbf{Level 1}                               & \textbf{Level 2}                \\
+    \textbf{Level 1} & \textbf{Level 2}          \\
     \midrule
 
-    {Hardware-Hiding}                              & ~                               \\
+    Jetson Module    & Gimbal Abstraction Module \\ & Computer Vision Module \\  &
+    Tracking Module                              \\ & Output Video Module \\ & Recording Module \\  & State
+    Management Module                            \\ & API Gateway Module \\
+
     \midrule
 
-    \multirow{7}{0.3\textwidth}{Behaviour-Hiding}  & Input Parameters                \\
-                                                   & Output Format                   \\
-                                                   & Output Verification             \\
-                                                   & Temperature ODEs                \\
-                                                   & Energy Equations                \\
-                                                   & Control Module                  \\
-                                                   & Specification Parameters Module \\
-    \midrule
-
-    \multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}       \\
-                                                   & ODE Solver                      \\
-                                                   & Plotting                        \\
-    \bottomrule
+    UI Module        & Preview Module            \\ & Manual Control Module \\  & Recording Management
+    Module                                       \\ & Configuration Module\\ \bottomrule
 
   \end{tabular}
   \caption{Module Hierarchy}
@@ -159,7 +153,7 @@ project.
 \newpage
 ~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
+\section{MIS of Gimbal Abstraction Module} \label{mGimbal} \wss{Use labels for
   cross-referencing}
 
 \wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
@@ -168,22 +162,34 @@ project.
 
 \subsection{Module}
 
+Gimbal
+
 \wss{Short name for the module}
 
 \subsection{Uses}
+
+This module does not use any other modules.
 
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
 
+This module does not have any exported constants.
+
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-  \begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+  \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
     \hline
-    \textbf{Name}    & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+    \textbf{Name}        & \textbf{In}         & \textbf{Out}        & \textbf{Exceptions}      \\
     \hline
-    \wss{accessProg} & -           & -            & -                   \\
+    move\_deg            & tilt: f32, pan: f32 & -                   & gimbalCommunicationError \\
+    \hline
+    measure\_deg         & -                   & tilt: f32, pan: f32 & gimbalCommunicationError \\
+    \hline
+    control\_arm\_led    & enabled: bool       & -                   & gimbalCommunicationError \\
+    \hline
+    control\_status\_led & enabled: bool       & -                   & gimbalCommunicationError \\
     \hline
   \end{tabular}
 \end{center}
@@ -192,10 +198,18 @@ project.
 
 \subsubsection{State Variables}
 
+\begin{itemize}
+  \item presistent connection to the gimbal
+\end{itemize}
+
 \wss{Not all modules will have state variables.  State variables give the module
   a memory.}
 
 \subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item This module interacts with an external gimbal device.
+\end{itemize}
 
 \wss{This section is not necessary for all modules.  Its purpose is to capture
   when the module has external interaction with the environment, such as for a
@@ -208,12 +222,873 @@ project.
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent move\_deg(tilt: f32, pan: f32):
 \begin{itemize}
-  \item transition: \wss{if appropriate}
-  \item output: \wss{if appropriate}
-  \item exception: \wss{if appropriate}
+  \item transition: sends the tilt and pan angles to the gimbal
+  \item output: None
+  \item exception: gimbalCommunicationError
 \end{itemize}
+
+\noindent measure\_deg():
+\begin{itemize}
+  \item transition: retrieves the tilt and pan angle measurements from the gimbal
+  \item output: (tilt: f32, pan: f32)
+  \item exception: gimbalCommunicationError
+\end{itemize}
+
+\noindent control\_arm\_led(enabled: bool):
+\begin{itemize}
+  \item transition: controls the arm LED on the gimbal
+  \item output: None
+  \item exception: gimbalCommunicationError
+\end{itemize}
+
+\noindent control\_status\_led(enabled: bool):
+\begin{itemize}
+  \item transition: controls the status LED on the gimbal
+  \item output: None
+  \item exception: gimbalCommunicationError
+\end{itemize}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+
+\section{MIS of Computer Vision Module} \label{mCV} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+CV
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+This module does not use any other modules.
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item WIDTH: width of the video feed (in pixels)
+  \item HEIGHT: height of the video feed (in pixels)
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+  \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
+    \hline
+    \textbf{Name}         & \textbf{In} & \textbf{Out}   & \textbf{Exceptions}        \\
+    \hline
+    get\_frame            & -           & frame          & cameraError                \\
+    \hline
+    get\_rocket\_location & frame       & x: f32, y: f32 & noRocketFound, cameraError \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item computer vision model
+  \item presistent connection to the camera sensor
+\end{itemize}
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item This module interacts with an external camera sensor.
+\end{itemize}
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent get\_frame():
+\begin{itemize}
+  \item transition: retrieves a frame from the camera sensor
+  \item output: frame
+  \item exception: cameraError
+\end{itemize}
+
+\noindent get\_rocket\_location(frame):
+\begin{itemize}
+  \item transition: analyzes the frame to find the rocket
+  \item output: (x: f32, y: f32)
+  \item exception: noRocketFound, cameraError
+\end{itemize}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+
+\section{MIS of Tracking Module} \label{mTracking} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+Tracking
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+This module uses the Computer Vision Module (\ref{mCV}) and the Gimbal
+Abstraction Module (\ref{mGimbal}).
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+This module does not have any exported constants.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+  \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
+    \hline
+    \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+    \hline
+    step          & -           & -            & -                   \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item PID parameters for controlling the gimbal
+\end{itemize}
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+None
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent step():
+\begin{itemize}
+  \item transition:
+        \begin{enumerate}
+          \item Retrieve the current gimbal angle from the Gimbal Abstraction Module.
+          \item Get the location of the rocket from the Computer Vision Module.
+          \item Calculate the desired gimbal angle using the PID algorithm.
+          \item Send the desired gimbal angle to the Gimbal Abstraction Module.
+        \end{enumerate}
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+
+\section{MIS of Output Video Module} \label{mOutputVideo} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+videoOut
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+  \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
+    \hline
+    \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+    \hline
+    output\_frame & states      & -            & outputDeviceError   \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+This module displays the frame on the screen connected to the Jetson.
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent output\_frame(states):
+\begin{itemize}
+  \item transition:
+        \begin{enumerate}
+          \item Retrieve the frame from the Computer Vision Module.
+          \item Retrieve the location of the rocket from the Computer Vision Module.
+          \item Crop the frame so the rocket is in the center of the frame.
+          \item Overlay the states on the cropped frame.
+          \item Display the cropped frame on the screen connected to the Jetson.
+        \end{enumerate}
+  \item output: None
+  \item exception: outputDeviceError
+\end{itemize}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+
+\section{MIS of Recording Module} \label{mRecording} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+recording
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+  \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
+    \hline
+    \textbf{Name}     & \textbf{In}      & \textbf{Out}                & \textbf{Exceptions} \\
+    \hline
+    start\_recording  & -                & -                           & recordingError      \\
+    \hline
+    stop\_recording   & -                & -                           & recordingError      \\
+    \hline
+    list\_recordings  & -                & recordings: list[Recording] &                     \\
+    \hline
+    delete\_recording & recordingId: str & -                           &                     \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item recording status
+\end{itemize}
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+This module interacts with the file system to record the video and log files.
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent start\_recording():
+\begin{itemize}
+  \item transition: starts recording the video and log files
+  \item output: None
+  \item exception: recordingError
+\end{itemize}
+
+\noindent stop\_recording():
+\begin{itemize}
+  \item transition: stops recording the video and log files
+  \item output: None
+  \item exception: recordingError
+\end{itemize}
+
+\noindent list\_recordings():
+\begin{itemize}
+  \item transition: retrieves the list of recordings from the file system
+  \item output: recordings: list[Recording]
+  \item exception: None
+\end{itemize}
+
+\noindent delete\_recording(recordingId: str):
+\begin{itemize}
+  \item transition: deletes the recording from the file system
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+
+\section{MIS of State Management Module} \label{mStateManagement} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+stateManagement
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+This module uses the Recording Module (\ref{mRecording}), Tracking Module
+(\ref{mTracking}), and Output Video Module (\ref{mOutputVideo}).
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+This module does not have any exported constants.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+  \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
+    \hline
+    \textbf{Name}   & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+    \hline
+    arm             & -           & -            & -                   \\
+    \hline
+    disarm          & -           & -            & -                   \\
+    \hline
+    manual\_control & direction   & -            & -                   \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item armed status
+\end{itemize}
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+None
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent arm():
+\begin{itemize}
+  \item transition:
+        \begin{enumerate}
+          \item Set the armed state variable to true.
+          \item Start a loop in the background, which does the following until the armed state
+                variable is set to false:
+                \begin{enumerate}
+                  \item Call "get\_frame" from the Computer Vision Module.
+                  \item Call "get\_rocket\_location" from the Computer Vision Module.
+                  \item Call "step" from the Tracking Module to adjust the gimbal to keep the rocket in
+                        the center of the frame.
+                  \item Call "output\_frame" from the Output Video Module to display the frame on the
+                        screen.
+                \end{enumerate}
+        \end{enumerate}
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\noindent disarm():
+\begin{itemize}
+  \item transition: sets the armed state variable to false
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\noindent manual\_control(direction):
+\begin{itemize}
+  \item transition: adjusts the gimbal to the given direction if the armed state
+        variable is false
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+
+\section{MIS of API Gateway Module} \label{mAPI} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+apiGateway
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+This module uses the State Management Module (\ref{mStateManagement}) .
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+This module does not have any exported constants.
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+  \begin{tabular}{p{3cm} p{4cm} p{4cm} p{3.5cm}}
+    \hline
+    \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+    \hline
+    start\_server & -           & -            & -                   \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+None
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent start\_server():
+\begin{itemize}
+  \item transition: starts the api server and listens for requests from the web
+        interface.
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+
+\section{MIS of Preview Module} \label{mPreview} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+preview
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+This module uses the API Gateway Module (\ref{mAPI}).
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+This module does not have any exported constants.
+
+\subsubsection{Exported Access Programs}
+
+This module does not have any exported access programs
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item This module shows the preview on the screen.
+\end{itemize}
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+
+\section{MIS of Manual Control Module} \label{mManualControl} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+manualControl
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+This module uses the State Management Module (\ref{mStateManagement}).
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+This module does not have any exported constants.
+
+\subsubsection{Exported Access Programs}
+
+This module does not have any exported access programs
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item This module shows the manual control interface on the screen.
+\end{itemize}
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+\section{MIS of Recording Management Module} \label{mRecordingManagement} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+recordingManagement
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+This module uses the Recording Module (\ref{mRecording}).
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+This module does not have any exported constants.
+
+\subsubsection{Exported Access Programs}
+
+This module does not have any exported access programs
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item recording list
+\end{itemize}
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item This module manages the recordings.
+\end{itemize}
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
+
+\wss{A module without environment variables or state variables is unlikely to
+  have a state transition.  In this case a state transition can only occur if
+  the module is changing the state of another module.}
+
+\wss{Modules rarely have both a transition and an output.  In most cases you
+  will have one or the other.}
+
+\subsubsection{Local Functions}
+
+\wss{As appropriate} \wss{These functions are for the purpose of specification.
+  They are not necessarily something that is going to be implemented
+  explicitly.  Even if they are implemented, they are not exported; they only
+  have local scope.}
+\section{MIS of Configuration Module} \label{mConfiguration} \wss{Use labels for
+  cross-referencing}
+
+\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+
+\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+\subsection{Module}
+
+configuration
+
+\wss{Short name for the module}
+
+\subsection{Uses}
+
+This module uses the Recording Management Module (\ref{mRecordingManagement}).
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+This module does not have any exported constants.
+
+\subsubsection{Exported Access Programs}
+
+This module does not have any exported access programs
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item configuration settings
+\end{itemize}
+
+\wss{Not all modules will have state variables.  State variables give the module
+  a memory.}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item This module manages the configuration settings.
+\end{itemize}
+
+\wss{This section is not necessary for all modules.  Its purpose is to capture
+  when the module has external interaction with the environment, such as for a
+  device driver, screen interface, keyboard, file, etc.}
+
+\subsubsection{Assumptions}
+
+\wss{Try to minimize assumptions and anticipate programmer errors via
+  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+
+\subsubsection{Access Routine Semantics}
 
 \wss{A module without environment variables or state variables is unlikely to
   have a state transition.  In this case a state transition can only occur if
