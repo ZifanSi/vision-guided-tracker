@@ -94,7 +94,7 @@ class GimbalHardwareAdapter:
         el = max(self.EL_MIN, min(self.EL_MAX, float(el)))
         return az, el
 
-    # —— 改动点 1：移动命令仅发指令 + 更新缓存；不阻塞等量角 ——
+    # —— 移动命令仅发指令 + 更新缓存；不阻塞等量角 ——
     def move_to(self, az: float, el: float) -> None:
         with self._lock:
             az, el = self._clamp(az, el)
@@ -120,12 +120,12 @@ class GimbalHardwareAdapter:
             logging.info(f"[gimbal] nudge/{direction} cmd -> az={az:.2f} el={el:.2f} (step={step_deg})")
             self._kick_measure_async(f"nudge/{direction}", az, el)
 
-    # —— 改动点 2：/api/status 不做串口 I/O，只回缓存 ——
+    # —— /api/status 不做串口 I/O，只回缓存 ——
     def angles(self) -> tuple[float, float]:
         with self._lock:
             return self._az, self._el
 
-    # —— 改动点 3：一次性“后台量角”，并做冷却去抖，避免高频争用串口 ——
+    # —— 一次性“后台量角”，并做冷却去抖，避免高频争用串口 ——
     def _kick_measure_async(self, tag: str, az_cmd: float, el_cmd: float):
         now = time.time()
         if (now - self._last_measure_ts) < MEASURE_COOLDOWN:
@@ -289,6 +289,7 @@ def set_mode():
     if mode not in ("manual", "auto"):
         return bad_request("mode must be 'manual' or 'auto'")
     Q.put(Command("SET_MODE", {"mode": mode}))
+    STATE.mode = mode
     return ok()
 
 
@@ -317,18 +318,31 @@ def move_quick(direction: str):
     Q.put(Command("MOVE", {"direction": direction, "step": step}))
     return ok(requested={"direction": direction, "step": step})
 
-# ===== 新增：起 / 停 YOLO 跟踪脚本 =====
+# ===== 起 / 停 YOLO 跟踪脚本 =====
 @app.post("/api/track/start")
 def track_start():
     """启动 YOLO + gimbal 自动跟踪脚本"""
     global tracker_proc
 
     if _tracker_running():
+        # 已经在跑了，直接返回当前状态
         return ok(tracker_started=False)
 
     try:
+        # 确保脚本能 import src.backend.Gimbal
+        tracker_env = os.environ.copy()
+        project_root = BASE_DIR.parent          # .../  (src 的上一级)
+        tracker_env["PYTHONPATH"] = (
+            str(project_root)
+            + os.pathsep
+            + tracker_env.get("PYTHONPATH", "")
+        )
+
+        logging.info(f"[track] starting tracker: {TRACKER_SCRIPT}")
         tracker_proc = subprocess.Popen(
             [sys.executable, str(TRACKER_SCRIPT)],
+            cwd=str(project_root),
+            env=tracker_env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
         )
@@ -348,6 +362,7 @@ def track_stop():
     global tracker_proc
 
     if _tracker_running():
+        logging.info(f"[track] stopping tracker pid={tracker_proc.pid}")
         tracker_proc.terminate()
         try:
             tracker_proc.wait(timeout=5)
@@ -368,10 +383,3 @@ def _404(_):
 
 
 @app.errorhandler(405)
-def _405(_):
-    return jsonify({"ok": False, "error": "method not allowed"}), 405
-
-
-if __name__ == "__main__":
-    # 本地单机调试；部署用 server.py 以 0.0.0.0 启动
-    app.run(host="127.0.0.1", port=5000, debug=True)
