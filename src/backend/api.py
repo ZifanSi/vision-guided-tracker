@@ -5,7 +5,8 @@ from dataclasses import dataclass, field
 from typing import Literal, Optional, Dict
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import threading, queue, logging, os, time
+import threading, queue, logging, os, time, subprocess, sys
+from pathlib import Path
 
 # ====== 尝试导入真实硬件（串口） ======
 try:
@@ -141,11 +142,16 @@ class GimbalHardwareAdapter:
                     try:
                         tilt, pan = self.dev.measure_deg()
                         self._el, self._az = float(tilt), float(pan)
-                        logging.info(f"[gimbal] {tag} measured -> az={self._az:.2f} el={self._el:.2f} "
-                                     f"(cmd az={az_cmd:.2f} el={el_cmd:.2f})")
+                        logging.info(
+                            f"[gimbal] {tag} measured -> az={self._az:.2f} el={self._el:.2f} "
+                            f"(cmd az={az_cmd:.2f} el={el_cmd:.2f})"
+                        )
                     except Exception as e:
                         # 测量失败不阻塞主流程，留缓存
-                        logging.warning(f"[gimbal] {tag} measure failed, keep cache (cmd az={az_cmd:.2f}, el={el_cmd:.2f}): {e}")
+                        logging.warning(
+                            f"[gimbal] {tag} measure failed, keep cache "
+                            f"(cmd az={az_cmd:.2f}, el={el_cmd:.2f}): {e}"
+                        )
             finally:
                 self._last_measure_ts = time.time()
                 with self._measure_guard:
@@ -168,7 +174,9 @@ def build_hw():
       GIMBAL_ACK_STRICT=0/1
     """
     try:
-        logging.info(f"[gimbal] init real device: port={PORT} baud={BAUD} timeout={TIMEOUT} ack_strict={ACK_STRICT}")
+        logging.info(
+            f"[gimbal] init real device: port={PORT} baud={BAUD} timeout={TIMEOUT} ack_strict={ACK_STRICT}"
+        )
         return GimbalHardwareAdapter(PORT, BAUD, TIMEOUT)
     except Exception as e:
         logging.exception(f"[gimbal] init real device failed, fallback to Fake: {e}")
@@ -177,17 +185,23 @@ def build_hw():
 # ========================= state & controller =========================
 @dataclass
 class State:
-    mode: Literal["manual","auto"] = "manual"
+    mode: Literal["manual", "auto"] = "manual"
     last_error: Optional[str] = None
+
 
 @dataclass(frozen=True)
 class Command:
-    kind: Literal["SET_MODE","MOVE"]
+    kind: Literal["SET_MODE", "MOVE"]
     payload: Dict[str, object] = field(default_factory=dict)
 
+
 class Controller(threading.Thread):
-    def __init__(self, hw: FakeHardwareAdapter | GimbalHardwareAdapter,
-                 st: State, q: "queue.Queue[Command]") -> None:
+    def __init__(
+        self,
+        hw: FakeHardwareAdapter | GimbalHardwareAdapter,
+        st: State,
+        q: "queue.Queue[Command]",
+    ) -> None:
         super().__init__(daemon=True)
         self.hw, self.state, self.q = hw, st, q
 
@@ -206,7 +220,7 @@ class Controller(threading.Thread):
                     if self.state.mode != "manual":
                         raise RuntimeError("movement is only allowed in MANUAL mode")
                     direction = cmd.payload.get("direction")
-                    if direction not in ("up","down","left","right"):
+                    if direction not in ("up", "down", "left", "right"):
                         raise ValueError("direction must be up/down/left/right")
                     step = float(cmd.payload.get("step", 0.5))
                     if step <= 0:
@@ -220,31 +234,53 @@ class Controller(threading.Thread):
             finally:
                 self.q.task_done()
 
+# ========================= YOLO tracker 控制 =========================
+BASE_DIR = Path(__file__).resolve().parent.parent  # .../src
+# 按你的实际路径修改：这里假设脚本在 src/cv/yolo_v4l2_display.py
+TRACKER_SCRIPT = BASE_DIR / "cv" / "yolo_move_r.py"
+
+tracker_proc: subprocess.Popen | None = None
+
+
+def _tracker_running() -> bool:
+    return tracker_proc is not None and tracker_proc.poll() is None
+
 # ========================= Flask =========================
 app = Flask(__name__)
 CORS(app)  # 开发期放开；生产建议收紧到你的前端域名
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+)
 
 HW = build_hw()
 STATE = State()
 Q: "queue.Queue[Command]" = queue.Queue(maxsize=256)
 Controller(HW, STATE, Q).start()
 
+
 def ok(**extra):
     az, el = HW.angles()
-    body = {"ok": True, "mode": STATE.mode, "angle": {"az": az, "el": el}}
+    body = {
+        "ok": True,
+        "mode": STATE.mode,
+        "angle": {"az": az, "el": el},
+        "tracking": _tracker_running(),
+    }
     if STATE.last_error:
         body["last_error"] = STATE.last_error
     body.update(extra)
     return jsonify(body), 200
 
+
 def bad_request(msg: str):
     return jsonify({"ok": False, "error": msg}), 400
+
 
 @app.get("/api/status")
 def status():
     # 只读缓存，不做串口 I/O
     return ok()
+
 
 @app.post("/api/mode")
 def set_mode():
@@ -255,11 +291,12 @@ def set_mode():
     Q.put(Command("SET_MODE", {"mode": mode}))
     return ok()
 
+
 @app.post("/api/move")
 def move():
     data = request.get_json(silent=True) or {}
     direction = data.get("direction")
-    if direction not in ("up","down","left","right"):
+    if direction not in ("up", "down", "left", "right"):
         return bad_request("direction must be up/down/left/right")
     step = data.get("step", 0.5)
     try:
@@ -271,21 +308,69 @@ def move():
     Q.put(Command("MOVE", {"direction": direction, "step": step}))
     return ok(requested={"direction": direction, "step": step})
 
+
 @app.post("/api/move/<direction>")
 def move_quick(direction: str):
-    if direction not in ("up","down","left","right"):
+    if direction not in ("up", "down", "left", "right"):
         return bad_request("direction must be up/down/left/right")
     step = float(request.args.get("step", "0.5"))
     Q.put(Command("MOVE", {"direction": direction, "step": step}))
     return ok(requested={"direction": direction, "step": step})
 
+# ===== 新增：起 / 停 YOLO 跟踪脚本 =====
+@app.post("/api/track/start")
+def track_start():
+    """启动 YOLO + gimbal 自动跟踪脚本"""
+    global tracker_proc
+
+    if _tracker_running():
+        return ok(tracker_started=False)
+
+    try:
+        tracker_proc = subprocess.Popen(
+            [sys.executable, str(TRACKER_SCRIPT)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT,
+        )
+        # 同时切到 auto 模式（禁用手动摇杆）
+        Q.put(Command("SET_MODE", {"mode": "auto"}))
+        STATE.mode = "auto"
+        return ok(tracker_started=True, pid=tracker_proc.pid)
+    except Exception as e:
+        logging.exception("track_start failed")
+        STATE.last_error = f"track_start failed: {e}"
+        return bad_request(f"track_start failed: {e}")
+
+
+@app.post("/api/track/stop")
+def track_stop():
+    """停止 YOLO + gimbal 自动跟踪脚本"""
+    global tracker_proc
+
+    if _tracker_running():
+        tracker_proc.terminate()
+        try:
+            tracker_proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            tracker_proc.kill()
+
+    tracker_proc = None
+
+    # 切回 manual 模式（允许手动摇杆）
+    Q.put(Command("SET_MODE", {"mode": "manual"}))
+    STATE.mode = "manual"
+    return ok(tracker_stopped=True)
+
+
 @app.errorhandler(404)
 def _404(_):
     return jsonify({"ok": False, "error": "not found"}), 404
 
+
 @app.errorhandler(405)
 def _405(_):
     return jsonify({"ok": False, "error": "method not allowed"}), 405
+
 
 if __name__ == "__main__":
     # 本地单机调试；部署用 server.py 以 0.0.0.0 启动
