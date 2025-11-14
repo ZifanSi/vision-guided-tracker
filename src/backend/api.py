@@ -61,6 +61,13 @@ class FakeHardwareAdapter:
     def refresh(self) -> None:
         return
 
+    def arm_led(self, state: bool) -> None:
+        logging.info(f"[gimbal/Fake] ARM_LED -> {state}")
+
+    def status_led(self, state: bool) -> None:
+        logging.info(f"[gimbal/Fake] STATUS_LED -> {state}")
+
+
 
 class GimbalHardwareAdapter:
     """
@@ -162,6 +169,22 @@ class GimbalHardwareAdapter:
     def refresh(self) -> None:
         # 供需要时主动刷新；当前实现不在 /api/status 里使用
         self._kick_measure_async("refresh", self._az, self._el)
+
+    def arm_led(self, state: bool) -> None:
+        with self._lock:
+            try:
+                self.dev.arm_led(bool(state))
+                logging.info(f"[gimbal] arm_led({state})")
+            except Exception as e:
+                logging.warning(f"[gimbal] arm_led({state}) failed: {e}")
+
+    def status_led(self, state: bool) -> None:
+        with self._lock:
+            try:
+                self.dev.status_led(bool(state))
+                logging.info(f"[gimbal] status_led({state})")
+            except Exception as e:
+                logging.warning(f"[gimbal] status_led({state}) failed: {e}")
 
 
 def build_hw():
