@@ -86,6 +86,7 @@ export function useGimbal({ pollMs = 1000 } = {}) {
 
   // 👉 ARMED：启动 YOLO 跟踪脚本
   const arm = useCallback(async () => {
+    console.log("[useGimbal] arm() called → calling /api/track/start");
     setBusy(true);
     try {
       const s = await startTracker();
@@ -99,6 +100,7 @@ export function useGimbal({ pollMs = 1000 } = {}) {
 
   // 👉 IDLE：停止脚本
   const disarm = useCallback(async () => {
+    console.log("[useGimbal] disarm() called → calling /api/track/stop")
     setBusy(true);
     try {
       const s = await stopTracker();
