@@ -131,8 +131,8 @@ try:
             error_y = cy - center_y
 
             # 保持你原有的云台映射与符号（最小化修改）
-            gimbal_pan  -= error_y * 0.01
-            gimbal_tilt -= error_x * 0.01
+            # gimbal_pan  -= error_y * 0.01
+            gimbal_tilt += error_y * 0.01
 
             if gimbal_pan > 45:
                 gimbal_pan = 45
