@@ -5,7 +5,7 @@ from ultralytics import YOLO
 import threading
 from collections import deque as _deque
 
-from Gimbal import GimbalSerial
+from backend.Gimbal import GimbalSerial
 
 # 把窗口显示到 Jetson 本地屏幕
 os.environ.setdefault("DISPLAY", ":0")
@@ -70,7 +70,7 @@ class LatestFrameGrabber:
 grabber = LatestFrameGrabber(cap).start()
 
 # 加载模型（可换成你的权重）
-model = YOLO("cv/weights/pega_11n_map95.pt")  # 或 "yolov8n.pt"
+model = YOLO("weights/pega_11n_map95.pt")  # 或 "yolov8n.pt"
 model.to("cuda:0" if torch.cuda.is_available() else "cpu")  # 只在这里指定一次设备
 
 # —— 方案A：1秒窗口的吞吐FPS（最小改动） ——
