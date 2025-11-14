@@ -239,6 +239,12 @@ class Controller(threading.Thread):
                     self.state.mode = mode  # type: ignore[attr-defined]
                     logging.info(f"[gimbal] set_mode -> {mode}")
 
+                    # manual = 正在手动控制 → STATUS 灯亮；auto = 交给自动 → 灯灭
+                    try:
+                        self.hw.status_led(mode == "manual")
+                    except Exception as e:
+                        logging.warning(f"[gimbal] status_led update failed: {e}")
+
                 elif cmd.kind == "MOVE":
                     if self.state.mode != "manual":
                         raise RuntimeError("movement is only allowed in MANUAL mode")
@@ -364,12 +370,19 @@ def track_start():
         logging.info(f"[track] starting tracker: {TRACKER_SCRIPT}")
         tracker_proc = subprocess.Popen(
             [sys.executable, str(TRACKER_SCRIPT)],
-            cwd=str(project_root),
+            cwd=str(TRACKER_SCRIPT.parent),
             env=tracker_env,
         )
         # 同时切到 auto 模式（禁用手动摇杆）
         Q.put(Command("SET_MODE", {"mode": "auto"}))
         STATE.mode = "auto"
+
+        # 摄像头/YOLO 打开 → ARM 灯亮
+        try:
+            HW.arm_led(True)
+        except Exception as e:
+            logging.warning(f"[gimbal] arm_led on failed: {e}")
+
         return ok(tracker_started=True, pid=tracker_proc.pid)
     except Exception as e:
         logging.exception("track_start failed")
@@ -395,6 +408,13 @@ def track_stop():
     # 切回 manual 模式（允许手动摇杆）
     Q.put(Command("SET_MODE", {"mode": "manual"}))
     STATE.mode = "manual"
+
+    # 摄像头关掉 → ARM 灯灭
+    try:
+        HW.arm_led(False)
+    except Exception as e:
+        logging.warning(f"[gimbal] arm_led off failed: {e}")
+
     return ok(tracker_stopped=True)
 
 
