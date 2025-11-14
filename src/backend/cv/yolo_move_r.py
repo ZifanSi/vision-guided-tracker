@@ -79,7 +79,7 @@ tsq = deque()
 frames = 0
 
 gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.5)
-gimbal.move_deg(0, 0)
+# gimbal.move_deg(0, 0)
 gimbal_tilt = 0
 gimbal_pan = 0
 time.sleep(1)
