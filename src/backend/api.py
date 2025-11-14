@@ -236,8 +236,8 @@ class Controller(threading.Thread):
 
 # ========================= YOLO tracker 控制 =========================
 BASE_DIR = Path(__file__).resolve().parent.parent  # .../src
-# 按你的实际路径修改：这里假设脚本在 src/cv/yolo_v4l2_display.py
-TRACKER_SCRIPT = BASE_DIR / "cv" / "yolo_move_r.py"
+# 你的脚本：src/cv/yolo_v4l2_display.py
+TRACKER_SCRIPT = BASE_DIR / "cv" / "yolo_v4l2_display.py"
 
 tracker_proc: subprocess.Popen | None = None
 
@@ -383,3 +383,10 @@ def _404(_):
 
 
 @app.errorhandler(405)
+def _405(_):
+    return jsonify({"ok": False, "error": "method not allowed"}), 405
+
+
+if __name__ == "__main__":
+    # 本地单机调试；部署用 server.py 以 0.0.0.0 启动
+    app.run(host="127.0.0.1", port=5000, debug=True)
