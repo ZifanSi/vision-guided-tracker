@@ -1,0 +1,55 @@
+/* --- DJI Style Status Grid --- */
+.gimbalStatus {
+  display: grid;
+  grid-template-columns: repeat(2, 180px);  /* wider cards */
+  gap: 12px;
+  justify-content: center;                  /* center the grid */
+}
+
+/* --- Individual Card --- */
+.statCard {
+  background: var(--surface3);
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 70px;
+}
+
+/* --- Label (small with icon) --- */
+.statLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* icon box (style like DJI glyphs) */
+.statIcon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+}
+
+/* --- Value (big, left-aligned) --- */
+.statValue {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 2px;
+  align-self: flex-start;
+}
+
+/* --- Error message --- */
+.statError {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  margin-top: 4px;
+  color: crimson;
+  text-align: center;
+}
