@@ -235,7 +235,7 @@ class Controller(threading.Thread):
                 self.q.task_done()
 
 # ========================= YOLO tracker 控制 =========================
-BASE_DIR = Path(__file__).resolve().parent.parent  # .../src
+BASE_DIR = Path(__file__).resolve().parent    # .../src
 # 你的脚本：src/cv/yolo_v4l2_display.py
 TRACKER_SCRIPT = BASE_DIR / "cv" / "yolo_move_r.py"
 
