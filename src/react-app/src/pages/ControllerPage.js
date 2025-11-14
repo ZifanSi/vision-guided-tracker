@@ -17,8 +17,8 @@ export default function ControllerPage() {
 
   const onCommand = useCallback(
     (cmd) => {
-      if (cmd === "manual" || cmd === "arm") return arm();
-      if (cmd === "auto" || cmd === "disarm") return disarm();
+      if (cmd === "auto" || cmd === "arm") return arm();
+      if (cmd === "manual" || cmd === "disarm") return disarm();
       if (["up", "down", "left", "right"].includes(cmd)) {
         return nudge(cmd, stepDeg);
       }
