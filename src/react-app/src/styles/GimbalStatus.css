@@ -1,43 +1,55 @@
-/* src/react-app/src/styles/GimbalStatus.css */
-
+/* --- DJI Style Status Grid --- */
 .gimbalStatus {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 cards side-by-side */
-  gap: 8px;
+  grid-template-columns: repeat(2, 180px);  /* wider cards */
+  gap: 12px;
+  justify-content: center;                  /* center the grid */
 }
 
-/* one box like the screenshot */
+/* --- Individual Card --- */
 .statCard {
   background: var(--surface3);
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid var(--line);
-  padding: 10px 12px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 64px;
+  gap: 4px;
+  min-height: 70px;
 }
 
-/* small grey label at top-left */
+/* --- Label (small with icon) --- */
 .statLabel {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
   color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* big white value at bottom-right */
+/* icon box (style like DJI glyphs) */
+.statIcon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+}
+
+/* --- Value (big, left-aligned) --- */
 .statValue {
-  margin-top: 6px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  align-self: flex-end;
+  color: var(--text);
+  margin-top: 2px;
+  align-self: flex-start;
 }
 
-/* error spans full width under cards */
+/* --- Error message --- */
 .statError {
   grid-column: 1 / -1;
   font-size: 12px;
   margin-top: 4px;
   color: crimson;
+  text-align: center;
 }

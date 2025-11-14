@@ -7,55 +7,57 @@
   justify-content: center;
 }
 
+/* container for the two mode buttons */
 .keys {
   display: flex;
-  gap: 12px;
+  gap: 6px;
+  width: 100%;              /* make buttons span the width */
+  max-width: 260px;         /* optional: limit width so they align with the pad */
 }
 
-/* --- Mode buttons (MANUAL / AUTO) --- */
-
+/* tab-style buttons like AWB / DISP */
 .pill {
-  padding: 8px 14px;
-  border-radius: 10px;
+  flex: 1;                   /* each button takes half the row */
+  padding: 10px 0;           /* taller, no extra horizontal padding */
+  border-radius: 4px;        /* more rectangular, less “pill” */
   border: 1px solid var(--line);
-  background: var(--surface3);
+  background: var(--surface); /* a bit lighter than the pad */
   color: var(--text);
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
   cursor: pointer;
   opacity: 1;
-  transition: opacity 0.15s, transform 0.04s, background 0.15s, border-color 0.15s;
+  transition:
+    opacity 0.15s,
+    transform 0.04s,
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .pill[disabled] {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
+/* optional: subtle press effect */
 .pill:active {
-  transform: scale(0.98);
+  transform: translateY(1px);
 }
 
-/* manual active = green */
+/* active states: filled like a tab */
 .pill[data-role="manual"][aria-pressed="true"] {
+  background: var(--green);
   border-color: var(--green);
-  color: var(--green);
-  background: color-mix(in srgb, var(--green) 14%, transparent);
+  color: #000;
 }
 
-/* auto active = red */
 .pill[data-role="auto"][aria-pressed="true"] {
-  border-color: var(--red);
-  color: var(--red);
-  background: color-mix(in srgb, var(--red) 14%, transparent);
-}
-
-/* hover hints when not active */
-.pill[data-role="manual"]:not([aria-pressed="true"]):hover {
-  border-color: var(--green);
-}
-.pill[data-role="auto"]:not([aria-pressed="true"]):hover {
-  border-color: var(--red);
+  background: var(--accent);   /* or var(--red) if you have it */
+  border-color: var(--accent);
+  color: #000;
 }
 
 /* --- Radial gimbal pad (DJI-style) --- */

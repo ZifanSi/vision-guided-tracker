@@ -30,7 +30,7 @@ export default function ControllerPage() {
     <div className="grid-col-12">   {/* 👈 full-width content cell inside .container */}
       <TwoByTwoGrid
         topLeft={<VideoPane /* zoom={zoom} */ />}
-        topRight={<GimbalStatus angles={angles} lastError={lastError} />}
+        topRight={<GimbalStatus  mode={mode} angles={angles} lastError={lastError} />}
         bottomLeft={
           <div style={{ display: "grid", gap: 12 }}>
             <SensitivityControl value={stepDeg} onChange={setStepDeg} />
