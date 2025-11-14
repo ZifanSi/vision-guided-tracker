@@ -237,7 +237,7 @@ class Controller(threading.Thread):
 # ========================= YOLO tracker 控制 =========================
 BASE_DIR = Path(__file__).resolve().parent.parent  # .../src
 # 你的脚本：src/cv/yolo_v4l2_display.py
-TRACKER_SCRIPT = BASE_DIR / "cv" / "yolo_v4l2_display.py"
+TRACKER_SCRIPT = BASE_DIR / "cv" / "yolo_move_r.py"
 
 tracker_proc: subprocess.Popen | None = None
 
@@ -343,8 +343,6 @@ def track_start():
             [sys.executable, str(TRACKER_SCRIPT)],
             cwd=str(project_root),
             env=tracker_env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.STDOUT,
         )
         # 同时切到 auto 模式（禁用手动摇杆）
         Q.put(Command("SET_MODE", {"mode": "auto"}))
