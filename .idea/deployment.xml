@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="rocam@100.115.14.44:22 password" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="rocam@100.115.14.44:22 agent" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="rocam@100.115.14.44:22 password">
+      <paths name="rocam@100.115.14.44:22 agent">
         <serverdata>
           <mappings>
-            <mapping deploy="/tmp/pycharm_project_392" local="$PROJECT_DIR$" />
+            <mapping deploy="/home/rocam/backend" local="$PROJECT_DIR$/src/backend" />
           </mappings>
         </serverdata>
       </paths>

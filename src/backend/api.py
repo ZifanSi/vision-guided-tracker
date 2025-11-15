@@ -10,7 +10,7 @@ from pathlib import Path
 
 # ====== 尝试导入真实硬件（串口） ======
 try:
-    from Gimbal import GimbalSerial  # 与本文件同目录的 Gimbal.py
+    from gimbal import GimbalSerial  # 与本文件同目录的 gimbal.py
 except Exception:
     GimbalSerial = None  # 导入失败时稍后回退到 Fake
 
