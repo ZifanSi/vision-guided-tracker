@@ -1,4 +1,3 @@
-import logging
 import time
 import cv2
 import torch
@@ -14,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class CVPipeline:
-    def __init__(self, device, width, height, fps, weight_path, detection_callback):
+    def __init__(self, device, width, height, fps, weight_path, conf, detection_callback):
         set_display_env()
         self.cap = cv2.VideoCapture(device, cv2.CAP_V4L2)
         if not self.cap.isOpened():
@@ -35,6 +34,7 @@ class CVPipeline:
         self._t_capture = None
         self._t_infer = None
         self._t_display = None
+        self._conf = conf
         self.armed = False
         logger.info("CV pipeline initialized")
 
@@ -62,33 +62,36 @@ class CVPipeline:
                 frame = self._frames_q.get(timeout=0.1)
             except queue.Empty:
                 continue
-            results = self.model(frame, device=0, imgsz=640, verbose=False)
+
+            results = self.model(frame, device=0, imgsz=640, verbose=False, conf=self._conf)
             result = results[0]
-            # user callback
+
+            detection_point = None
+
+            if result.boxes is not None and result.boxes.shape[0] > 0:
+                confs = result.boxes.conf  # [N]
+                xyxy = result.boxes.xyxy  # [N,4]
+
+                # pick best box for callback
+                max_idx = torch.argmax(confs).item()
+                x1, y1, x2, y2 = xyxy[max_idx].tolist()
+                cx = 0.5 * (x1 + x2)
+                cy = 0.5 * (y1 + y2)
+                detection_point = (cx, cy)
+
+            # --- user callback ---
             try:
-                boxes = result.boxes
-                if boxes is not None and boxes.shape[0] > 0:
-                    confs = boxes.conf  # tensor [N]
-                    xyxy = boxes.xyxy  # tensor [N,4]  format: x1,y1,x2,y2
-
-                    max_idx = torch.argmax(confs).item()
-
-                    best_box_xyxy = xyxy[max_idx].tolist()
-
-                    x1, y1, x2, y2 = best_box_xyxy
-                    cx = 0.5 * (x1 + x2)
-                    cy = 0.5 * (y1 + y2)
-
-                    self._detection_callback((cx, cy))
-                else:
-                    self._detection_callback(None)
+                self._detection_callback(detection_point)
             except Exception as e:
                 logger.debug(f"detection_callback error: {e}")
+
+            # --- queue result (now already filtered) ---
             if self._results_q.full():
                 try:
                     self._results_q.get_nowait()
                 except queue.Empty:
                     pass
+
             try:
                 self._results_q.put(result, timeout=0.01)
             except queue.Full:
@@ -101,7 +104,6 @@ class CVPipeline:
 
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
         cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        time.sleep(0.5)
 
         d = display.Display()
         screen = d.screen()

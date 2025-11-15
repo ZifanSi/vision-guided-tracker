@@ -138,14 +138,13 @@ class GimbalSerial:
         Returns:
           True if exactly one byte 0x00 is received. False otherwise.
         """
-        self._mutex.acquire()
-        packet = self.create_request_data(request_id, payload)
-        written = self.ser.write(packet)
-        if written != len(packet):
-            return False
-        resp = self._read_exact(1)
-        self._mutex.release()
-        return resp == b"\x00"
+        with self._mutex:
+            packet = self.create_request_data(request_id, payload)
+            written = self.ser.write(packet)
+            if written != len(packet):
+                return False
+            resp = self._read_exact(1)
+            return resp == b"\x00"
 
     # ── Commands ───────────────────────────────────────────────────────────────
     def arm_led(self, state: bool) -> bool:
@@ -229,26 +228,25 @@ class GimbalSerial:
         Raises:
           RuntimeError on port closed, short write, timeout, or CRC mismatch.
         """
-        self._mutex.acquire()
-        if not self.ser or not self.ser.is_open:
-            raise RuntimeError("Serial port is not open")
-        packet = self.create_request_data(0x03, b"")
-        written = self.ser.write(packet)
-        if written != len(packet):
-            raise RuntimeError("Short write for measure_deg request")
-        resp = self._read_exact(9)
-        if resp is None or len(resp) != 9:
-            raise RuntimeError("Timeout or short read on measure_deg response")
-        crc_expected = self._crc8_smbus(resp[:8])
-        crc_received = resp[8]
-        if crc_expected != crc_received:
-            raise RuntimeError(
-                f"CRC mismatch: got 0x{crc_received:02X}, expected 0x{crc_expected:02X}"
-            )
-        tilt = struct.unpack("<f", resp[0:4])[0]
-        pan = struct.unpack("<f", resp[4:8])[0]
-        self._mutex.release()
-        return tilt, pan
+        with self._mutex:
+            if not self.ser or not self.ser.is_open:
+                raise RuntimeError("Serial port is not open")
+            packet = self.create_request_data(0x03, b"")
+            written = self.ser.write(packet)
+            if written != len(packet):
+                raise RuntimeError("Short write for measure_deg request")
+            resp = self._read_exact(9)
+            if resp is None or len(resp) != 9:
+                raise RuntimeError("Timeout or short read on measure_deg response")
+            crc_expected = self._crc8_smbus(resp[:8])
+            crc_received = resp[8]
+            if crc_expected != crc_received:
+                raise RuntimeError(
+                    f"CRC mismatch: got 0x{crc_received:02X}, expected 0x{crc_expected:02X}"
+                )
+            tilt = struct.unpack("<f", resp[0:4])[0]
+            pan = struct.unpack("<f", resp[4:8])[0]
+            return tilt, pan
 
 if __name__ == "__main__":
     # gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.5)

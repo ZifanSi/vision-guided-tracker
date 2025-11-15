@@ -18,6 +18,7 @@ class StateManagement:
             720,
             60,
             "models/pega_11n_map95.engine",
+            0.5,
             lambda v: self._on_detection(v),
         )
 
