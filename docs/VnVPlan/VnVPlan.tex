@@ -170,8 +170,6 @@ Verification and validation efforts will prioritize the following qualities:
 The following objectives are excluded from this project due to time, budget,
 and resource constraints:
 \begin{itemize}
-  \item \textbf{Comprehensive Usability Testing:} User experience will be evaluated
-        informally via team and client feedback rather than large-scale formal studies.
   \item \textbf{Third-Party Component Verification:} External hardware such as the
         gimbal controller and camera are assumed to perform according to their
         manufacturer specifications.
@@ -376,7 +374,9 @@ specified in the SRS document.
                                                     & $\square$ \; Validate full system behavior against SRS requirements                           \\[-2pt]
                                                     & $\square$ \; Log and resolve all integration issues                                           \\[-2pt]
                                                     & $\square$ \; Prepare final verification report for stakeholder review                         \\ \hline
-  \end{tabular}
+    
+    Safety Review                                   & $\square$ \; Review safety requirements against Hazard Analysis                               \\ \hline
+    \end{tabular}
 \end{table}
 
 \wss{If you have a supervisor for the project, you shouldn't just say they will
@@ -587,6 +587,9 @@ They include the following elements:
         (Idle, Armed, Tracking), and video recording accuracy at 1080p\,60\,fps.
         These tests correspond directly to the verification items in
         the SRS functional and performance requirements.
+    \item \textbf{Branch Coverage Analysis:}
+        Test must cover all Branch in the UI and backend code to ensure 
+        all logic paths.
 \end{itemize}
 
 \subsubsection*{Static Verification}
@@ -606,13 +609,13 @@ Planned techniques include:
         Team members will review each other’s pull requests prior to
         merging into the main branch.
         Reviews will focus on coding standard compliance, potential
-        logic errors, exception handling, and safety-critical sections
+        logic errors, exception handling, and safety-critical sections align
+        with the Hazard Analysis
         (e.g., gimbal actuation and state transitions).
 
   \item \textbf{Static Analysis Tools:}
-        Tools such as \texttt{clang-tidy}, \texttt{cppcheck}, and
-        \texttt{pylint} will be used to detect memory leaks, uninitialized variables,
-        and other common implementation defects.
+        Tools such as \texttt{pylint} will be used to detect memory leaks, 
+        uninitialized variables, and other common implementation defects.
         Results from static analysis will be logged and reviewed
         as part of the verification record.
 
