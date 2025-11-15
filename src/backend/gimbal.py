@@ -1,7 +1,7 @@
 import struct
 import serial
 from typing import Optional, Tuple
-
+from threading import Lock
 
 class GimbalSerial:
     """
@@ -56,11 +56,14 @@ class GimbalSerial:
           timeout: read timeout in seconds (default 0.5).
         """
         self.ser = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
+        self._mutex = Lock()
 
     def close(self) -> None:
         """Close the serial port if open."""
+        self._mutex.acquire()
         if self.ser and self.ser.is_open:
             self.ser.close()
+        self._mutex.release()
 
     def __enter__(self):
         return self
@@ -135,11 +138,13 @@ class GimbalSerial:
         Returns:
           True if exactly one byte 0x00 is received. False otherwise.
         """
+        self._mutex.acquire()
         packet = self.create_request_data(request_id, payload)
         written = self.ser.write(packet)
         if written != len(packet):
             return False
         resp = self._read_exact(1)
+        self._mutex.release()
         return resp == b"\x00"
 
     # ── Commands ───────────────────────────────────────────────────────────────
@@ -224,6 +229,7 @@ class GimbalSerial:
         Raises:
           RuntimeError on port closed, short write, timeout, or CRC mismatch.
         """
+        self._mutex.acquire()
         if not self.ser or not self.ser.is_open:
             raise RuntimeError("Serial port is not open")
         packet = self.create_request_data(0x03, b"")
@@ -241,6 +247,7 @@ class GimbalSerial:
             )
         tilt = struct.unpack("<f", resp[0:4])[0]
         pan = struct.unpack("<f", resp[4:8])[0]
+        self._mutex.release()
         return tilt, pan
 
 if __name__ == "__main__":

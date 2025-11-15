@@ -10,7 +10,7 @@ def noop_callback(result):
 
 def main():
     set_display_env()
-    pipeline = CVPipeline("/dev/video0", 1280, 720, 60, "./pega_11n_map95.engine", noop_callback)
+    pipeline = CVPipeline("/dev/video0", 1280, 720, 60, "models/pega_11n_map95.engine", noop_callback)
     pipeline.start()
     try:
         while pipeline.running:

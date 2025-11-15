@@ -7,6 +7,7 @@ from ultralytics import YOLO
 import threading
 import queue
 import numpy as np
+from utils import *
 from Xlib import display
 
 logger = logging.getLogger(__name__)
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 class CVPipeline:
     def __init__(self, device, width, height, fps, weight_path, detection_callback):
+        set_display_env()
         self.cap = cv2.VideoCapture(device, cv2.CAP_V4L2)
         if not self.cap.isOpened():
             raise RuntimeError("Failed to open video device %s" % device)
@@ -33,6 +35,7 @@ class CVPipeline:
         self._t_capture = None
         self._t_infer = None
         self._t_display = None
+        self.armed = False
         logger.info("CV pipeline initialized")
 
     def _capture_loop(self):
@@ -122,6 +125,9 @@ class CVPipeline:
             avg_fps = sum(fps_values) / len(fps_values) if fps_values else 0.0
             cv2.putText(annotated, f"{avg_fps:.1f} FPS", (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2, cv2.LINE_AA)
+            if self.armed:
+                cv2.putText(annotated, f"ARMED", (10, 70),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2, cv2.LINE_AA)
 
             h, w = annotated.shape[:2]
             scale = min(screen_w / w, screen_h / h) if (screen_w and screen_h) else 1.0
@@ -134,7 +140,7 @@ class CVPipeline:
             y = (screen_h - new_h) // 2
             canvas[y:y + new_h, x:x + new_w] = resized
 
-            cv2.imshow(window_name, resized)
+            cv2.imshow(window_name, canvas)
             if cv2.waitKey(1) & 0xFF == 27:
                 # ESC
                 self._stop_event.set()
