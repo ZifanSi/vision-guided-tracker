@@ -69,6 +69,15 @@ class StateManagement:
         except Exception as e:
             logger.error(f"Error in manual_move: {e}")
 
+    def manual_move_to(self, tilt: float, pan: float):
+        if self._armed:
+            return
+        try:
+            new_tilt = max(0.0, min(90.0, tilt))
+            new_pan = max(-45.0, min(45.0, pan))
+            self._gimbal.move_deg(new_tilt, new_pan)
+        except Exception as e:
+            logger.error(f"Error in manual_move_to: {e}")
 
     def start(self):
         self._cv_pipeline.start()
