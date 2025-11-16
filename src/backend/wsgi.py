@@ -7,13 +7,18 @@ flask_logger.setLevel(logging.WARN)
 
 logger.info("Starting backend.....")
 
-from flask import Flask, jsonify, request
+import os
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from state_management import StateManagement
 
 state_management = StateManagement()
 app = Flask(__name__)
 CORS(app)
+FRONTEND_DIR = "../frontend"
+
+if not os.path.isdir(FRONTEND_DIR):
+    logger.warning(f"FRONTEND_DIR does not exist.")
 
 @app.post("/api/status")
 def get_status():
@@ -43,6 +48,14 @@ def arm():
 def disarm():
     state_management.disarm()
     return jsonify({})
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_frontend(path):
+    try:
+        return send_from_directory(FRONTEND_DIR, path)
+    except Exception:
+        return send_from_directory(FRONTEND_DIR, "index.html")
 
 
 state_management.start()
