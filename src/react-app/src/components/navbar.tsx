@@ -6,13 +6,17 @@ import {
 } from "@heroui/navbar";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
-import { useRocam } from "@/network/rocamProvider";
 import { Button } from "@heroui/button";
+import { IconCancel, IconMaximize, IconMaximizeOff } from "@tabler/icons-react";
 
 export const Navbar = () => {
-  const { apiClient } = useRocam();
   return (
-    <HeroUINavbar maxWidth="full">
+    <HeroUINavbar
+      maxWidth="full"
+      classNames={{
+        wrapper: "px-4",
+      }}
+    >
       <NavbarContent justify="start">
         <img src="/logo.png" alt="RoCam" className="h-8" />
 
@@ -48,9 +52,28 @@ export const Navbar = () => {
       <NavbarContent justify="end">
         <Button
           radius="sm"
+          variant="bordered"
+          startContent={
+            document.fullscreenElement ? <IconMaximizeOff /> : <IconMaximize />
+          }
+          onPress={() => {
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            } else {
+              document.documentElement.requestFullscreen();
+            }
+          }}
+        >
+          {document.fullscreenElement ? "Exit Fullscreen" : "Fullscreen"}
+        </Button>
+        <Button
+          radius="sm"
           color="danger"
           variant="bordered"
-          onPress={() => apiClient?.arm()}
+          startContent={<IconCancel />}
+          onPress={() => {
+            alert("Not implemented");
+          }}
         >
           Emergency Stop
         </Button>
