@@ -53,9 +53,10 @@ urlcolor=cyan          % color of external links
 \section{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-  \toprule {\bf Date} & {\bf Version} & {\bf Notes}   \\
+  \toprule {\bf Date} & {\bf Version} & {\bf Notes}              \\
   \midrule
-  Nov. 10, 2025       & Rev -1        & Initial Draft \\
+  Nov. 10, 2025       & Rev -1        & Initial Draft            \\
+  Nov. 16, 2025       & -             & Fix Peer Review Comments \\
   \bottomrule
 \end{tabularx}
 
@@ -138,7 +139,8 @@ project.
 
     Jetson Module    & Gimbal Abstraction Module \\ & Computer Vision Module \\  &
     Tracking Module                              \\ & Output Video Module \\ & Recording Module \\  & State
-    Management Module                            \\ & API Gateway Module \\
+    Management Module                            \\ & API Gateway Module \\ & Serial Abstraction Module \\  &
+    Video Stream Abstraction Module              \\
 
     \midrule
 
@@ -168,7 +170,7 @@ Gimbal
 
 \subsection{Uses}
 
-This module does not use any other modules.
+This module uses the Serial Abstraction Module (M14 described in the MG).
 
 \subsection{Syntax}
 
@@ -279,7 +281,7 @@ CV
 
 \subsection{Uses}
 
-This module does not use any other modules.
+This module uses the Video Stream Abstraction Module (M15 described in the MG).
 
 \subsection{Syntax}
 
@@ -465,6 +467,8 @@ videoOut
 
 \subsection{Uses}
 
+This module uses the Video Stream Abstraction Module (M15 described in the MG).
+
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
@@ -547,6 +551,8 @@ recording
 \wss{Short name for the module}
 
 \subsection{Uses}
+
+This module uses the Video Stream Abstraction Module (M15 described in the MG).
 
 \subsection{Syntax}
 

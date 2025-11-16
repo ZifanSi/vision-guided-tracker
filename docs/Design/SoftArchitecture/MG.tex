@@ -46,9 +46,10 @@
 \section{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-  \toprule {\bf Date} & {\bf Version} & {\bf Notes}   \\
+  \toprule {\bf Date} & {\bf Version} & {\bf Notes}              \\
   \midrule
-  Nov. 10, 2025       & Rev -1        & Initial Draft \\
+  Nov. 10, 2025       & Rev -1        & Initial Draft            \\
+  Nov. 16, 2025       & -             & Fix Peer Review Comments \\
   \bottomrule
 \end{tabularx}
 
@@ -175,9 +176,18 @@ will potentially need to be modified. Hence, it is not intended that these
 decisions will be changed.
 
 \begin{description}
-  \item[\refstepcounter{ucnum} \uctheucnum \label{ucHW}:] The hardware platform. The system relys hardware acceleration for running the computer vision model, encoding, and video output. Changing the hardware platform may require refactoring all the related algorithms.
-  \item[\refstepcounter{ucnum} \uctheucnum \label{ucRocket}:] The tracked object. The system is designed to track only rockets. We are able to optimize the performance of the system based on deterministic movement patterns of a rocket. Changing the tracked object to something other than a rocket invalidates this optimization.
-  \item[\refstepcounter{ucnum} \uctheucnum \label{ucRemote}:] Fundamental changes to the use case. The system is designed to be operated remotely by a human operator.
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucHW}:]
+        The hardware platform. The system relys hardware acceleration for running the
+        computer vision model, encoding, and video output. Changing the hardware
+        platform may require refactoring all the related algorithms.
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucRocket}:]
+        The tracking algorithm. The system is designed to track only rockets. The
+        tracking algorithms are designed to only handle the mostly deterministic
+        trajectory of a rocket. Changing the tracked object to something other than a
+        rocket will make the tracking algorithm less accurate.
+  \item[\refstepcounter{ucnum} \uctheucnum \label{ucRemote}:]
+        Fundamental changes to the use case. The system is designed to be operated
+        remotely by a human operator.
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
@@ -201,6 +211,8 @@ actually be implemented.
   \item [\refstepcounter{mnum} \mthemnum \label{mManual}:] Manual Control Module
   \item [\refstepcounter{mnum} \mthemnum \label{mRecordMng}:] Recording Management Module
   \item [\refstepcounter{mnum} \mthemnum \label{mConfig}:] Configuration Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mSerial}:] Serial Abstraction Module
+  \item [\refstepcounter{mnum} \mthemnum \label{mStream}:] Video Stream Abstraction Module
 \end{description}
 
 \begin{table}[h!]
@@ -212,7 +224,8 @@ actually be implemented.
 
     Jetson Module    & Gimbal Abstraction Module \\ & Computer Vision Module \\  &
     Tracking Module                              \\ & Output Video Module \\ & Recording Module \\  & State
-    Management Module                            \\ & API Gateway Module \\
+    Management Module                            \\ & API Gateway Module \\ & Serial Abstraction Module \\  &
+    Video Stream Abstraction Module              \\
 
     \midrule
 
@@ -319,6 +332,25 @@ The jetson module contains all the code that runs on the Nvidia Jetson.
   \item[Services:] Provides the API endpoints for the UI.
   \item[Implemented By:] \progname
   \item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Serial Abstraction Module (\mref{mSerial})}
+
+\begin{description}
+  \item[Secrets:] How to interface with the hardware serial ports.
+  \item[Services:] Abstracts the serial communication interface of the hardware.
+  \item[Implemented By:] pip package pyserial
+  \item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Video Stream Abstraction Module (\mref{mStream})}
+
+\begin{description}
+  \item[Secrets:] How to retrieve the video stream from the hardware and efficiently
+        process and display it.
+  \item[Services:] Video stream retrieval, processing, and display.
+  \item[Implemented By:] Nvidia DeepStream SDK
+  \item[Type of Module:] SDK
 \end{description}
 
 \subsection{UI Module (\mref{mUI})}
