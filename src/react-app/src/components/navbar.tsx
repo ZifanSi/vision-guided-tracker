@@ -12,13 +12,13 @@ import { IconCancel, IconMaximize, IconMaximizeOff } from "@tabler/icons-react";
 export const Navbar = () => {
   return (
     <HeroUINavbar
-      maxWidth="full"
       classNames={{
         wrapper: "px-4",
       }}
+      maxWidth="full"
     >
       <NavbarContent justify="start">
-        <img src="/logo.png" alt="RoCam" className="h-8" />
+        <img alt="RoCam" className="h-8" src="/logo.png" />
 
         <div className="hidden lg:flex gap-4 justify-start ml-2">
           <NavbarItem>
@@ -26,7 +26,7 @@ export const Navbar = () => {
               className={({ isActive }: { isActive: boolean }) =>
                 clsx(
                   linkStyles({ color: "foreground" }),
-                  isActive ? "font-bold" : "text-gray-500"
+                  isActive ? "font-bold" : "text-gray-500",
                 )
               }
               to={"/"}
@@ -39,7 +39,7 @@ export const Navbar = () => {
               className={({ isActive }: { isActive: boolean }) =>
                 clsx(
                   linkStyles({ color: "foreground" }),
-                  isActive ? "font-bold" : "text-gray-500"
+                  isActive ? "font-bold" : "text-gray-500",
                 )
               }
               to={"/recordings"}
@@ -52,10 +52,10 @@ export const Navbar = () => {
       <NavbarContent justify="end">
         <Button
           radius="sm"
-          variant="bordered"
           startContent={
             document.fullscreenElement ? <IconMaximizeOff /> : <IconMaximize />
           }
+          variant="bordered"
           onPress={() => {
             if (document.fullscreenElement) {
               document.exitFullscreen();
@@ -67,10 +67,10 @@ export const Navbar = () => {
           {document.fullscreenElement ? "Exit Fullscreen" : "Fullscreen"}
         </Button>
         <Button
-          radius="sm"
           color="danger"
-          variant="bordered"
+          radius="sm"
           startContent={<IconCancel />}
+          variant="bordered"
           onPress={() => {
             alert("Not implemented");
           }}

@@ -1,8 +1,15 @@
-import DefaultLayout from "@/layouts/default";
-import { useRocam } from "@/network/rocamProvider";
 import { useEffect } from "react";
 import { Button } from "@heroui/button";
-import { IconChevronLeft, IconChevronRight, IconChevronUp, IconChevronDown, IconHome } from '@tabler/icons-react';
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronUp,
+  IconChevronDown,
+  IconHome,
+} from "@tabler/icons-react";
+
+import { useRocam } from "@/network/rocamProvider";
+import DefaultLayout from "@/layouts/default";
 
 export default function ControlPage() {
   const { apiClient, status, error } = useRocam();
@@ -46,16 +53,16 @@ export default function ControlPage() {
         <div className="bg-gray-100 rounded-lg p-4">
           <div className="flex gap-4">
             <Button
-              radius="sm"
               color="danger"
+              radius="sm"
               variant="bordered"
               onPress={() => apiClient?.arm()}
             >
               Arm
             </Button>
             <Button
-              radius="sm"
               color="primary"
+              radius="sm"
               variant="bordered"
               onPress={() => apiClient?.disarm()}
             >
@@ -63,15 +70,60 @@ export default function ControlPage() {
             </Button>
           </div>
           <div className="grid gap-2 mt-4 grid-cols-3 grid-rows-3 w-fit">
-            <div></div>
-            <Button radius="sm" isIconOnly size="lg" variant="flat" disabled={status?.armed} onPress={() => apiClient?.manualMove("up")}><IconChevronUp/></Button>
-            <div></div>
-            <Button radius="sm" isIconOnly size="lg" variant="flat" disabled={status?.armed} onPress={() => apiClient?.manualMove("left")}><IconChevronLeft/></Button>
-            <Button radius="sm" isIconOnly size="lg" variant="flat" disabled={status?.armed} onPress={() => apiClient?.manualMoveTo(0, 0)}><IconHome/></Button>
-            <Button radius="sm" isIconOnly size="lg" variant="flat" disabled={status?.armed} onPress={() => apiClient?.manualMove("right")}><IconChevronRight/></Button>
-            <div></div>
-            <Button radius="sm" isIconOnly size="lg" variant="flat" disabled={status?.armed} onPress={() => apiClient?.manualMove("down")}><IconChevronDown/></Button>
-            <div></div>
+            <div />
+            <Button
+              isIconOnly
+              disabled={status?.armed}
+              radius="sm"
+              size="lg"
+              variant="flat"
+              onPress={() => apiClient?.manualMove("up")}
+            >
+              <IconChevronUp />
+            </Button>
+            <div />
+            <Button
+              isIconOnly
+              disabled={status?.armed}
+              radius="sm"
+              size="lg"
+              variant="flat"
+              onPress={() => apiClient?.manualMove("left")}
+            >
+              <IconChevronLeft />
+            </Button>
+            <Button
+              isIconOnly
+              disabled={status?.armed}
+              radius="sm"
+              size="lg"
+              variant="flat"
+              onPress={() => apiClient?.manualMoveTo(0, 0)}
+            >
+              <IconHome />
+            </Button>
+            <Button
+              isIconOnly
+              disabled={status?.armed}
+              radius="sm"
+              size="lg"
+              variant="flat"
+              onPress={() => apiClient?.manualMove("right")}
+            >
+              <IconChevronRight />
+            </Button>
+            <div />
+            <Button
+              isIconOnly
+              disabled={status?.armed}
+              radius="sm"
+              size="lg"
+              variant="flat"
+              onPress={() => apiClient?.manualMove("down")}
+            >
+              <IconChevronDown />
+            </Button>
+            <div />
           </div>
         </div>
       </div>
@@ -81,5 +133,6 @@ export default function ControlPage() {
 
 function formatDegrees(degrees: number | undefined) {
   if (degrees === undefined) return "N/A";
+
   return `${Math.round(degrees * 10) / 10}°`;
 }

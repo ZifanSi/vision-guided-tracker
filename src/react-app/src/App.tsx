@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 
+import ControlPage from "./pages/control";
 
 import RecordingsPage from "@/pages/recordings";
-import ControlPage from "./pages/control";
 
 function App() {
   return (

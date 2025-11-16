@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths(), tailwindcss()],
   resolve: {
     alias: {
-      '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
+      "@tabler/icons-react": "@tabler/icons-react/dist/esm/icons/index.mjs",
     },
   },
 });

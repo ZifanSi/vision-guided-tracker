@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+
 import { ApiClient, type StatusResponse } from "./api";
 
 interface RocamContextType {
@@ -65,6 +66,7 @@ export function RocamProvider({ children }: RocamProviderProps) {
 
       try {
         const statusData = await apiClient.getStatus();
+
         if (isMounted) {
           setStatus(statusData);
           setError(null);
@@ -114,8 +116,10 @@ export function RocamProvider({ children }: RocamProviderProps) {
  */
 export function useRocam() {
   const context = useContext(RocamContext);
+
   if (context === undefined) {
     throw new Error("useRocam must be used within a RocamProvider");
   }
+
   return context;
 }

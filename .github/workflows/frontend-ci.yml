@@ -1,0 +1,27 @@
+name: react-ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/react-app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+          cache-dependency-path: src/react-app/yarn.lock
+
+      - name: Install deps
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn eslint

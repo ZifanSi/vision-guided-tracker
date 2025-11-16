@@ -5,9 +5,7 @@ export type StatusResponse = {
   pan: number;
 };
 
-
 export type ApiResponse<T = Record<string, unknown>> = T;
-
 
 /**
  * API Client for communicating with the Flask backend
@@ -37,9 +35,11 @@ export class ApiClient {
 
     for (const baseUrl of baseUrls) {
       const client = new ApiClient(baseUrl);
+
       try {
         await client.getStatus();
         console.log(`Connected to API at ${baseUrl}`);
+
         return client;
       } catch (error) {
         // Continue to next URL if this one fails
@@ -48,7 +48,7 @@ export class ApiClient {
     }
 
     throw new Error(
-      "Failed to connect to API. Tried base URLs: " + baseUrls.join(", ")
+      "Failed to connect to API. Tried base URLs: " + baseUrls.join(", "),
     );
   }
 
@@ -57,7 +57,7 @@ export class ApiClient {
    */
   private async post<T>(
     endpoint: string,
-    body?: Record<string, unknown>
+    body?: Record<string, unknown>,
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     const response = await fetch(url, {
@@ -69,11 +69,14 @@ export class ApiClient {
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `API request failed: ${response.status} ${response.statusText}`,
+      );
     }
 
     // Handle empty responses
     const text = await response.text();
+
     if (!text) {
       return {} as T;
     }
@@ -94,8 +97,11 @@ export class ApiClient {
    * @param direction - The direction to move
    * @returns Promise resolving to an empty response
    */
-  async manualMove(direction: "up" | "down" | "left" | "right"): Promise<ApiResponse> {
+  async manualMove(
+    direction: "up" | "down" | "left" | "right",
+  ): Promise<ApiResponse> {
     const body = { direction };
+
     return this.post<ApiResponse>("/api/manual_move", body);
   }
 
@@ -107,6 +113,7 @@ export class ApiClient {
    */
   async manualMoveTo(tilt: number, pan: number): Promise<ApiResponse> {
     const body = { tilt, pan };
+
     return this.post<ApiResponse>("/api/manual_move_to", body);
   }
 
@@ -129,4 +136,3 @@ export class ApiClient {
 
 // Export a default instance
 export const apiClient = new ApiClient();
-

@@ -1,5 +1,6 @@
-import { Navbar } from "@/components/navbar";
 import clsx from "clsx";
+
+import { Navbar } from "@/components/navbar";
 
 export default function DefaultLayout({
   children,
@@ -11,9 +12,7 @@ export default function DefaultLayout({
   return (
     <div className="relative flex flex-col h-screen">
       <Navbar />
-      <main className={clsx("flex-grow", className)}>
-        {children}
-      </main>
+      <main className={clsx("flex-grow", className)}>{children}</main>
     </div>
   );
 }
