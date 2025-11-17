@@ -52,9 +52,10 @@
 \section*{Revision History}
 
 \begin{tabularx}{\textwidth}{llX}
-  \toprule {\textbf{Date}} & {\textbf{Developer(s)}} & {\textbf{Change}} \\
+  \toprule {\textbf{Date}} & {\textbf{Developer(s)}} & {\textbf{Change}}        \\
   \midrule
-  Oct. 10, 2025            & All team members        & Initial release   \\
+  Oct. 10, 2025            & All team members        & Initial release          \\
+  Nov. 16, 2025            & Jianqing Liu            & Fix Peer Review Comments \\
   \bottomrule
 \end{tabularx}
 
@@ -933,17 +934,17 @@ unambiguous, and verifiable.
         \textbf{Source PUC:} 3 \\
         \textbf{Priority:} High
 
-  \item[FR-8] \emph{The system must begin outputting video through HDMI as soon as it
-          is initialized.}\\[2mm]
-        \textbf{Rationale:} Immediate HDMI output ensures that event video is available to stakeholders from the earliest possible moment.\\
-        \textbf{Fit Criterion:} Upon system initialization, an HDMI-connected display immediately receives a live video signal from the camera without requiring additional user action.\\
+  \item[FR-8] \emph{The system must begin outputting video as soon as it is
+          initialized.}\\[2mm]
+        \textbf{Rationale:} Immediate video output ensures that event video is available to stakeholders from the earliest possible moment.\\
+        \textbf{Fit Criterion:} Upon system initialization, a connected display immediately receives a live video signal from the camera without requiring additional user action.\\
         \textbf{Source PUC:} 1 \\
         \textbf{Priority:} High
 
-  \item[FR-9] \emph{The HDMI video output must have a text overlay that displays the
-          current gimbal tilt and pan angle.}\\[2mm]
+  \item[FR-9] \emph{The video output must have a text overlay that displays the current
+          gimbal tilt and pan angle.}\\[2mm]
         \textbf{Rationale:} Overlaying the gimbal angles on the video stream provides immediate feedback to operators and analysts and aids in diagnostics and post-flight analysis.\\
-        \textbf{Fit Criterion:} The HDMI output includes a text label showing current tilt and pan angles, updating once per video frame.\\
+        \textbf{Fit Criterion:} The video output includes a text label showing current tilt and pan angles, updating once per video frame.\\
         \textbf{Source PUC:} 1 \\
         \textbf{Priority:} Medium
 
@@ -1109,9 +1110,10 @@ testable in bench or field conditions.
         \textbf{Source PUC:} 1, 3 \\
         \textbf{Priority:} High
 
-  \item[SLR-3] \emph{The system shall be able to output 1080p 60fps video via HDMI}\\[2mm]
-        \textbf{Rationale:} The HDMI output is the output of the system\\
-        \textbf{Fit Criterion:} The system is able to output 1080p 60fps video via HDMI.\\
+  \item[SLR-3] \emph{The system shall be able to output 1080p 60fps video to a
+          connected display}\\[2mm]
+        \textbf{Rationale:} The connected display is the output of the system\\
+        \textbf{Fit Criterion:} The system is able to output 1080p 60fps video to a connected display.\\
         \textbf{Source PUC:} 1 \\
         \textbf{Priority:} High
 \end{itemize}
@@ -1132,9 +1134,9 @@ testable in bench or field conditions.
         \textbf{Source PUC:} 3 \\
         \textbf{Priority:} High
 
-  \item[SCR-3] \emph{The system must be remote operatable.}\\[2mm]
+  \item[SCR-3] \emph{The system must be remote operatable over a local network.}\\[2mm]
         \textbf{Rationale:} The system may need to be positioned inside hazardous zones (launch pad, ballistic landing areas) or at distant vantage points with no safe operator access during the countdown and flight.\\
-        \textbf{Fit Criterion:} The system should be able to perform all the product use cases with no physical interaction at the camera site once deployed.\\
+        \textbf{Fit Criterion:} The system should be able to perform all the product use cases over a local network with no physical interaction at the camera site once deployed.\\
         \textbf{Source PUC:} all \\
         \textbf{Priority:} High
 
@@ -1209,9 +1211,11 @@ None.
 None.
 
 \section{Operational and Environmental Requirements}
+
 This section describes where and how RoCam operates (temperature, power,
 networking) and how it connects to adjacent systems (e.g., HDMI). It ensures
 the design will survive real launch conditions.
+
 \subsection{Expected Physical Environment}
 \begin{itemize}[leftmargin=*]
   \item[EPE-1] \emph{The system shall operate normally in the expected temperature
@@ -1258,16 +1262,7 @@ None.
 
 \section{Maintainability and Support Requirements}
 
-Not applicable, no features or changes are expected to be made after the
-project is completed.
-
-\subsection{Supportability Requirements}
-
-Not applicable.
-
-\subsection{Adaptability Requirements}
-
-Not applicable, we are free to pick any hardware platform.
+This section is not applicable, as this is a one-time capstone project.
 
 \section{Security Requirements}
 This section sets rules for safe control and data integrity in mostly offline
@@ -1291,7 +1286,8 @@ AS-2)
 
 \subsection{Privacy Requirements}
 
-None.
+Not applicable, we assume that the system will not be connected to the public
+internet, and only physically accessible by authorized personnel.
 
 \subsection{Audit Requirements}
 \begin{itemize}[leftmargin=*]
@@ -1343,7 +1339,7 @@ acceptance criteria.
 
 \subsection{Standards Compliance Requirements}
 
-None.
+None, there are no standards compliance requirements for this project.
 
 % xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 18 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \section{Open Issues}
@@ -1813,8 +1809,6 @@ fast onboarding of new contributors.
 
 % xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \subsection{Planning of the Development Phases}
-\lips
-\subsection{Planning of the Development Phases}
 
 RoCam will be delivered in short iterations that align with the capstone
 milestones. Each phase below states the benefit to users, the main components
@@ -1861,11 +1855,24 @@ bi-directional traceability and ensure continuous alignment with stakeholder
 expectations.
 
 % xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-%\section{Migration to the New Product}
-%\subsection{Requirements for Migration to the New Product}
-%\lips
-%\subsection{Data That Has to be Modified or Translated for the New System}
-%\lips
+
+\section{Migration to the New Product}
+
+This section describes the procedure for migrating existing workflow to use the
+system we developed.
+
+\subsection{Requirements for Migration to the New Product}
+
+\begin{enumerate}
+  \item The client need to select a place with power source to deploy the system.
+  \item The client need to set up a local network between the operator and the system.
+\end{enumerate}
+
+\subsection{Data That Has to be Modified or Translated for the New System}
+
+None, as the system will only be producing new video footage and logs, it does
+not need to process any existing data.
+
 % xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 \section{Costs}
 \label{sec:costs}
