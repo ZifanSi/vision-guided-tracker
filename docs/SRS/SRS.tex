@@ -281,11 +281,32 @@ rationale and a fit criterion so compliance is testable and traceable.
           tracking}\\[2mm]
         \textbf{Rationale:} There is already a camera connected to the system for recording, using computer vision for detection and tracking is the most efficient way to do it. \\
         \textbf{Fit Criterion:} The system should be able to detect and track a rocket based only on the camera feed.
+
+  \item[SC-2] \emph{The gimbal control hardware shall use an STM32-family
+          microcontroller board supplied or approved by the McMaster Rocketry Team.}\\[2mm]
+        \textbf{Rationale:} The Rocketry Team already provides STM32-based hardware and tooling, and the project must integrate with this ecosystem.\\
+        \textbf{Fit Criterion:} All low-level gimbal control firmware runs on an STM32 device from the approved list.
+
+  \item[SC-3] \emph{The vision and tracking pipeline shall run on an NVIDIA
+          Jetson Orin Nano, or an equivalent NVIDIA Jetson-class embedded GPU
+          module.}\\[2mm]
+        \textbf{Rationale:} The Jetson platform is provided to the team and is the supported embedded GPU for this project.\\
+        \textbf{Fit Criterion:} The deployed system executes the full vision pipeline on a Jetson Orin Nano (or approved equivalent) and meets the performance requirements in Section~\ref{sec:performance}.
+
+  \item[SC-4] \emph{The project shall reuse open-source components for computer
+          vision, deep learning, media streaming/recording, containerization, and
+          continuous integration, provided they meet the performance and
+          verification criteria defined in Section~\ref{sec:reusable-components}.}\\[2mm]
+        \textbf{Rationale:} Using established open-source tools reduces risk and development effort.\\
+        \textbf{Fit Criterion:} The selected components for these roles are open-source and have recorded verification results linked to the requirements they support.
 \end{itemize}
 
 \subsection{Implementation Environment of the Current System}
 
-There are no constrains on the hardware platform the system need to use.
+The current manual recording process uses consumer or semi-professional cameras
+and tripods, with no standardized hardware platform. The mandated hardware
+platform for RoCam itself is captured in the solution constraints (SC-2--SC-3).
+
 
 \subsection{Partner or Collaborative Applications}
 
@@ -294,7 +315,12 @@ The system will command the gimbal to track and record model rocket launches.
 
 \subsection{Off-the-Shelf Software}
 
-There are no constrains on the off-the-shelf software the system need to use.
+The system is expected to rely on open-source off-the-shelf software for
+computer vision, deep learning, streaming/recording, containerization, and
+continuous integration. The requirement to reuse such components is captured in
+solution constraint SC-4, while Section~\ref{sec:reusable-components} lists the
+intended reusable components and their verification approach.
+
 
 \subsection{Anticipated Workplace Environment}
 
@@ -1533,7 +1559,14 @@ a build artifact, and fails if coverage or style gates are not met.
 
 \medskip
 \noindent\textbf{Verification approach for all components.}
-For every component above we will record the version and license, define one or more clear checks (for example frames per second, latency, precision and recall, controller step response, and web task success), and store the results with links back to the requirement they support. This keeps our reuse choices measurable and traceable.
+For every component above we will record the version and license, define one or more clear checks (for example frames per second, latency, precision and recall, controller step response, and web task success), and store the results with links back to the requirement they support. This keeps our reuse choices measurable and traceable.\\
+
+\noindent\textbf{Note:} Platform choices such as the STM32 microcontroller and the
+NVIDIA Jetson Orin Nano are documented in the solution constraints (SC-2 and
+SC-4). This section focuses on the open-source components we plan to reuse and
+how we will verify them.
+
+
 
 % xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
