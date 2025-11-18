@@ -286,8 +286,6 @@ ultralytics/
 *.pythontex
 *.pth 
 /runs
-/weights
-*.pt
 *.avi
 
 #ignore temperary latex
