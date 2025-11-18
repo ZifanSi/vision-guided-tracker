@@ -2,7 +2,7 @@
 gpu-id=0
 net-scale-factor=0.0039215697906911373
 model-color-format=0
-onnx-file=../models/pega_11n_map95.pt.onnx
+onnx-file=../models/model.pt.onnx
 model-engine-file=model_b1_gpu0_fp16.engine
 batch-size=1
 network-mode=2
