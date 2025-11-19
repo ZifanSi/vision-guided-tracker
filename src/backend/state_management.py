@@ -1,5 +1,7 @@
 import logging
 from gimbal import GimbalSerial
+from preview import MjpegFrameReceiver
+import base64
 
 logger = logging.getLogger(__name__)
 
@@ -9,6 +11,7 @@ class StateManagement:
 
         self._gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.1)
         self._gimbal.move_deg(0,0)
+        self._preview_receiver = MjpegFrameReceiver(host="127.0.0.1", port=9999, boundary="spionisto")
         # self._tracking = Tracking(self._gimbal, 720, 1280, 0.003)
         # self._cv_pipeline = CVPipeline(
         #     "/dev/video0",
@@ -34,12 +37,16 @@ class StateManagement:
         # self._cv_pipeline.armed = False
 
     def status(self):
+        latest_preview_frame = self._preview_receiver.get_latest_frame()
+        if latest_preview_frame is not None:
+            latest_preview_frame = base64.b64encode(latest_preview_frame).decode("ascii")
+
         try:
             tilt, pan = self._gimbal.measure_deg()
-            return {"armed": self._armed, "tilt": tilt, "pan": pan}
+            return {"armed": self._armed, "tilt": tilt, "pan": pan, "preview": latest_preview_frame}
         except Exception as e:
             logger.error(f"Error reading status: {e}")
-            return {"armed": self._armed, "tilt": None, "pan": None}
+            return {"armed": self._armed, "tilt": None, "pan": None, "preview": latest_preview_frame}
 
     def manual_move(self, direction: str):
         if self._armed:
@@ -79,5 +86,6 @@ class StateManagement:
             logger.error(f"Error in manual_move_to: {e}")
 
     def start(self):
+        self._preview_receiver.start()
         # self._cv_pipeline.start()
         pass

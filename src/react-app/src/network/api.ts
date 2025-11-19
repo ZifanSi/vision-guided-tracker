@@ -3,6 +3,7 @@ export type StatusResponse = {
   armed: boolean;
   tilt: number;
   pan: number;
+  preview: string | null;
 };
 
 export type ApiResponse<T = Record<string, unknown>> = T;
@@ -14,13 +15,6 @@ export class ApiClient {
   private baseUrl: string;
 
   constructor(baseUrl: string = "") {
-    this.baseUrl = baseUrl;
-  }
-
-  /**
-   * Sets the base URL for API requests
-   */
-  setBaseUrl(baseUrl: string): void {
     this.baseUrl = baseUrl;
   }
 
@@ -50,6 +44,10 @@ export class ApiClient {
     throw new Error(
       "Failed to connect to API. Tried base URLs: " + baseUrls.join(", "),
     );
+  }
+
+  previewUrl(): string {
+    return `${this.baseUrl}/preview`;
   }
 
   /**

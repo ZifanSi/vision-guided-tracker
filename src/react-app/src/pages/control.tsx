@@ -32,7 +32,7 @@ export default function ControlPage() {
           <p>Live Stream Loading.....</p>
           <img
             className="absolute rotate-90 rounded-lg"
-            src="http://100.115.14.44:9000/mjpeg_stream"
+            src={status?.preview ? `data:image/jpeg;base64,${status.preview}` : undefined}
             style={{ width: height, height: width }}
           />
         </div>

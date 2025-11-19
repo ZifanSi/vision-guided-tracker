@@ -9,6 +9,7 @@ gi.require_version('Gst', '1.0')
 from gi.repository import GLib, Gst
 from bus_call import bus_call
 import time
+import pyds
 
 MUXER_BATCH_TIMEOUT_USEC = 33000
 
@@ -98,17 +99,70 @@ def inference_start_probe(pad, info, u_data):
 def inference_stop_probe(pad, info, u_data):
     global _inference_start_time
 
+    # gst_buffer = info.get_buffer()
+    # if not gst_buffer:
+    #     print("Unable to get GstBuffer ")
+    #     return
+    #
+    # key = hash(gst_buffer)
+    # start_time = _inference_start_time[key]
+    # now = time.perf_counter()
+    # elapsed = now - start_time
+    # del _inference_start_time[key]
+    # print("Inference took {} ms, {} in queue".format(elapsed*1000, len(_inference_start_time)))
+
     gst_buffer = info.get_buffer()
     if not gst_buffer:
         print("Unable to get GstBuffer ")
         return
 
-    key = hash(gst_buffer)
-    start_time = _inference_start_time[key]
-    now = time.perf_counter()
-    elapsed = now - start_time
-    del _inference_start_time[key]
-    print("Inference took {} ms, {} in queue".format(elapsed*1000, len(_inference_start_time)))
+    # Retrieve batch metadata from the gst_buffer
+    # Note that pyds.gst_buffer_get_nvds_batch_meta() expects the
+    # C address of gst_buffer as input, which is obtained with hash(gst_buffer)
+    batch_meta = pyds.gst_buffer_get_nvds_batch_meta(hash(gst_buffer))
+    l_frame = batch_meta.frame_meta_list
+    while l_frame is not None:
+        try:
+            # Note that l_frame.data needs a cast to pyds.NvDsFrameMeta
+            # The casting is done by pyds.NvDsFrameMeta.cast()
+            # The casting also keeps ownership of the underlying memory
+            # in the C code, so the Python garbage collector will leave
+            # it alone.
+            frame_meta = pyds.NvDsFrameMeta.cast(l_frame.data)
+        except StopIteration:
+            break
+
+        # Intiallizing object counter with 0.
+        num_rects = frame_meta.num_obj_meta
+        l_obj = frame_meta.obj_meta_list
+        while l_obj is not None:
+            try:
+                # Casting l_obj.data to pyds.NvDsObjectMeta
+                obj_meta = pyds.NvDsObjectMeta.cast(l_obj.data)
+            except StopIteration:
+                break
+            # obj_meta.rect_params.border_color.set(0.0, 0.0, 1.0, 0.8)
+            bbox = obj_meta.detector_bbox_info.org_bbox_coords
+            bbox = {
+                "conf": obj_meta.confidence,
+                "left": bbox.left,
+                "top": bbox.top,
+                "width": bbox.width,
+                "height": bbox.height
+            }
+            print(bbox)
+            try:
+                l_obj = l_obj.next
+            except StopIteration:
+                break
+
+        try:
+            l_frame = l_frame.next
+        except StopIteration:
+            break
+
+
+
     return Gst.PadProbeReturn.OK
 
 _fps_last_time = time.perf_counter()
@@ -175,18 +229,18 @@ def main():
             filesink location=recording.avi
             
             t. !
-            videorate !
-            video/x-raw(memory:NVMM),framerate=15/1 !
             queue !
             nvvideoconvert dest-crop=0:0:480:270 !
             video/x-raw(memory:NVMM),width=480,height=270 !
+            videorate !
+            video/x-raw(memory:NVMM),framerate=15/1 !
             nvjpegenc quality=70 !
             multipartmux boundary=spionisto !
             tcpclientsink port=9999
             
         """
 
-    # convert avi -> mp4: ffmpeg -i recording.avi -c:v libx264 -pix_fmt yuv420p -preset veryfast -crf 21 -an output.mp4
+    # convert avi -> mp4: ffmpeg -i recording.avi -vf "transpose=1" -c:v libx264 -pix_fmt yuv420p -preset veryfast -crf 21 -an output.mp4
     pipeline = Gst.parse_launch(pipeline_desc)
 
     glshader = pipeline.get_by_name("shader")
@@ -197,6 +251,12 @@ def main():
     bus = pipeline.get_bus()
     bus.add_signal_watch()
     bus.connect("message", bus_call, loop)
+
+    infer = pipeline.get_by_name("infer")
+    infer_source_pad = infer.get_static_pad("src")
+    if not infer_source_pad:
+        sys.stderr.write(" Unable to get src pad \n")
+    infer_source_pad.add_probe(Gst.PadProbeType.BUFFER, inference_stop_probe, 0)
 
     osd = pipeline.get_by_name("osd")
 
@@ -213,6 +273,7 @@ def main():
     try:
         loop.run()
     except:
+        print("Loop error! Exiting")
         pass
     # cleanup
     pipeline.set_state(Gst.State.NULL)
@@ -243,11 +304,11 @@ def inspect_caps(pipeline):
 
 if __name__ == '__main__':
     # sudo is configured to not require password
-    os.system("sudo setcap 'cap_net_bind_service=+eip' /usr/bin/python3.10") # give permission to bind to low-numbered ports
-    os.system("sudo setcap 'cap_sys_nice=+eip' /usr/bin/python3.10") # give permission to set high priority
-    os.system("sudo nvpmodel -m 2") # MAXN_SUPER mode
-    os.system("sudo jetson_clocks") # set all clocks to max
-    os.system("sudo modprobe nvidia-drm modeset=1") # I can't get this to persist across reboots
+    # os.system("sudo setcap 'cap_net_bind_service=+eip' /usr/bin/python3.10") # give permission to bind to low-numbered ports
+    # os.system("sudo setcap 'cap_sys_nice=+eip' /usr/bin/python3.10") # give permission to set high priority
+    # os.system("sudo nvpmodel -m 2") # MAXN_SUPER mode
+    # os.system("sudo jetson_clocks") # set all clocks to max
+    # os.system("sudo modprobe nvidia-drm modeset=1") # I can't get this to persist across reboots
     os.nice(-10)
 
 
