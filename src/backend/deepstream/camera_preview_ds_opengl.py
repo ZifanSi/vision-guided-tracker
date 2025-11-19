@@ -169,7 +169,7 @@ def main():
             t. !
             queue !
             nvvideoconvert !
-            nvjpegenc quality=80 !
+            nvjpegenc quality=70 !
             queue leaky=1 !
             avimux !
             filesink location=recording.avi
@@ -180,12 +180,13 @@ def main():
             queue !
             nvvideoconvert dest-crop=0:0:480:270 !
             video/x-raw(memory:NVMM),width=480,height=270 !
-            nvjpegenc quality=75 !
+            nvjpegenc quality=70 !
             multipartmux boundary=spionisto !
             tcpclientsink port=9999
             
         """
 
+    # convert avi -> mp4: ffmpeg -i recording.avi -c:v libx264 -pix_fmt yuv420p -preset veryfast -crf 21 -an output.mp4
     pipeline = Gst.parse_launch(pipeline_desc)
 
     glshader = pipeline.get_by_name("shader")
@@ -242,6 +243,8 @@ def inspect_caps(pipeline):
 
 if __name__ == '__main__':
     # sudo is configured to not require password
+    os.system("sudo setcap 'cap_net_bind_service=+eip' /usr/bin/python3.10") # give permission to bind to low-numbered ports
+    os.system("sudo setcap 'cap_sys_nice=+eip' /usr/bin/python3.10") # give permission to set high priority
     os.system("sudo nvpmodel -m 2") # MAXN_SUPER mode
     os.system("sudo jetson_clocks") # set all clocks to max
     os.system("sudo modprobe nvidia-drm modeset=1") # I can't get this to persist across reboots
