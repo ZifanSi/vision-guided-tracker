@@ -1,17 +1,85 @@
 import sys
 import os
 os.environ["GST_DEBUG_DUMP_DOT_DIR"] = "/tmp/"
+os.environ["GST_DEBUG"] = "2,caps:6,pad:6"
 sys.path.append('../')
 import gi
 
 gi.require_version('Gst', '1.0')
 from gi.repository import GLib, Gst
 from bus_call import bus_call
-
+import pyds
 import time
 
 MUXER_BATCH_TIMEOUT_USEC = 33000
 
+FRAGMENT_SHADER = """
+#version 100
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+varying vec2 v_texcoord;
+uniform sampler2D tex;
+
+void main() {
+    // Input: 1920x1080 (16:9)
+    // Rotated: 1080x1920 (9:16)
+    // Output: 1920x1080 (16:9)
+    // Rotated image is letterboxed horizontally.
+
+    float outputAspect  = 16.0 / 9.0;
+    float rotatedAspect = 9.0 / 16.0;
+    float contentWidth  = rotatedAspect / outputAspect; // normalized width of rotated content
+    float border        = (1.0 - contentWidth) * 0.5;
+
+    float s = v_texcoord.x;
+    float t = v_texcoord.y;
+
+    // Common vertical coord in rotated space
+    float Y = clamp(t, 0.0, 1.0);
+
+    // Inside content region: just rotate and sample normally
+    if (s >= border && s <= 1.0 - border) {
+        float X = (s - border) / contentWidth; // 0..1 across rotated image
+        X = clamp(X, 0.0, 1.0);
+
+        // Rotate 90° clockwise: (X, Y) -> (Y, 1 - X)
+        vec2 src;
+        src.x = Y;
+        src.y = 1.0 - X;
+
+        gl_FragColor = texture2D(tex, src);
+        return;
+    }
+
+    // Border region: vertical blur using edge pixels of rotated image
+
+    bool isLeft = (s < border);
+    float X_edge = isLeft ? 0.0 : 1.0;
+
+    // Vertical texel size in 1080p
+    float texelSize = 1.0 / 1080.0;
+
+    vec4 accum = vec4(0.0);
+    float count = 0.0;
+
+    for (int i = -50; i <= 50; i += 5) {
+        float sampleY = clamp(Y + float(i) * texelSize, 0.0, 1.0);
+
+        // Rotated coords: (X_edge, sampleY) -> (sampleY, 1 - X_edge)
+        vec2 src;
+        src.x = sampleY;
+        src.y = 1.0 - X_edge;
+
+        accum += texture2D(tex, src);
+        count += 1.0;
+    }
+
+    gl_FragColor = accum / count;
+}
+
+"""
 
 _inference_start_time = {}
 
@@ -68,6 +136,11 @@ def osd_sink_pad_buffer_probe(pad, info, u_data):
     if len(_fps_time_list) > 60:
         _fps_time_list.pop(0)
 
+    gst_buffer = info.get_buffer()
+    if not gst_buffer:
+        print("Unable to get GstBuffer")
+        return
+
     return Gst.PadProbeReturn.OK
 
 
@@ -78,17 +151,27 @@ def main():
     camera = "/dev/video0"
 
     pipeline_desc = f"""
-        nvv4l2camerasrc device={camera} cap-buffers=2 !
-        video/x-raw(memory:NVMM),framerate=60/1,width=1920,height=1080 !
-        nvvideoconvert !
-        mux.sink_0 nvstreammux name=mux width=1920 height=1080 live-source=1 batch-size=1 !
-        nvinfer name=infer config-file-path=dstest1_pgie_config.txt !
-        nvvideoconvert !
-        nvdsosd !
-        nvdrmvideosink name=drm-sink sync=false set-mode=1
-    """
+            nvv4l2camerasrc device={camera} cap-buffers=2 !
+            video/x-raw(memory:NVMM),framerate=60/1,width=1920,height=1080 !
+            nvvideoconvert !
+            mux.sink_0 nvstreammux name=mux width=1920 height=1080 live-source=1 batch-size=1 !
+            nvinfer name=infer config-file-path=dstest1_pgie_config.txt !
+            nvvideoconvert !
+            video/x-raw,format=RGBA !
+            queue leaky=1 max-size-buffers=2 !
+            glupload !
+            glshader name=shader !
+            gldownload !
+            video/x-raw !
+            textoverlay text="RoCam" valignment=top halignment=left font-desc="Sans, 12" draw-outline=0 draw-shadow=0 color=0xFFFF0000 !
+            nvvideoconvert !
+            nvdrmvideosink name=drm-sink sync=false set-mode=1
+        """
 
     pipeline = Gst.parse_launch(pipeline_desc)
+
+    glshader = pipeline.get_by_name("shader")
+    glshader.set_property('fragment', FRAGMENT_SHADER)
 
     # create an event loop and feed gstreamer bus mesages to it
     loop = GLib.MainLoop()
@@ -96,22 +179,13 @@ def main():
     bus.add_signal_watch()
     bus.connect("message", bus_call, loop)
 
-    sink = pipeline.get_by_name("drm-sink")
-    sinkpad = sink.get_static_pad("sink")
-    if not sinkpad:
+    osd = pipeline.get_by_name("drm-sink")
+    osd_sink_pad = osd.get_static_pad("sink")
+    if not osd_sink_pad:
         sys.stderr.write(" Unable to get sink pad \n")
 
-    sinkpad.add_probe(Gst.PadProbeType.BUFFER, osd_sink_pad_buffer_probe, 0)
+    osd_sink_pad.add_probe(Gst.PadProbeType.BUFFER, osd_sink_pad_buffer_probe, 0)
 
-    pgie = pipeline.get_by_name("infer")
-    infersinkpad = pgie.get_static_pad("sink")
-    if not infersinkpad:
-        sys.stderr.write(" Unable to get sink pad of pgie \n")
-    infersinkpad.add_probe(Gst.PadProbeType.BUFFER, inference_start_probe, 0)
-    infersrcpad = pgie.get_static_pad("src")
-    if not infersrcpad:
-        sys.stderr.write(" Unable to get src pad of pgie \n")
-    infersrcpad.add_probe(Gst.PadProbeType.BUFFER, inference_stop_probe, 0)
 
     print("Starting pipeline \n")
     pipeline.set_state(Gst.State.PLAYING)
