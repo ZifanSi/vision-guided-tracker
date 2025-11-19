@@ -1,7 +1,5 @@
 import logging
 from gimbal import GimbalSerial
-from tracking import Tracking
-from cv import CVPipeline
 
 logger = logging.getLogger(__name__)
 
@@ -11,28 +9,29 @@ class StateManagement:
 
         self._gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.1)
         self._gimbal.move_deg(0,0)
-        self._tracking = Tracking(self._gimbal, 720, 1280, 0.003)
-        self._cv_pipeline = CVPipeline(
-            "/dev/video0",
-            1280,
-            720,
-            60,
-            "models/pega_11n_map95.engine",
-            0.5,
-            lambda v: self._on_detection(v),
-        )
+        # self._tracking = Tracking(self._gimbal, 720, 1280, 0.003)
+        # self._cv_pipeline = CVPipeline(
+        #     "/dev/video0",
+        #     1280,
+        #     720,
+        #     60,
+        #     "models/pega_11n_map95.engine",
+        #     0.5,
+        #     lambda v: self._on_detection(v),
+        # )
 
     def _on_detection(self, center):
         if self._armed:
-            self._tracking.on_detection(center)
+            # self._tracking.on_detection(center)
+            pass
 
     def arm(self):
         self._armed = True
-        self._cv_pipeline.armed = True
+        # self._cv_pipeline.armed = True
 
     def disarm(self):
         self._armed = False
-        self._cv_pipeline.armed = False
+        # self._cv_pipeline.armed = False
 
     def status(self):
         try:
@@ -80,4 +79,5 @@ class StateManagement:
             logger.error(f"Error in manual_move_to: {e}")
 
     def start(self):
-        self._cv_pipeline.start()
+        # self._cv_pipeline.start()
+        pass

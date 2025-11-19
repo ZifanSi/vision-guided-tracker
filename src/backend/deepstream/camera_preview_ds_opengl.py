@@ -8,7 +8,6 @@ import gi
 gi.require_version('Gst', '1.0')
 from gi.repository import GLib, Gst
 from bus_call import bus_call
-import pyds
 import time
 
 MUXER_BATCH_TIMEOUT_USEC = 33000
@@ -120,7 +119,7 @@ def osd_sink_pad_buffer_probe(pad, info, u_data):
     global _fps_last_time
     global _fps_time_list
     global _inspected
-    global pipeline
+    global pipeline, osd
 
     # if not _inspected:
     #     # inspect_caps(pipeline)
@@ -130,22 +129,19 @@ def osd_sink_pad_buffer_probe(pad, info, u_data):
     now = time.perf_counter()
     elapsed = now - _fps_last_time
     avg_fps = len(_fps_time_list)/(now - _fps_time_list[0])
-    print(f"FPS: {avg_fps:.1f}, frame time: {elapsed * 1000:.1f} ms")
+    # print(f"FPS: {avg_fps:.1f}, frame time: {elapsed * 1000:.1f} ms")
     _fps_last_time = now
     _fps_time_list.append(now)
     if len(_fps_time_list) > 60:
         _fps_time_list.pop(0)
 
-    gst_buffer = info.get_buffer()
-    if not gst_buffer:
-        print("Unable to get GstBuffer")
-        return
+    osd.set_property("text", f"FPS: {avg_fps:.1f}")
 
     return Gst.PadProbeReturn.OK
 
 
 def main():
-    global pipeline
+    global pipeline, osd
     Gst.init(None)
 
     camera = "/dev/video0"
@@ -153,19 +149,41 @@ def main():
     pipeline_desc = f"""
             nvv4l2camerasrc device={camera} cap-buffers=2 !
             video/x-raw(memory:NVMM),framerate=60/1,width=1920,height=1080 !
+            tee name=t
+            
+            t. !
             nvvideoconvert !
             mux.sink_0 nvstreammux name=mux width=1920 height=1080 live-source=1 batch-size=1 !
             nvinfer name=infer config-file-path=dstest1_pgie_config.txt !
             nvvideoconvert !
             video/x-raw,format=RGBA !
-            queue leaky=1 max-size-buffers=2 !
+            queue leaky=1 max-size-buffers=1 !
             glupload !
             glshader name=shader !
             gldownload !
             video/x-raw !
-            textoverlay text="RoCam" valignment=top halignment=left font-desc="Sans, 12" draw-outline=0 draw-shadow=0 color=0xFFFF0000 !
+            textoverlay name=osd valignment=top halignment=left font-desc="Sans, 12" draw-outline=0 draw-shadow=0 color=0xFFFF0000 !
             nvvideoconvert !
             nvdrmvideosink name=drm-sink sync=false set-mode=1
+            
+            t. !
+            queue !
+            nvvideoconvert !
+            nvjpegenc quality=80 !
+            queue leaky=1 !
+            avimux !
+            filesink location=recording.avi
+            
+            t. !
+            videorate !
+            video/x-raw(memory:NVMM),framerate=15/1 !
+            queue !
+            nvvideoconvert dest-crop=0:0:480:270 !
+            video/x-raw(memory:NVMM),width=480,height=270 !
+            nvjpegenc quality=75 !
+            multipartmux boundary=spionisto !
+            tcpclientsink port=9999
+            
         """
 
     pipeline = Gst.parse_launch(pipeline_desc)
@@ -179,12 +197,14 @@ def main():
     bus.add_signal_watch()
     bus.connect("message", bus_call, loop)
 
-    osd = pipeline.get_by_name("drm-sink")
-    osd_sink_pad = osd.get_static_pad("sink")
-    if not osd_sink_pad:
+    osd = pipeline.get_by_name("osd")
+
+    drm_sink = pipeline.get_by_name("drm-sink")
+    drm_sink_pad = drm_sink.get_static_pad("sink")
+    if not drm_sink_pad:
         sys.stderr.write(" Unable to get sink pad \n")
 
-    osd_sink_pad.add_probe(Gst.PadProbeType.BUFFER, osd_sink_pad_buffer_probe, 0)
+    drm_sink_pad.add_probe(Gst.PadProbeType.BUFFER, osd_sink_pad_buffer_probe, 0)
 
 
     print("Starting pipeline \n")

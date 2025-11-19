@@ -10,9 +10,11 @@ import {
 
 import { useRocam } from "@/network/rocamProvider";
 import DefaultLayout from "@/layouts/default";
+import { useMeasure } from "react-use";
 
 export default function ControlPage() {
   const { apiClient, status, error } = useRocam();
+  const [streamContainerRef, { width, height }] = useMeasure<HTMLDivElement>();
 
   useEffect(() => {
     if (error) {
@@ -23,8 +25,16 @@ export default function ControlPage() {
   return (
     <DefaultLayout className="flex items-stretch">
       <div className="grid gap-4 m-4 mt-0 grid-cols-[auto_1fr] grid-rows-[1fr_auto] min-w-0 w-full">
-        <div className="bg-gray-100 aspect-[9/16] rounded-lg flex items-center justify-center row-span-2">
-          Video Preview here
+        <div
+          ref={streamContainerRef}
+          className="bg-gray-100 aspect-[9/16] rounded-lg flex items-center justify-center row-span-2"
+        >
+          <p>Live Stream Loading.....</p>
+          <img
+            className="absolute rotate-90 rounded-lg"
+            src="http://100.115.14.44:9000/mjpeg_stream"
+            style={{ width: height, height: width }}
+          />
         </div>
 
         <div className="bg-gray-100 rounded-lg p-4 font-mono">
