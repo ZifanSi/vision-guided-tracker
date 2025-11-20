@@ -7,12 +7,14 @@ import {
   IconChevronDown,
   IconHome,
 } from "@tabler/icons-react";
+import { useMeasure } from "react-use";
 
 import { useRocam } from "@/network/rocamProvider";
 import DefaultLayout from "@/layouts/default";
 
 export default function ControlPage() {
   const { apiClient, status, error } = useRocam();
+  const [streamContainerRef, { width, height }] = useMeasure<HTMLDivElement>();
 
   useEffect(() => {
     if (error) {
@@ -20,11 +22,50 @@ export default function ControlPage() {
     }
   }, [error]);
 
+  const bbox = status?.bbox;
+
   return (
     <DefaultLayout className="flex items-stretch">
       <div className="grid gap-4 m-4 mt-0 grid-cols-[auto_1fr] grid-rows-[1fr_auto] min-w-0 w-full">
-        <div className="bg-gray-100 aspect-[9/16] rounded-lg flex items-center justify-center row-span-2">
-          Video Preview here
+        <div
+          ref={streamContainerRef}
+          className="bg-gray-100 aspect-[9/16] rounded-lg flex items-center justify-center row-span-2"
+        >
+          <p>Live Stream Loading.....</p>
+          <img
+            className="absolute rotate-90 rounded-lg"
+            src={
+              status?.preview
+                ? `data:image/jpeg;base64,${status.preview}`
+                : undefined
+            }
+            style={{ width: height, height: width }}
+            alt="Camera Preview"
+          />
+          <div className="absolute" style={{ width, height }}>
+            {bbox && (
+              <>
+                <div
+                  className="absolute bg-green-500 text-white w-11 h-6 pl-1"
+                  style={{
+                    top: bbox.top * height - 24,
+                    left: bbox.left * width,
+                  }}
+                >
+                  {Math.round(bbox.conf * 100) / 100}
+                </div>
+                <div
+                  className="absolute border-4 border-green-500"
+                  style={{
+                    top: bbox.top * height,
+                    left: bbox.left * width,
+                    width: bbox.width * width,
+                    height: bbox.height * height,
+                  }}
+                />
+              </>
+            )}
+          </div>
         </div>
 
         <div className="bg-gray-100 rounded-lg p-4 font-mono">

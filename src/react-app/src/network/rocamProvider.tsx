@@ -57,7 +57,7 @@ export function RocamProvider({ children }: RocamProviderProps) {
 
     let isMounted = true;
     let timeoutId: number | null = null;
-    const targetInterval = 1000 / 15; // 15Hz
+    const targetInterval = 1000 / 30; // 15Hz
 
     async function pollStatus() {
       if (!isMounted || !apiClient) return;

@@ -1,5 +1,6 @@
 import os
 import logging
+import netifaces
 
 logger = logging.getLogger(__name__)
 
@@ -34,3 +35,12 @@ def set_display_env():
         else:
             logger.info("No DISPLAY detected")
             exit(1)
+
+def ip4_addresses():
+    addrs = []
+    for iface in netifaces.interfaces():
+        info = netifaces.ifaddresses(iface)
+        if netifaces.AF_INET in info:
+            addrs.append(info[netifaces.AF_INET][0]['addr'])
+
+    return addrs
