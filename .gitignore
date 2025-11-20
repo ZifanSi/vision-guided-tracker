@@ -294,5 +294,9 @@ weights/
 
 .idea/
 
-
+SAM3/
 src/cv/test_files/train.py
+
+
+rocam_data_15000.zip
+rocam_data_15000/

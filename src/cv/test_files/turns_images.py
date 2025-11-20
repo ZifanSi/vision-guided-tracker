@@ -1,7 +1,7 @@
 import os, glob, random, cv2, numpy as np
 
-DATA_ROOT = r".\src\cv\data\Rocket_Tracking.v1i.yolov12"   # has train/, valid/, test/
-OUT_ROOT  = r".\src\cv\data\Rocket_Tracking.v1i.yolov12_turns"
+DATA_ROOT = r".\src\cv\data\Rocket.v1i.yolov12"   # has train/, valid/, test/
+OUT_ROOT  = r".\src\cv\data\Rocket.v1i.yolov12_turns"
 ANGLE_RANGE = (-180, 180)
 TARGET_W, TARGET_H = 1080, 720
 
