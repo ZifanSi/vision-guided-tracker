@@ -41,6 +41,7 @@ def inference_stop_probe(pad, info, u_data):
     global _fps_time_list
     global osd
     global ipc_client
+    global glshader
 
     gst_buffer = info.get_buffer()
     if not gst_buffer:
@@ -63,6 +64,7 @@ def inference_stop_probe(pad, info, u_data):
     # C address of gst_buffer as input, which is obtained with hash(gst_buffer)
     batch_meta = pyds.gst_buffer_get_nvds_batch_meta(hash(gst_buffer))
     l_frame = batch_meta.frame_meta_list
+    bounding_box = None
     while l_frame is not None:
         try:
             # Note that l_frame.data needs a cast to pyds.NvDsFrameMeta
@@ -83,14 +85,15 @@ def inference_stop_probe(pad, info, u_data):
                 break
 
             bbox = obj_meta.detector_bbox_info.org_bbox_coords
-            ipc_client.send(BoundingBox(
-                pts_s=pts_s,
-                conf=obj_meta.confidence,
-                left=bbox.left / WIDTH,
-                top=bbox.top / HEIGHT,
-                width=bbox.width / WIDTH,
-                height=bbox.height / HEIGHT
-            ))
+            if not bounding_box or obj_meta.confidence > bounding_box.conf:
+                bounding_box = BoundingBox(
+                    pts_s=pts_s,
+                    conf=obj_meta.confidence,
+                    left=bbox.left / WIDTH,
+                    top=bbox.top / HEIGHT,
+                    width=bbox.width / WIDTH,
+                    height=bbox.height / HEIGHT
+                )
             try:
                 l_obj = l_obj.next
             except StopIteration:
@@ -101,11 +104,21 @@ def inference_stop_probe(pad, info, u_data):
         except StopIteration:
             break
 
+    if bounding_box and bounding_box.conf > 0.4:
+        ipc_client.send(bounding_box)
+        cx = bounding_box.left + bounding_box.width / 2.0
+        cy = bounding_box.top + bounding_box.height / 2.0
+
+        tx = 0.5 - cx
+        ty = 0.5 - cy
+        glshader.set_property('uniforms',
+                              Gst.Structure.new_from_string(f"uniforms, tx=(float){tx}, ty=(float){ty}, scale=(float)1.0"))
+
     return Gst.PadProbeReturn.OK
 
 
 def main():
-    global pipeline, osd
+    global pipeline, osd, glshader
     global ipc_client
 
     logger.info("Trying to connect to IPC server...")
@@ -158,6 +171,7 @@ def main():
 
     glshader = pipeline.get_by_name("shader")
     glshader.set_property('fragment', open("shader.frag").read())
+    glshader.set_property('uniforms', Gst.Structure.new_from_string("uniforms, tx=(float)0.0, ty=(float)0.0, scale=(float)1.0"))
 
     # create an event loop and feed gstreamer bus mesages to it
     loop = GLib.MainLoop()

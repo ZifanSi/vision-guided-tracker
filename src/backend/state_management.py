@@ -86,10 +86,8 @@ class StateManagement:
         bbox = None
         if latest_preview_frame is not None:
             latest_preview_frame = base64.b64encode(latest_preview_frame).decode("ascii")
+            # preview is delayed by 3 frames
             bbox = self._bboxes.get_bbox(latest_preview_frame_time - 3 / 60)
-
-        # preview is delayed by 3 frames
-
 
         try:
             tilt, pan = self._gimbal.measure_deg()
