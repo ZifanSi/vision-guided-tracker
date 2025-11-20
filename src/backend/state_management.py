@@ -8,6 +8,8 @@ import base64
 import time
 from dataclasses import dataclass
 
+from tracking import Tracking
+
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -59,16 +61,17 @@ class StateManagement:
 
         self._gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.1)
         self._gimbal.move_deg(0,0)
+        self._tracking = Tracking(gimbal=self._gimbal, width=1080, height=1920, k_p=0.001)
+
         self._preview_receiver = MjpegFrameReceiver()
         self._cv_pipeline = CVPipeline(lambda v: self._on_detection(v))
         self._bboxes = BoundingBoxCollection()
-
 
     def _on_detection(self, bbox: BoundingBox):
         self._bboxes.received_bbox(bbox)
 
         if self._armed:
-            pass
+            self._tracking.on_detection(bbox.center())
 
     def arm(self):
         self._armed = True

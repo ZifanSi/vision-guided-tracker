@@ -11,6 +11,11 @@ class BoundingBox:
     width: float
     height: float
 
+    def center(self) -> tuple[float, float]:
+        cx = self.left + self.width / 2.0
+        cy = self.top + self.height / 2.0
+        return (cx, cy)
+
 def create_rocam_ipc_server():
     return Listener(('localhost', 5000))
 

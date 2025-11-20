@@ -11,7 +11,6 @@ import {
 import { useRocam } from "@/network/rocamProvider";
 import DefaultLayout from "@/layouts/default";
 import { useMeasure } from "react-use";
-import { BoundingBox } from "@/network/api";
 
 export default function ControlPage() {
   const { apiClient, status, error } = useRocam();
@@ -23,17 +22,7 @@ export default function ControlPage() {
     }
   }, [error]);
 
-  let bbox: BoundingBox | undefined = undefined;
-  if (status?.bbox) {
-    // rotate 90 degrees
-    bbox = {
-      ...status?.bbox,
-      top: status?.bbox.left,
-      left: 1 - status?.bbox.top - status?.bbox.height,
-      width: status?.bbox.height,
-      height: status?.bbox.width,
-    };
-  }
+  const bbox = status?.bbox;
 
   return (
     <DefaultLayout className="flex items-stretch">

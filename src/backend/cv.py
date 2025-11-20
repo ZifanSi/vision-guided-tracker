@@ -53,7 +53,15 @@ class CVPipeline:
             try:
                 data = self._conn.recv()
                 if isinstance(data, BoundingBox):
-                    self._detection_callback(data)
+                    # rotate 90 degrees
+                    self._detection_callback(BoundingBox(
+                        pts_s=data.pts_s,
+                        conf=data.conf,
+                        left=1-(data.top + data.height),
+                        top=data.left,
+                        width=data.height,
+                        height=data.width,
+                    ))
             except EOFError:
                 # client disconnected
                 self._conn = self._ipc_server.accept()

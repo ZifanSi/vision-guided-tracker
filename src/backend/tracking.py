@@ -48,8 +48,8 @@ class Tracking:
             if center:
                 try:
                     cx, cy = center
-                    error_x = cx - self._width / 2.0
-                    error_y = cy - self._height / 2.0
+                    error_x = cx * self._width - self._width / 2.0
+                    error_y = cy * self._height - self._height / 2.0
 
                     delta_pan = error_x * self._k_p
                     delta_tilt = -error_y * self._k_p
