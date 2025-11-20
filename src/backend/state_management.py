@@ -61,7 +61,7 @@ class StateManagement:
 
         self._gimbal = GimbalSerial(port="/dev/ttyTHS1", baudrate=115200, timeout=0.1)
         self._gimbal.move_deg(0,0)
-        self._tracking = Tracking(gimbal=self._gimbal, width=1080, height=1920, k_p=0.001)
+        self._tracking = Tracking(gimbal=self._gimbal, width=1080, height=1920, k_p=0.003)
 
         self._preview_receiver = MjpegFrameReceiver()
         self._cv_pipeline = CVPipeline(lambda v: self._on_detection(v))
