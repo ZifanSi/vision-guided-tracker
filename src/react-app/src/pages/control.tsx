@@ -7,10 +7,10 @@ import {
   IconChevronDown,
   IconHome,
 } from "@tabler/icons-react";
+import { useMeasure } from "react-use";
 
 import { useRocam } from "@/network/rocamProvider";
 import DefaultLayout from "@/layouts/default";
-import { useMeasure } from "react-use";
 
 export default function ControlPage() {
   const { apiClient, status, error } = useRocam();
@@ -40,28 +40,29 @@ export default function ControlPage() {
                 : undefined
             }
             style={{ width: height, height: width }}
+            alt="Camera Preview"
           />
           <div className="absolute" style={{ width, height }}>
             {bbox && (
               <>
-              <div
-                className="absolute bg-green-500 text-white w-11 h-6 pl-1"
-                style={{
-                  top: bbox.top * height - 24,
-                  left: bbox.left * width,
-                }}
-              >
-                {Math.round(bbox.conf * 100)/100}
-              </div>
-              <div
-                className="absolute border-4 border-green-500"
-                style={{
-                  top: bbox.top * height,
-                  left: bbox.left * width,
-                  width: bbox.width * width,
-                  height: bbox.height * height,
-                }}
-              />
+                <div
+                  className="absolute bg-green-500 text-white w-11 h-6 pl-1"
+                  style={{
+                    top: bbox.top * height - 24,
+                    left: bbox.left * width,
+                  }}
+                >
+                  {Math.round(bbox.conf * 100) / 100}
+                </div>
+                <div
+                  className="absolute border-4 border-green-500"
+                  style={{
+                    top: bbox.top * height,
+                    left: bbox.left * width,
+                    width: bbox.width * width,
+                    height: bbox.height * height,
+                  }}
+                />
               </>
             )}
           </div>

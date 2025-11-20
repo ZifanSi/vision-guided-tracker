@@ -6,7 +6,7 @@ export type BoundingBox = {
   top: number;
   width: number;
   height: number;
-}
+};
 
 export type StatusResponse = {
   armed: boolean;
