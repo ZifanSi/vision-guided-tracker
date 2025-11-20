@@ -1,9 +1,19 @@
 // API Types
+
+export type BoundingBox = {
+  conf: number;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
 export type StatusResponse = {
   armed: boolean;
   tilt: number;
   pan: number;
   preview: string | null;
+  bbox: BoundingBox;
 };
 
 export type ApiResponse<T = Record<string, unknown>> = T;

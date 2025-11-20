@@ -233,7 +233,7 @@ def main():
             nvvideoconvert dest-crop=0:0:480:270 !
             video/x-raw(memory:NVMM),width=480,height=270 !
             videorate !
-            video/x-raw(memory:NVMM),framerate=15/1 !
+            video/x-raw(memory:NVMM),framerate=30/1 !
             nvjpegenc quality=70 !
             multipartmux boundary=spionisto !
             tcpclientsink port=9999

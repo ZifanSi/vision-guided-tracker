@@ -11,6 +11,7 @@ import {
 import { useRocam } from "@/network/rocamProvider";
 import DefaultLayout from "@/layouts/default";
 import { useMeasure } from "react-use";
+import { BoundingBox } from "@/network/api";
 
 export default function ControlPage() {
   const { apiClient, status, error } = useRocam();
@@ -22,6 +23,18 @@ export default function ControlPage() {
     }
   }, [error]);
 
+  let bbox: BoundingBox | undefined = undefined;
+  if (status?.bbox) {
+    // rotate 90 degrees
+    bbox = {
+      ...status?.bbox,
+      top: status?.bbox.left,
+      left: 1 - status?.bbox.top - status?.bbox.height,
+      width: status?.bbox.height,
+      height: status?.bbox.width,
+    };
+  }
+
   return (
     <DefaultLayout className="flex items-stretch">
       <div className="grid gap-4 m-4 mt-0 grid-cols-[auto_1fr] grid-rows-[1fr_auto] min-w-0 w-full">
@@ -32,9 +45,37 @@ export default function ControlPage() {
           <p>Live Stream Loading.....</p>
           <img
             className="absolute rotate-90 rounded-lg"
-            src={status?.preview ? `data:image/jpeg;base64,${status.preview}` : undefined}
+            src={
+              status?.preview
+                ? `data:image/jpeg;base64,${status.preview}`
+                : undefined
+            }
             style={{ width: height, height: width }}
           />
+          <div className="absolute" style={{ width, height }}>
+            {bbox && (
+              <>
+              <div
+                className="absolute bg-green-500 text-white w-11 h-6 pl-1"
+                style={{
+                  top: bbox.top * height - 24,
+                  left: bbox.left * width,
+                }}
+              >
+                {Math.round(bbox.conf * 100)/100}
+              </div>
+              <div
+                className="absolute border-4 border-green-500"
+                style={{
+                  top: bbox.top * height,
+                  left: bbox.left * width,
+                  width: bbox.width * width,
+                  height: bbox.height * height,
+                }}
+              />
+              </>
+            )}
+          </div>
         </div>
 
         <div className="bg-gray-100 rounded-lg p-4 font-mono">

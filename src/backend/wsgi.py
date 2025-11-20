@@ -61,5 +61,3 @@ def serve_frontend(path):
         return send_from_directory(FRONTEND_DIR, "index.html")
 
 logger.info(f"ipv4 addresses: {ip4_addresses()}")
-
-state_management.start()
