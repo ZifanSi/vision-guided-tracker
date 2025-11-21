@@ -12,6 +12,7 @@ python export_yolo11.py \
     --simplify \
     --batch 1
 
+rm labels.txt
 rm -f "${SCRIPT_DIR}/cv_process/model_b1_gpu0_fp16.engine"
 
 echo "Created ${SCRIPT_DIR}/models/model.pt.onnx"
