@@ -17,6 +17,7 @@ defmt-rtt = "1.0.0"
 embassy-executor = { git = "https://github.com/embassy-rs/embassy.git", features = [
     "arch-cortex-m",
     "executor-thread",
+    "executor-interrupt",
     "defmt",
     "nightly",
 ] }
@@ -43,7 +44,7 @@ lora-phy = { git = "https://github.com/lora-rs/lora-rs.git", default-features = 
 embassy-embedded-hal = { git = "https://github.com/embassy-rs/embassy.git" }
 embedded-io-async = "0.6.1"
 micromath = "2.1.0"
-firmware-common-new = { git = "https://github.com/McMaster-Rocketry-Team/Rust_Monorepo", default-features = false, features = [
+firmware-common-new = { path = "/home/pegasis/Projects/RocketProjects/Rust_Monorepo/firmware-common-new", default-features = false, features = [
     "defmt",
 ] }
 

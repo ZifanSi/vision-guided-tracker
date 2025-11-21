@@ -1,17 +1,17 @@
 use defmt::{error, info};
 use embassy_stm32::{
     gpio::Level,
-    mode::Async,
-    usart::{Error as UartError, Uart},
+    usart::{BufferedUart, Error as UartError},
 };
-use embassy_sync::{blocking_mutex::raw::NoopRawMutex, watch::Watch};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, watch::Watch};
+use embedded_io_async::{Read, Write};
 use firmware_common_new::rpc::{gimbal_rpc::*, half_duplex_serial::HalfDuplexSerial};
 
 use crate::led::{set_arm_led, set_status_led};
 
 pub struct GimbalRpc {
-    pub tilt_angle_deg_watch: &'static Watch<NoopRawMutex, f32, 1>,
-    pub pan_angle_deg_watch: &'static Watch<NoopRawMutex, f32, 1>,
+    pub tilt_angle_deg_watch: &'static Watch<CriticalSectionRawMutex, f32, 1>,
+    pub pan_angle_deg_watch: &'static Watch<CriticalSectionRawMutex, f32, 1>,
 }
 
 impl GimbalRpcServer for GimbalRpc {
@@ -58,19 +58,18 @@ impl GimbalRpcServer for GimbalRpc {
 }
 
 #[embassy_executor::task]
-pub async fn rpc_task(uart: Uart<'static, Async>, mut rpc: GimbalRpc) {
-    struct SerialWrapper(Uart<'static, Async>);
+pub async fn rpc_task(uart: BufferedUart<'static>, mut rpc: GimbalRpc) {
+    struct SerialWrapper(BufferedUart<'static>);
 
     impl HalfDuplexSerial for SerialWrapper {
         type Error = UartError;
 
         async fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
-            self.0.read_until_idle(buf).await
+            self.0.read(buf).await
         }
 
         async fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
-            self.0.write(buf).await?;
-            Ok(buf.len())
+            self.0.write(buf).await
         }
 
         async fn clear_read_buffer(&mut self) -> Result<(), Self::Error> {
