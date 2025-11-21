@@ -4,9 +4,9 @@ set -e
 # Resolve the directory this script lives in
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-cd ~/ultralytics
+cd ~
 
-python3 export_yolo11.py \
+python export_yolo11.py \
     -w "${SCRIPT_DIR}/models/model.pt" \
     -s 540 960 \
     --simplify \
