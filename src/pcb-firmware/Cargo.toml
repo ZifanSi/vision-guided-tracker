@@ -17,6 +17,7 @@ defmt-rtt = "1.0.0"
 embassy-executor = { git = "https://github.com/embassy-rs/embassy.git", features = [
     "arch-cortex-m",
     "executor-thread",
+    "executor-interrupt",
     "defmt",
     "nightly",
 ] }

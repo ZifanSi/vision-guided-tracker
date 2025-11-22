@@ -18,18 +18,16 @@ mod servo;
 
 use cortex_m::singleton;
 use defmt::*;
-use embassy_executor::Spawner;
+use embassy_executor::{Executor, InterruptExecutor};
+use embassy_stm32::interrupt::{InterruptExt, Priority};
 use embassy_stm32::time::mhz;
-use embassy_stm32::usart::{Config as UsartConfig, Uart};
+use embassy_stm32::usart::Config as UsartConfig;
 use embassy_stm32::{bind_interrupts, peripherals, usart};
-use embassy_sync::{blocking_mutex::raw::NoopRawMutex, watch::Watch};
+use embassy_stm32::{interrupt, usart::BufferedUart};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, watch::Watch};
 
-bind_interrupts!(struct Irqs {
-    USART1 => usart::InterruptHandler<peripherals::USART1>;
-});
-
-#[embassy_executor::main]
-async fn main(spawner: Spawner) {
+#[cortex_m_rt::entry]
+fn main() -> ! {
     let config = {
         use embassy_stm32::rcc::mux::*;
         use embassy_stm32::rcc::*;
@@ -64,23 +62,49 @@ async fn main(spawner: Spawner) {
     let p = embassy_stm32::init(config);
     info!("Hello RoCam!");
 
-    spawner.spawn(arm_led_task(p.PC11).unwrap());
-    spawner.spawn(status_led_task(p.PD2).unwrap());
+    let tilt_angle_deg_watch =
+        singleton!(: Watch<CriticalSectionRawMutex, f32, 1> = Watch::new()).unwrap();
+    let pan_angle_deg_watch =
+        singleton!(: Watch<CriticalSectionRawMutex, f32, 1> = Watch::new()).unwrap();
 
-    let tilt_angle_deg_watch = singleton!(: Watch<NoopRawMutex, f32, 1> = Watch::new()).unwrap();
-    let pan_angle_deg_watch = singleton!(: Watch<NoopRawMutex, f32, 1> = Watch::new()).unwrap();
-    spawner.spawn(servo_task(p.PB5.into(), 49.0, true, tilt_angle_deg_watch).unwrap());
-    spawner.spawn(servo_task(p.PB6.into(), -7.0, false, pan_angle_deg_watch).unwrap());
+    // High priority executor
+    {
+        static EXECUTOR: InterruptExecutor = InterruptExecutor::new();
+        #[embassy_stm32::interrupt]
+        unsafe fn USART2() {
+            unsafe { EXECUTOR.on_interrupt() }
+        }
 
-    let mut config = UsartConfig::default();
-    config.baudrate = 115200;
-    let usart = Uart::new(
-        p.USART1, p.PA10, p.PA9, Irqs, p.DMA2_CH7, p.DMA2_CH5, config,
-    )
-    .unwrap();
-    let gimbal_rpc = GimbalRpc {
-        tilt_angle_deg_watch,
-        pan_angle_deg_watch,
-    };
-    spawner.spawn(rpc_task(usart, gimbal_rpc).unwrap());
+        interrupt::USART2.set_priority(Priority::P0);
+        let spawner = EXECUTOR.start(interrupt::USART2);
+
+        spawner.spawn(servo_task(p.PB5.into(), 49.0, true, tilt_angle_deg_watch).unwrap());
+        spawner.spawn(servo_task(p.PB6.into(), -7.0, false, pan_angle_deg_watch).unwrap());
+    }
+
+    // Low priority executor
+    {
+        let executor_low = singleton!(: Executor = Executor::new()).unwrap();
+        executor_low.run(|spawner| {
+            spawner.spawn(arm_led_task(p.PC11).unwrap());
+            spawner.spawn(status_led_task(p.PD2).unwrap());
+
+            bind_interrupts!(struct Irqs {
+                USART1 => usart::BufferedInterruptHandler<peripherals::USART1>;
+            });
+            let mut config = UsartConfig::default();
+            config.baudrate = 115200;
+            let tx_buffer = singleton!(: [u8; 64] = [0; 64]).unwrap();
+            let rx_buffer = singleton!(: [u8; 64] = [0; 64]).unwrap();
+            let usart =
+                BufferedUart::new(p.USART1, p.PA10, p.PA9, tx_buffer, rx_buffer, Irqs, config)
+                    .unwrap();
+
+            let gimbal_rpc = GimbalRpc {
+                tilt_angle_deg_watch,
+                pan_angle_deg_watch,
+            };
+            spawner.spawn(rpc_task(usart, gimbal_rpc).unwrap());
+        })
+    }
 }

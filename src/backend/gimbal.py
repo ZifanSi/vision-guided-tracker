@@ -128,7 +128,7 @@ class GimbalSerial:
         data[0] = self._crc8_smbus(bytes(data[1:]))
         return bytes(data)
 
-    def _send_simple(self, request_id: int, payload: bytes) -> bool:
+    def _send_simple(self, request_id: int, payload: bytes):
         """
         Send a request and expect a 1-byte 0x00 ACK.
 
@@ -142,9 +142,10 @@ class GimbalSerial:
             packet = self.create_request_data(request_id, payload)
             written = self.ser.write(packet)
             if written != len(packet):
-                return False
+                raise RuntimeError("Short write for simple command")
             resp = self._read_exact(1)
-            return resp == b"\x00"
+            if resp is None:
+                raise RuntimeError("Timeout or short read on response")
 
     # ── Commands ───────────────────────────────────────────────────────────────
     def arm_led(self, state: bool) -> bool:
@@ -165,7 +166,7 @@ class GimbalSerial:
         if not self.ser or not self.ser.is_open:
             raise RuntimeError("Serial port is not open")
         payload = bytes([1 if state else 0])
-        return self._send_simple(0x00, payload)
+        self._send_simple(0x00, payload)
 
     def status_led(self, state: bool) -> bool:
         """
@@ -185,7 +186,7 @@ class GimbalSerial:
         if not self.ser or not self.ser.is_open:
             raise RuntimeError("Serial port is not open")
         payload = bytes([1 if state else 0])
-        return self._send_simple(0x01, payload)
+        self._send_simple(0x01, payload)
 
     def move_deg(self, tilt: float, pan: float) -> bool:
         """
@@ -207,7 +208,7 @@ class GimbalSerial:
         if not self.ser or not self.ser.is_open:
             raise RuntimeError("Serial port is not open")
         payload = struct.pack("<ff", float(tilt), float(pan))
-        return self._send_simple(0x02, payload)
+        self._send_simple(0x02, payload)
 
     def measure_deg(self) -> Tuple[float, float]:
         """

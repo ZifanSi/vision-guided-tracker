@@ -2,7 +2,7 @@ use embassy_stm32::{
     Peri,
     gpio::{AnyPin, Level, Output, Speed},
 };
-use embassy_sync::{blocking_mutex::raw::NoopRawMutex, watch::Watch};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, watch::Watch};
 use embassy_time::{Duration, Ticker, Timer};
 
 fn servo_angle_to_pulse_width_us(mut angle_deg: f32) -> u64 {
@@ -27,7 +27,7 @@ pub async fn servo_task(
     pwm_pin: Peri<'static, AnyPin>,
     offset_deg: f32,
     reverse_direction: bool,
-    angle_deg_watch: &'static Watch<NoopRawMutex, f32, 1>,
+    angle_deg_watch: &'static Watch<CriticalSectionRawMutex, f32, 1>,
 ) {
     let mut pwm_pin = Output::new(pwm_pin, Level::Low, Speed::Low);
     let mut receiver = angle_deg_watch.receiver().unwrap();

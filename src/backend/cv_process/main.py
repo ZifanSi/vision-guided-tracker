@@ -104,15 +104,16 @@ def inference_stop_probe(pad, info, u_data):
         except StopIteration:
             break
 
-    if bounding_box and bounding_box.conf > 0.4:
+    if bounding_box and bounding_box.conf > 0.2:
         ipc_client.send(bounding_box)
         cx = bounding_box.left + bounding_box.width / 2.0
         cy = bounding_box.top + bounding_box.height / 2.0
 
         tx = 0.5 - cx
         ty = 0.5 - cy
+        s = max(bounding_box.width * WIDTH, bounding_box.height * HEIGHT)
         glshader.set_property('uniforms',
-                              Gst.Structure.new_from_string(f"uniforms, tx=(float){tx}, ty=(float){ty}, scale=(float)1.0"))
+                              Gst.Structure.new_from_string(f"uniforms, tx=(float){tx}, ty=(float){ty}, scale=(float){1080 / s * 0.5}"))
 
     return Gst.PadProbeReturn.OK
 
