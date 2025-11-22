@@ -163,6 +163,7 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 [[package]]
 name = "calculate-required-bits"
 version = "0.1.0"
+source = "git+https://github.com/McMaster-Rocketry-Team/Rust_Monorepo#31ff69b147c2e7caa57acd4ee00e61d4799490e4"
 dependencies = [
  "quote",
  "syn 2.0.110",
@@ -768,6 +769,7 @@ dependencies = [
 [[package]]
 name = "firmware-common-new"
 version = "0.1.0"
+source = "git+https://github.com/McMaster-Rocketry-Team/Rust_Monorepo#31ff69b147c2e7caa57acd4ee00e61d4799490e4"
 dependencies = [
  "aligned 0.4.2",
  "calculate-required-bits",
